@@ -8,14 +8,14 @@
             $this->acceso = $db->pdo;
         }
         //consultas a la bd
-        /*function loguearse($user, $pass){
+        function loguearse($user, $pass){
             $sql ="SELECT * FROM usuario 
                     WHERE user=:user AND pass=:pass";
             $query = $this->acceso->prepare($sql); 
             $query->execute(array(':user'=>$user, ':pass'=>$pass));
             $this->objetos = $query->fetchAll();
             return $this->objetos;
-        }*/
+        }
         //funcion para verificar si el username ya existe
         function verificar_usuario($user){
             $sql ="SELECT * FROM usuario 
@@ -57,7 +57,7 @@
             ':email'=>$email,
             ':telefono'=>$telefono,
             ':avatar'=>$nombre
-        );
+            );
             $query->execute($variables);
             }
             else{   
@@ -77,18 +77,4 @@
             }
             
         }
-
-        function cambiar_contra($id_usuario, $pass_new){
-            $sql ="UPDATE usuario SET pass = :pass_new WHERE  id=:id_usuario";
-            $query = $this->acceso->prepare($sql); 
-            $variables = array(
-            ':id_usuario'=>$id_usuario,
-            ':pass_new'=>$pass_new
-        );
-            $query->execute($variables);
-
-        }
-        
     }
-
-    

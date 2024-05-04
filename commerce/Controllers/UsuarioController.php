@@ -1,8 +1,6 @@
 <?php
 include_once '../Models/Usuario.php';
-include_once '../Util/Config/config.php';
-require '../vendor/autoload.php';
-//esta variable esta siendo instanciada en Usuasrio.php y a la vez en Conexion.php
+//esta variable esta siendo instanciada en Usuario.php y a la vez en Conexion.php
 $usuario = new Usuario();
 //sive para saber cuando el usuario entra en su sesion
 session_start();
@@ -12,16 +10,15 @@ session_start();
     if($_POST['funcion']=='login'){
         $user = $_POST['user'];
         $pass = $_POST['pass'];
-        $usuario->verificar_usuario($user);
+        $usuario->loguearse($user, $pass);
         if($usuario->objetos!=null){
-            $pass_bd = openssl_decrypt($usuario->objetos[0]->pass,CODE,KEY);
-            if($pass_bd == $pass){
-                    $_SESSION['id']=$usuario->objetos[0]->id;
-                    $_SESSION['user']=$usuario->objetos[0]->user;
-                    $_SESSION['tipo_usuario']=$usuario->objetos[0]->id_tipo;
-                    $_SESSION['avatar']=$usuario->objetos[0]->avatar;
-                echo 'logueado';
-            } 
+            foreach($usuario->objetos as $objeto){
+                $_SESSION['id']=$objeto->id;
+                $_SESSION['user']=$objeto->user;
+                $_SESSION['tipo_usuario']=$objeto->id_tipo;
+                $_SESSION['avatar']=$objeto->avatar;
+            }
+            echo 'logueado';
         }
     }
     //aqui manejo la funcion de verificar sesion, verificando si existe un SESSION id
@@ -51,7 +48,7 @@ session_start();
 
     if($_POST['funcion']=='registrar_usuario'){
         $username = $_POST['username'];
-        $pass = openssl_encrypt($_POST['pass'],CODE,KEY);
+        $pass = $_POST['pass'];
         $nombres = $_POST['nombres'];
         $apellidos = $_POST['apellidos'];	
         $dni = $_POST['dni'];
@@ -83,7 +80,7 @@ session_start();
     if($_POST['funcion']=='editar_datos'){
         $id_usuario = $_SESSION['id'];
         $nombres = $_POST['nombres_mod'];
-        $apellidos = $_POST['apellidos_mod'];	
+        $apellidos = $_POST['apellidos_mod'];
         $dni = $_POST['dni_mod'];
         $email = $_POST['email_mod'];
         $telefono = $_POST['telefono_mod'];
@@ -91,25 +88,7 @@ session_start();
         if($avatar != ''){
             $nombre = uniqid().'-'.$avatar;
             $ruta = '../Util/Img/Users/'.$nombre;
-            //move_uploaded_file($_FILES['avatar_mod']['tmp_name'],$ruta);
-            $archivo = $nombre;
-            $extension = pathinfo($archivo, PATHINFO_EXTENSION);
-            $nombre_base = basename($archivo, '.'.PATHINFO_EXTENSION);
-            $handle = new \Verot\Upload\Upload($_FILES['avatar_mod']);
-            if ($handle->uploaded) {
-                $handle->file_new_name_body   = $nombre_base;
-                $handle->image_resize         = true;
-                $handle->image_x              = 200;
-                $handle->image_y        = 200;
-                $handle->process('../Util/Img/Users/');
-                if ($handle->processed) {
-                    //echo 'image resized';
-                    $handle->clean();
-            } 
-            else {
-                echo 'error : ' . $handle->error;
-            }
-            }
+            move_uploaded_file($_FILES['avatar_mod']['tmp_name'],$ruta);
             $usuario->obtener_datos($id_usuario);
             foreach($usuario->objetos as $objeto){
                 $avatar_actual = $objeto->avatar;
@@ -128,24 +107,3 @@ session_start();
     }
 
 
-    if($_POST['funcion']=='cambiar_contra'){
-        $id_usuario = $_SESSION['id'];
-        $user = $_SESSION['user'];
-        $pass_old = $_POST['pass_old'];
-        $pass_new = $_POST['pass_new'];
-        $usuario->verificar_usuario($user);
-        if(!empty($usuario->objetos)){
-            $pass_bd = openssl_decrypt($usuario->objetos[0]->pass,CODE,KEY);
-            if($pass_bd == $pass_old){
-                $pass_new_encriptada = openssl_encrypt($_POST['pass_new'],CODE,KEY);
-                $usuario->cambiar_contra($id_usuario, $pass_new_encriptada);
-                echo 'success';
-            }
-            else{
-                echo 'error';   
-            }
-        }
-        else{
-            echo 'error';
-        }
-    }
