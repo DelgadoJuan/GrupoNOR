@@ -1,10 +1,12 @@
 import { verificar_sesion } from "./sesion.js";
 
 $(document).ready(function() {
-    var funcion;
+    let ordenar_por = null;
+    let direccion = 'ASC';
+
     bsCustomFileInput.init();
     verificar_sesion();
-    obtenerProductos();
+    obtenerProductos($('#sortCharacteristic').val(), $('#filterName').val());
     
     // Función para modificar el estado de un producto
     function modificarEstadoProducto(id, estado) {
@@ -18,7 +20,7 @@ $(document).ready(function() {
             },
             success: function(response) {
                 alert('Estado modificado correctamente');
-                obtenerProductos(); // Actualizar la tabla
+                obtenerProductos($('#sortCharacteristic').val(), $('#filterName').val()); // Actualizar la tabla
             }
         });
     }
@@ -34,18 +36,18 @@ $(document).ready(function() {
             },
             success: function(response) {
                 alert('Producto eliminado correctamente');
-                obtenerProductos(); // Actualizar la tabla
+                obtenerProductos($('#sortCharacteristic').val(), $('#filterName').val()); // Actualizar la tabla
             }
         });
     }
 
     // Función para obtener todos los productos y llenar la tabla de stock
-    function obtenerProductos() {
+    function obtenerProductos(ordenar_por, nombre, direccion) {
         $.ajax({
             url: '../Controllers/ProductoController.php',
             method: 'POST',
             data: {
-                funcion: 'obtener_productos'
+                funcion: 'obtener_productos', ordenar_por: ordenar_por, nombre: nombre, direccion: direccion 
             },
             success: function(response) {
                 let productos = JSON.parse(response);
@@ -64,10 +66,10 @@ $(document).ready(function() {
                             <td>${producto.fecha_registro ? new Date(producto.fecha_registro).toLocaleString() : ''}</td>
                             <td>${producto.fecha_actualizacion ? new Date(producto.fecha_actualizacion).toLocaleString() : ''}</td>
                             <td class='cantidad-column'>${producto.cantidad_disponible ? producto.cantidad_disponible : 0}</td>
+                            <td><button class="btn btn-warning toggle-status-button" data-id="${producto.id}" data-status="${producto.estado}"><i class="${producto.estado == 'A' ? 'fas fa-toggle-on' : 'fas fa-toggle-off'}"></i></button></td>
                                 <td>
                                     <button class="btn btn-primary add-quantity-button" data-id="${producto.id}" data-toggle="modal" data-target="#addStockModal"><i class="fas fa-plus"></i></button>
                                     <button class="btn btn-info edit-button" data-id="${producto.id}" data-toggle="modal" data-target="#editProductModal"><i class="fas fa-edit"></i></button>
-                                    <button class="btn btn-warning toggle-status-button" data-id="${producto.id}" data-status="${producto.estado}"><i class="${producto.estado == 'A' ? 'fas fa-toggle-on' : 'fas fa-toggle-off'}"></i></button>
                                     <button class="btn btn-danger delete-button" data-id="${producto.id}"><i class="fas fa-trash"></i></button>
                                 </td>
                         </tr>
@@ -136,7 +138,7 @@ $(document).ready(function() {
                 $('#productModal').modal('hide');
                 alert('Producto creado correctamente');
                 // Actualizar la tabla de productos
-                obtenerProductos();
+                obtenerProductos($('#sortCharacteristic').val(), $('#filterName').val());
             }
         });
     });
@@ -209,7 +211,7 @@ $(document).ready(function() {
             contentType: false,  // No establecer el encabezado Content-Type automáticamente
             success: function(response) {
                 alert('Producto editado correctamente');
-                obtenerProductos();
+                obtenerProductos($('#sortCharacteristic').val(), $('#filterName').val());
                 $('#editProductModal').modal('hide');
             }
         });
@@ -232,28 +234,6 @@ $(document).ready(function() {
             });
         }
     }
-
-    /*document.querySelector('#editProductForm').addEventListener('submit', function(event) {
-        // Prevenir la recarga de la página
-        event.preventDefault();
-    
-        // Crear un objeto FormData con los datos del formulario
-        let formData = new FormData(this);
-    
-        // Agregar la función al objeto FormData
-        formData.append('funcion', 'editar_producto');
-    
-        // Enviar los datos del formulario al servidor
-        $.ajax({
-            url: '../Controllers/ProductoController.php',
-            method: 'POST',
-            data: formData,
-            success: function(response) {
-                alert('Producto editado correctamente');
-                $('#editProductModal').modal('hide');
-            }
-        });
-    });*/
     
         $('#saveChanges').on('click', function() {
             var id = $('#addStockForm #productId').val();
@@ -267,7 +247,7 @@ $(document).ready(function() {
                     if (data.status === 'success') {
                         alert('Cantidad modificada correctamente');
                         $('#addStockModal').modal('hide');
-                        obtenerProductos();
+                        obtenerProductos($('#sortCharacteristic').val(), $('#filterName').val());
                     } else {
                         alert(data.message);
                     }
@@ -277,41 +257,31 @@ $(document).ready(function() {
                 }
             });
         });
-    
-        /*$('#addStockForm').on('submit', function(e) {
-            e.preventDefault();
-            var id = $('#productId').val();
-            var cantidad = $('#cantidad').val();
-            $.ajax({
-                url: '../Controllers/ProductoController.php',
-                method: 'POST',
-                data: { funcion: 'modificar_cantidad_disponible', id: id, cantidad: cantidad },
-                success: function(response) {
-                    var data = JSON.parse(response);
-                    if (data.status === 'success') {
-                        $('#addStockModal').modal('hide');
-                        location.reload();
-                    } else {
-                        alert(data.message);
-                    }
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    console.error(textStatus, errorThrown);
-                }
-            });
+
+        $('#filterName').on('input', function() {
+            const nombre = $(this).val();
+            obtenerProductos($('#sortCharacteristic').val(), nombre);
+        });
+
+        /*$('#sortCharacteristic').on('change', function() {
+            const ordenar_por = $(this).val();
+            const nombre = $('#filterName').val();
+            obtenerProductos(ordenar_por, nombre);
         }); */
-    
-        // Otras funciones como eliminarFoto, eliminarProducto, etc.
-    
-        /*function obtenerCategorias() {
-            $.post('../Controllers/CategoriaController.php', { funcion: 'obtener_categorias' }, function(response) {
-                const categorias = JSON.parse(response);
-                let select = $('#id_categoria');
-                categorias.forEach(categoria => {
-                    select.append('<option value="' + categoria.id + '">' + categoria.nombre + '</option>');
-                });
-            });
-        } */
+
+        $('th').on('click', function() {
+            const columna = $(this).data('columna');
+            if (ordenar_por === columna) {
+                direccion = direccion === 'ASC' ? 'DESC' : 'ASC';
+            } else {
+                ordenar_por = columna;
+                direccion = 'ASC';
+            }
+            obtenerProductos(ordenar_por, null, direccion);
+        
+            // Cambia la flecha de dirección
+            $(this).find('i').toggleClass('fa-sort-up fa-sort-down');
+        });
 
         function obtenerCategorias() {
             $.post('../Controllers/CategoriaController.php', { funcion: 'obtener_categorias' }, function(response) {

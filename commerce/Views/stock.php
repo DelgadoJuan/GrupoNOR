@@ -14,11 +14,6 @@
                         <div class="d-flex justify-content-between mb-3">
                             <!-- Agregar un input para el filtrado por nombre -->
                             <input type="text" id="filterName" class="form-control" placeholder="Filtrar por nombre">
-                            <!-- Agregar un select para ordenar por determinada característica -->
-                            <select id="sortCharacteristic" class="form-control">
-                                <option value="">Ordenar por...</option>
-                                <!-- Aquí puedes agregar las opciones de ordenamiento -->
-                            </select>
                             <!-- Botón para abrir el modal -->
                             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#productModal">
                                 Agregar Producto
@@ -28,15 +23,16 @@
                         <table id="inventoryTable" class="table table-striped">
                             <thead>
                                 <tr>
-                                    <th>Nombre</th>
-                                    <th>Categoría</th>
-                                    <th>Precio unitario</th>
-                                    <th>Costo unitario</th>
-                                    <th>Sector</th>
-                                    <th>Descripción</th>
-                                    <th>Fecha de registro</th>
-                                    <th>Fecha de actualización</th>
-                                    <th>Cantidad disponible</th>
+                                    <th data-columna="p.nombre">Nombre <i class="fas fa-sort"></i></th>
+                                    <th data-columna="c.nombre">Categoría <i class="fas fa-sort"></i></th>
+                                    <th data-columna="p.precio_unitario">Precio unitario <i class="fas fa-sort"></i></th>
+                                    <th data-columna="p.costo_unidad">Costo unitario <i class="fas fa-sort"></i></th>
+                                    <th data-columna="p.sector">Sector <i class="fas fa-sort"></i></th>
+                                    <th data-columna="p.descripcion">Descripción <i class="fas fa-sort"></i></th>
+                                    <th data-columna="p.fecha_registro">Fecha de registro <i class="fas fa-sort"></i></th>
+                                    <th data-columna="p.fecha_actualizacion">Fecha de actualización <i class="fas fa-sort"></i></th>
+                                    <th data-columna="p.cantidad_disponible">Cantidad disponible <i class="fas fa-sort"></i></th>
+                                    <th data-columna="p.estado">Estado <i class="fas fa-sort"></i></th>
                                     <th>Acciones</th>
                                 </tr>
                             </thead>

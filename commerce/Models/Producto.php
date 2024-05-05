@@ -32,13 +32,20 @@
             }
         }
 
-        public function obtener_productos(){
-
-            $sql ="SELECT p.id, p.nombre, p.descripcion, p.precio_unitario, p.fecha_registro, p.fecha_actualizacion, p.costo_unidad, p.cantidad_disponible, p.sector, p.estado, c.nombre AS nombre_categoria 
+        function obtener_productos($ordenar_por = null, $nombre = null, $direccion = 'ASC') {
+            $sql ="SELECT p.id, p.nombre, p.descripcion, p.precio_unitario, p.fecha_registro, p.fecha_actualizacion, p.costo_unidad, p.cantidad_disponible, p.sector, p.estado, c.nombre as nombre_categoria 
             FROM producto p 
             INNER JOIN categoria c ON p.id_categoria = c.id";
-            $query = $this->acceso->prepare($sql); 
-            $query->execute();
+            $params = [];
+            if ($nombre) {
+                $sql .= " WHERE p.nombre LIKE :nombre";
+                $params[':nombre'] = '%' . $nombre . '%';
+            }
+            if ($ordenar_por) {
+                $sql .= " ORDER BY " . $ordenar_por . " " . $direccion;
+            }
+            $query = $this->acceso->prepare($sql);
+            $query->execute($params);
             $this->objetos = $query->fetchAll();
             return $this->objetos;
         }
@@ -110,6 +117,7 @@
             $sql = "SELECT nombre FROM imagen WHERE id = :id";
             $query = $this->acceso->prepare($sql);
             $query->execute(array(':id' => $id));
+            return $query->fetchColumn();
         }
 
         public function existe_imagen($id) {
@@ -132,5 +140,11 @@
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
             $stmt->execute();
         }
-        
+
+        public function obtener_foto($id) {
+            $sql = "SELECT foto FROM producto WHERE id = :id";
+            $query = $this->acceso->prepare($sql);
+            $query->execute([':id' => $id]);
+            return $query->fetchColumn();
+        }
     }

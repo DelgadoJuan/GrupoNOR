@@ -8,10 +8,18 @@
             $this->acceso = $db->pdo;
         }
 
-        function obtener_categorias() {
-            $sql = "SELECT * FROM categoria";
+        function obtener_categorias($ordenar_por = null, $nombre = null, $direccion = 'ASC') {
+            $sql = "SELECT c.id, c.nombre, c.id_padre, c.fecha_creacion, c.descripcion, c.estado, cp.nombre as nombre_padre FROM categoria as c LEFT JOIN categoria as cp ON c.id_padre=cp.id";
+            $params = [];
+            if ($nombre) {
+                $sql .= " WHERE c.nombre LIKE :nombre";
+                $params[':nombre'] = '%' . $nombre . '%';
+            }
+            if ($ordenar_por) {
+                $sql .= " ORDER BY " . $ordenar_por . " " . $direccion;
+            }
             $query = $this->acceso->prepare($sql);
-            $query->execute();
+            $query->execute($params);
             $this->objetos = $query->fetchAll();
             return $this->objetos;
         }
@@ -43,15 +51,23 @@
         }
     
         function activar_categoria($id) {
-            $sql = "UPDATE categoria SET activo=1 WHERE id=:id";
+            $sql = "UPDATE categoria SET estado='A' WHERE id=:id";
             $query = $this->acceso->prepare($sql);
             $query->execute(array(':id' => $id));
         }
     
         function desactivar_categoria($id) {
-            $sql = "UPDATE categoria SET activo=0 WHERE id=:id";
+            $sql = "UPDATE categoria SET estado='I' WHERE id=:id";
             $query = $this->acceso->prepare($sql);
             $query->execute(array(':id' => $id));
         }
+
+        /*function filtrar_categorias_por_nombre($nombre) {
+            $sql = "SELECT c.id, c.nombre, c.id_padre, c.fecha_creacion, c.descripcion, c.estado, cp.nombre as nombre_padre FROM categoria as c LEFT JOIN categoria as cp ON c.id_padre=cp.id WHERE c.nombre LIKE :nombre";
+            $query = $this->acceso->prepare($sql);
+            $query->execute([':nombre' => '%' . $nombre . '%']);
+            $this->objetos = $query->fetchAll();
+            return $this->objetos;
+        }*/
     }
 

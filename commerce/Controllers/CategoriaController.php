@@ -1,13 +1,17 @@
 <?php
 include_once '../Models/Categoria.php';
+include '../Util/Config/config.php';
 //esta variable esta siendo instanciada en Producto.php y a la vez en Conexion.php
 $categoria = new Categoria();
 //sirve para saber cuando el usuario entra en su sesion
 session_start();
 
     if($_POST['funcion']=='obtener_categorias'){
-        // Llama al método obtener_productos
-        $categorias = $categoria->obtener_categorias();
+        // Llama al método obtener_categorias
+        $ordenar_por = isset($_POST['ordenar_por']) ? $_POST['ordenar_por'] : null;
+        $nombre = isset($_POST['nombre']) ? $_POST['nombre'] : null;
+        $direccion = isset($_POST['direccion']) ? $_POST['direccion'] : 'ASC';
+        $categorias = $categoria->obtener_categorias($ordenar_por, $nombre, $direccion);
 
         $jsonstring = json_encode($categorias);
         echo $jsonstring;
@@ -15,7 +19,7 @@ session_start();
 
     if ($_POST['funcion'] == 'agregar_categoria') {
         $nombre = $_POST['nombre'];
-        $id_padre = $_POST['id_padre'] === 'null' ? null : $_POST['id_padre'];
+        $id_padre = is_numeric($_POST['id_padre']) ? $_POST['id_padre'] : null;
         $fecha_creacion = date('Y-m-d H:i:s');
         $descripcion = $_POST['descripcion'];
 
@@ -29,7 +33,7 @@ session_start();
         $id = $_POST['id'];
         if ($categoria->existe_categoria($id)) {
             $nombre = $_POST['nombre'];
-            $id_padre = $_POST['id_padre'] === 'null' ? null : $_POST['id_padre'];
+            $id_padre = is_numeric($_POST['id_padre']) ? $_POST['id_padre'] : null;
             $descripcion = $_POST['descripcion'];
             $categoria->editar_categoria($id, $nombre, $id_padre, $descripcion);
             echo json_encode(['status' => 'success', 'message' => 'Categoría actualizada correctamente']);
@@ -67,4 +71,12 @@ session_start();
             echo json_encode(['status' => 'error', 'message' => 'La categoría no existe']);
         }
     }
+
+    /*if($_POST['funcion']=='filtrar_categorias_por_nombre'){
+        $nombre = $_POST['nombre'];
+        $categorias = $categoria->filtrar_categorias_por_nombre($nombre);
+    
+        $jsonstring = json_encode($categorias);
+        echo $jsonstring;
+    }*/
         
