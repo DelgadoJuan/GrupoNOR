@@ -122,6 +122,11 @@ $(document).ready(function() {
     
         // Crear un objeto FormData con los datos del formulario
         let formData = new FormData(this);
+
+        // Validar los datos del producto
+        if (!validarProducto(formData)) {
+            return;
+        }
     
         // Agregar la función al objeto FormData
         formData.append('funcion', 'crear_producto');
@@ -201,6 +206,11 @@ $(document).ready(function() {
     
         // Agregar la función al objeto FormData
         formData.append('funcion', 'editar_producto');
+
+        // Validar los datos del producto
+        if (!validarProducto(formData)) {
+            return;
+        }   
     
         // Enviar los datos del formulario al servidor
         $.ajax({
@@ -238,6 +248,13 @@ $(document).ready(function() {
         $('#saveChanges').on('click', function() {
             var id = $('#addStockForm #productId').val();
             var cantidad = $('#addStockForm #cantidad').val();
+
+            // Validar que la cantidad a añadir sea un número decimal normal
+            if (!isDecimal(cantidad)) {
+                alert('La cantidad a añadir debe ser un número');
+                return;
+            }
+
             $.ajax({
                 url: '../Controllers/ProductoController.php',
                 method: 'POST',
@@ -263,11 +280,30 @@ $(document).ready(function() {
             obtenerProductos($('#sortCharacteristic').val(), nombre);
         });
 
-        /*$('#sortCharacteristic').on('change', function() {
-            const ordenar_por = $(this).val();
-            const nombre = $('#filterName').val();
-            obtenerProductos(ordenar_por, nombre);
-        }); */
+        // Función para validar los datos del producto
+        function validarProducto(formData) {
+            // Validar los campos del formulario
+            for (var pair of formData.entries()) {
+                if (pair[0] === 'nombre' && jQuery.validator.isEmpty(pair[1])) {
+                    alert('El campo ' + pair[0] + ' no puede estar vacío');
+                    return false;
+                }
+        
+                if (pair[0] === 'cantidad_disponible' || pair[0] === 'costo_unidad' || pair[0] === 'precio_unitario') {
+                    if (!isDecimal(pair[1])) {
+                        alert('El campo ' + pair[0] + ' debe ser numérico');
+                        return false;
+                    }
+                }
+            }
+        
+            return true;
+        }
+
+        // Función para validar que un campo sea un número decimal normal
+        function isDecimal(value) {
+            return /^\d+(\.\d+)?$/.test(value);
+        }
 
         $('th').on('click', function() {
             const columna = $(this).data('columna');

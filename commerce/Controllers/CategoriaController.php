@@ -23,6 +23,12 @@ session_start();
         $fecha_creacion = date('Y-m-d H:i:s');
         $descripcion = $_POST['descripcion'];
 
+        // Validaciones
+        if(empty($nombre)) {
+            echo json_encode(['message' => 'El nombre no puede estar vacío', 'status' => 'error']);
+            return;
+        }
+
         $categoria->agregarCategoria($nombre, $id_padre, $fecha_creacion, $descripcion);
 
         // Envía una respuesta al cliente
@@ -35,6 +41,13 @@ session_start();
             $nombre = $_POST['nombre'];
             $id_padre = is_numeric($_POST['id_padre']) ? $_POST['id_padre'] : null;
             $descripcion = $_POST['descripcion'];
+
+            // Validaciones
+            if(empty($nombre)) {
+                echo json_encode(['message' => 'El nombre no puede estar vacío', 'status' => 'error']);
+                return;
+            }
+
             $categoria->editar_categoria($id, $nombre, $id_padre, $descripcion);
             echo json_encode(['status' => 'success', 'message' => 'Categoría actualizada correctamente']);
         } else {
@@ -71,12 +84,3 @@ session_start();
             echo json_encode(['status' => 'error', 'message' => 'La categoría no existe']);
         }
     }
-
-    /*if($_POST['funcion']=='filtrar_categorias_por_nombre'){
-        $nombre = $_POST['nombre'];
-        $categorias = $categoria->filtrar_categorias_por_nombre($nombre);
-    
-        $jsonstring = json_encode($categorias);
-        echo $jsonstring;
-    }*/
-        

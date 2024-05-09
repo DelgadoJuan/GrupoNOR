@@ -43,6 +43,16 @@ session_start();
         $costo_unidad = $_POST['costo_unidad'];
         $foto = $_FILES['foto']['name'] ? $_FILES['foto']['name'] : null;
 
+        // Validaciones
+        if(empty($nombre)) {
+            echo json_encode(['message' => 'El nombre no puede estar vacío', 'status' => 'error']);
+            return;
+        }
+
+        if(!is_numeric($precio_unitario) || !is_numeric($cantidad_disponible) || !is_numeric($costo_unidad)) {
+            echo json_encode(['message' => 'Los campos numéricos deben ser números', 'status' => 'error']);
+            return;
+        }
     
         if ($foto) {
             $ruta = '../Util/Img/Producto/' . $foto;
@@ -78,6 +88,17 @@ session_start();
             $costo_unidad = $_POST['costo_unidad'];
             $foto = $_FILES['foto']['name'] ? $_FILES['foto']['name'] : null;
         
+            // Validaciones
+            if(empty($nombre)) {
+                echo json_encode(['message' => 'El nombre no puede estar vacío', 'status' => 'error']);
+                return;
+            }
+
+            if(!is_numeric($precio_unitario) || !is_numeric($cantidad_disponible) || !is_numeric($costo_unidad)) {
+                echo json_encode(['message' => 'Los campos numéricos deben ser números', 'status' => 'error']);
+                return;
+            }
+
             if ($foto) {
                 // Obtén la ruta de la foto antigua
                 $ruta_antigua = $producto->obtener_foto($id);
@@ -127,6 +148,13 @@ session_start();
     if($_POST['funcion']=='modificar_cantidad_disponible'){
         $id = $_POST['id'];
         $cantidad = $_POST['cantidad'];
+
+        // Validaciones
+        if(!is_numeric($cantidad)) {
+            echo json_encode(['message' => 'La cantidad debe ser un número', 'status' => 'error']);
+            return;
+        }
+
         $producto->modificar_cantidad_disponible($id, $cantidad);
         echo json_encode(['message' => 'Cantidad modificada', 'status' => 'success']);
     }
