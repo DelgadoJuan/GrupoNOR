@@ -90,11 +90,11 @@ session_start();
         $avatar = $_FILES['avatar_mod']['name'];
         if($avatar != ''){
             $nombre = uniqid().'-'.$avatar;
-            $ruta = '../Util/Img/Users/'.$nombre;
+            //$ruta = '../Util/Img/Users/'.$nombre;
             //move_uploaded_file($_FILES['avatar_mod']['tmp_name'],$ruta);
             $archivo = $nombre;
             $extension = pathinfo($archivo, PATHINFO_EXTENSION);
-            $nombre_base = basename($archivo, '.'.PATHINFO_EXTENSION);
+            $nombre_base = basename($archivo, '.'.$extension);
             $handle = new \Verot\Upload\Upload($_FILES['avatar_mod']);
             if ($handle->uploaded) {
                 $handle->file_new_name_body   = $nombre_base;

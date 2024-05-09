@@ -1,11 +1,67 @@
 <?php
 include_once '../Models/Producto.php';
+include_once '../Util/Config/config.php';
+
 //esta variable esta siendo instanciada en Producto.php y a la vez en Conexion.php
 $producto = new Producto();
 //sirve para saber cuando el usuario entra en su sesion
 session_start();
 
-    if($_POST['funcion']=='eliminar_producto'){
+    if($_POST['funcion']=='llenar_productos'){
+        $producto->llenar_productos();
+        $json=array();
+        foreach($producto->objetos as $objeto){
+            $json[]=array(
+                'id'=>openssl_encrypt($objeto->id,CODE,KEY),
+                'nombre'=>$objeto->nombre,
+                'stock'=>$objeto->stock,
+                'precio'=>intval($objeto->precio),
+                'foto'=>$objeto->foto,
+                'descripcion'=>$objeto->descripcion,
+            );
+        }
+        $jsonstring = json_encode($json);
+        echo $jsonstring;
+    }
+
+    if($_POST['funcion']=='verificar_productos'){
+        $id_prod =openssl_decrypt($_SESSION['product-verification'], CODE, KEY);
+        if (is_numeric($id_prod)) {
+            $producto->llenar_productos($id_prod);
+            $id_producto = $producto->objetos[0]->id;
+            $nombre = $producto->objetos[0]->nombre;
+            $stock = $producto->objetos[0]->stock;
+            $precio = $producto->objetos[0]->precio;
+            $foto = $producto->objetos[0]->foto;
+            $descripcion = $producto->objetos[0]->descripcion;
+            $producto->capturar_imagenes($id_producto);
+            $imagenes =  array();
+            foreach($producto->objetos as $objeto){
+                $imagenes[]=array(
+                    'id'=>$objeto->id,
+                    'nombre'=>$objeto->nombre
+                );
+            }
+                $json=array(
+                    'id'=>$id_prod,
+                    'nombre'=>$nombre,
+                    'stock'=>$stock,
+                    'precio'=>intval($precio),
+                    'foto'=>$foto,
+                    'descripcion'=>$descripcion,
+                    'imagenes'=>$imagenes
+                );
+            
+            $jsonstring = json_encode($json);
+            echo $jsonstring; 
+        }
+        else {
+            echo "error";
+        }
+        
+    }
+
+        if($_POST['funcion']=='eliminar_producto'){
         $id = $_POST['id'];
         // Verifica si el producto existe
         if (!Producto::existe($id)) {
@@ -53,3 +109,4 @@ session_start();
         $producto->actualizar_producto($id_producto, $nombre, $descripcion, $stock, $nombre_imagen);
         echo 'success';
     }
+    
