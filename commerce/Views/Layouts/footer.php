@@ -26,6 +26,8 @@
 <script src="Util/Js/demo.js"></script>
 <!-- Js de bootstrap -->
 <script src="Util/Js/bootstrap.min.js"></script>
+<!-- Js de sweetalert2 -->
+<script src="Util/Js/sweetalert2.min.js"></script>
 
 </body>
 </html>

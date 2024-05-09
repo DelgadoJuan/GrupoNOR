@@ -1,11 +1,57 @@
 <?php
+
 //llamamos a la conexion de la bd
+
     include_once 'Conexion.php';
     class Producto{
         var $objetos;
         public function __construct(){
             $db = new Conexion();
             $this->acceso = $db->pdo;
+        }
+
+        function llenar_productos($id=null){
+            if ($id) {
+                $sql ="SELECT producto.id as id,
+                    producto.nombre as nombre,
+                    producto.cantidad_disponible as stock,
+                    producto.precio_unitario as precio,
+                    producto.foto as foto,
+                    producto.descripcion as descripcion
+                    FROM producto
+                    WHERE producto.estado = 'A' AND producto.id = :id";
+                $query = $this->acceso->prepare($sql); 
+                $query->execute(array(':id'=>$id));
+                $this->objetos = $query->fetchAll();
+                return $this->objetos;
+            }
+            else {
+                $sql ="SELECT producto.id as id,
+                    producto.nombre as nombre,
+                    producto.cantidad_disponible as stock,
+                    producto.precio_unitario as precio,
+                    producto.foto as foto,
+                    producto.descripcion as descripcion
+                    FROM producto
+                    WHERE producto.estado = 'A'";
+                $query = $this->acceso->prepare($sql); 
+                $query->execute();
+                $this->objetos = $query->fetchAll();
+                return $this->objetos;
+            }
+            
+        }
+
+        //funcion para traer las imagenes del producto 
+        function capturar_imagenes($id_producto){
+            $sql ="SELECT *
+                FROM imagen
+                WHERE imagen.id_producto = :id_producto
+                AND imagen.estado = 'A'";
+            $query = $this->acceso->prepare($sql); 
+            $query->execute(array(':id_producto'=>$id_producto));
+            $this->objetos = $query->fetchAll();
+            return $this->objetos;
         }
 
         //consultas a la bd
@@ -148,3 +194,5 @@
             return $query->fetchColumn();
         }
     }
+
+    
