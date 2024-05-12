@@ -192,32 +192,6 @@
                 <div id="direcciones" class="card-body pt-0 mt-3">
                 </div>
             </div>
-
-            <div class="card card-light d-flex flex-fill">
-                <div class="card-header text-muted border-bottom-0">
-                <strong>Mis tarjetas de pago</strong>
-                <div class="card-tools">
-                  <button type="button" class="btn btn-tool">
-                    <i class="fas fa-plus"></i>
-                  </button>
-                </div>
-                </div>
-                <div class="card-body pt-0 mt-3">
-                  <div class="row">
-                    <div class="col-8">
-                      <h2 class="lead"><b>Nicole Pearson</b></h2>
-                      <p class="text-muted text-sm"><b>About: </b> Web Designer / UX / Graphic Artist / Coffee Lover </p>
-                      <ul class="ml-4 mb-0 fa-ul text-muted">
-                        <li class="small"><span class="fa-li"><i class="fas fa-lg fa-building"></i></span> Address: Demo Street 123, Demo City 04312, NJ</li>
-                        <li class="small"><span class="fa-li"><i class="fas fa-lg fa-phone"></i></span> Phone #: + 800 - 12 12 23 52</li>
-                      </ul>
-                    </div>
-                    <div class="col-4 text-center">
-                      <img src="../Util/Img/tarjetas.png" alt="user-avatar" class="img-circle img-fluid">
-                    </div>
-                  </div>
-                </div>
-            </div>
             <!-- /.card -->
           </div>
           <!-- /.col -->
@@ -505,4 +479,4 @@
 <?php
     include_once 'Layouts/General/footer.php';
 ?>
-<script src="mi_perfil.js"></script>
+<script src="mi_perfil.js" type="module"></script>

@@ -1,24 +1,6 @@
 <?php
-    include_once 'Views/Layouts/header.php';
+    include_once './Layouts/Tienda/header.php';
 ?>
-
-    <title>Home</title>
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-      <div class="container-fluid">
-        <div class="row mb-2">
-          <div class="col-sm-6">
-            <h1>Home</h1>
-          </div>
-          <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Blank Page</li>
-            </ol>
-          </div>
-        </div>
-      </div><!-- /.container-fluid -->
-    </section>
 
     <style>
       .descripcion_producto{
@@ -79,7 +61,7 @@
     </section>
     <!-- /.content -->
 <?php
-    include_once 'Views/Layouts/footer.php';
+    include_once './Layouts/Tienda/footer.php';
 ?>
 <!-- Js del index -->
-<script src="index.js"></script>
+<script src="./tienda.js" type="module"></script>

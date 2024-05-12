@@ -1,13 +1,13 @@
 <?php
-if(!empty($_GET['id']) && $_GET['name']){
-    session_start();
-    $_SESSION['product-verification'] = $_GET['id'];
-    //echo $_SESSION['product-verification'];
-    include_once '../Views/Layouts/General/header.php';
-
+    if(!empty($_GET['id']) && $_GET['name']){
+        session_start();
+        $_SESSION['product-verification'] = $_GET['id'];
+        //echo $_SESSION['product-verification'];
+        include_once './Layouts/General/header.php';
+    }
 ?>
     
-    <title> <?php echo $_GET['name'] ?> </title>
+<title> <?php echo $_GET['name'] ?> </title>
 
 <!-- Content Header (Page header) -->
 <section class="content-header">
@@ -18,7 +18,7 @@ if(!empty($_GET['id']) && $_GET['name']){
         </div>
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-            <li class="breadcrumb-item"><a href="../index.php">Home</a></li>
+            <li class="breadcrumb-item"><a href="./tienda.php">Home</a></li>
             <li class="breadcrumb-item active"><?php echo $_GET['name'] ?></li>
             </ol>
         </div>
@@ -71,6 +71,10 @@ if(!empty($_GET['id']) && $_GET['name']){
                     Xtra-Large
                 </label>
                 </div>
+                <div class="mt-4">
+                    <h4>Cantidad</h4>
+                    <input type="number" id="product_quantity" min="1" value="1">
+                </div>
 
                 <div class="bg-gray py-2 px-3 mt-4 border">
                     <h2 class="mb-0" id="precio_producto">
@@ -107,11 +111,9 @@ if(!empty($_GET['id']) && $_GET['name']){
 
 
 <?php
-include_once 'Layouts/General/footer.php';
-}else{
-    header('Location: ../index.php');
-}
+    include_once 'Layouts/General/footer.php';
+    
 ?>
 
-<script src="descripcion.js"></script>
-<script src="carrito.js"></script>
+<script src="./descripcion.js" type="module"></script>
+<script src="./carrito.js" type="module"></script>

@@ -4,12 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./Util/Css/styles.css">
+    <link rel="stylesheet" href="../Util/Css/styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.cdnfonts.com/css/sf-pro-display" rel="stylesheet">
 
-    <link rel="icon" type="image/png" href="./Util/Assets/Grupo Nor Logo 2 [Recuperado].svg">
+    <link rel="icon" type="image/png" href="../Util/Assets/Grupo Nor Logo 2 [Recuperado].svg">
     <title>GRUPO NOR | Home</title>
 </head>
 
@@ -25,7 +25,7 @@
 
             <div class="logo-container">
                 <div class="logo-img-container">
-                    <img src="./Util/Assets/Grupo Nor Logo 3[Recuperado].png" class="logo-img" />
+                    <img src="../Util/Assets/Grupo Nor Logo 3[Recuperado].png" class="logo-img" />
                 </div>
                 <ul class="nav-list">
                     <a class="nav-link" href=""> TIENDA </a>
@@ -38,7 +38,7 @@
                 <!-- <p class="nav-spacer">I</p> -->
                 <a class="nav-link-login" href="Pages/login.html"> INICIAR SESION </a>
                 <div class="ham">
-                    <img src="./Util/Assets/menu.svg" class="ham-img" />
+                    <img src="../Util/Assets/menu.svg" class="ham-img" />
                 </div>
 
             </div>
@@ -53,7 +53,7 @@
 
         <!--home-->
 
-        <img src="./Util/Assets/fondomain.jpeg" class="back-image">
+        <img src="../Util/Assets/fondomain.jpeg" class="back-image">
         <div class="back-image-2"></div>
 
 
@@ -62,10 +62,10 @@
             <div class="popup-center-news">
                 <div class="popup-container-news">
                     <div class="marni-container-news">
-                        <img src="./Util/Assets/workeranimated.png" class="marni">
+                        <img src="../Util/Assets/workeranimated.png" class="marni">
                     </div>
                     <a href="#" class="close-btn">
-                        <img src="./Util/Assets/close-button.svg" alt="">
+                        <img src="../Util/Assets/close-button.svg" alt="">
                     </a>
                     <div class="popup-text-news">
                         <h2>Bienvenido!</h2>
@@ -88,7 +88,7 @@
                 <div class="popup-container">
 
                     <a href="#" class="close-btn">
-                        <img src="./Util/Assets/close-button.svg" alt="">
+                        <img src="../Util/Assets/close-button.svg" alt="">
                     </a>
 
                     <div class="popup-column-1">
@@ -117,7 +117,7 @@
 
                         <div class="pp-clm2-div1">
                             <div class="pp-img-div">
-                                <img src="./Util/Assets/Logo_TPI.png" alt="">
+                                <img src="../Util/Assets/Logo_TPI.png" alt="">
                             </div>
                         </div>
 
@@ -132,10 +132,10 @@
                             H3500 Resistencia, Chaco</p>
 
                         <div class="pp-redes">
-                            <a href=""><img src="./Util/Assets/linkedin.svg" alt=""></a>
-                            <a href=""><img src="./Util/Assets/instagram.svg" alt=""></a>
-                            <a href=""><img src="./Util/Assets/facebook.svg" alt=""></a>
-                            <a href=""><img src="./Util/Assets/mail.svg" alt=""></a>
+                            <a href=""><img src="../Util/Assets/linkedin.svg" alt=""></a>
+                            <a href=""><img src="../Util/Assets/instagram.svg" alt=""></a>
+                            <a href=""><img src="../Util/Assets/facebook.svg" alt=""></a>
+                            <a href=""><img src="../Util/Assets/mail.svg" alt=""></a>
                         </div>
                     </div>
 
@@ -154,13 +154,13 @@
                 <div class="popup-container-cm">
 
                     <a href="#" class="close-btn-cm">
-                        <img src="./Util/Assets/close-button.svg" alt="">
+                        <img src="../Util/Assets/close-button.svg" alt="">
                     </a>
 
                     <div class="popup-column-1-cm">
 
                         <div class="pp-cm-img">
-                            <img src="./Util/Assets/secundaria.png" alt="">
+                            <img src="../Util/Assets/secundaria.png" alt="">
                         </div>
 
                     </div>
@@ -213,7 +213,7 @@
                 </div>
 
                 <div class='landing-img-container'>
-                    <img src="./Util/Assets/worker no background.png" alt="">
+                    <img src="../Util/Assets/worker no background.png" alt="">
                 </div>
 
             </div>
@@ -225,7 +225,7 @@
             <div class="qs-main-div">
                 <div class="qs-img-div">
                     <div class="qs-img-background">
-                        <img src="./Util/Assets/worker.jpg" alt="Trabajador" class="img-worker">
+                        <img src="../Util/Assets/worker.jpg" alt="Trabajador" class="img-worker">
                         <div class="qs-list">
                             ✓ Lorem ipsum dolor sit amet.<br>
                             ✓ Voltapat pillesbeque ipsum.<br>
@@ -571,7 +571,7 @@
 
                 <div class="end-list-1">
                     <div class="end-logo-container">
-                        <img src="./Util/Assets/Grupo Nor Logo 3[Recuperado].png" alt="">
+                        <img src="../Util/Assets/Grupo Nor Logo 3[Recuperado].png" alt="">
                     </div>
                     
                     <p>
@@ -623,7 +623,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.3.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.3.1/firebase-database.js"></script>
 
-    <script src="./landing.js"></script>
+    <script src="./index.js"></script>
     <!-- <script src="index.js"></script> -->
     <!--<script src="functions.js"></script> -->
 

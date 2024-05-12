@@ -62,12 +62,17 @@
             $query->execute(array(':id' => $id));
         }
 
-        /*function filtrar_categorias_por_nombre($nombre) {
-            $sql = "SELECT c.id, c.nombre, c.id_padre, c.fecha_creacion, c.descripcion, c.estado, cp.nombre as nombre_padre FROM categoria as c LEFT JOIN categoria as cp ON c.id_padre=cp.id WHERE c.nombre LIKE :nombre";
+        function obtener_categorias_activas() {
+            $sql = "SELECT c1.id, c1.nombre, c2.nombre AS nombre_subcategoria
+                    FROM categoria c1
+                    LEFT JOIN categoria c2 ON c1.id = c2.id_padre
+                    WHERE c1.estado='A' AND (c2.estado='A' OR c2.estado IS NULL) AND c1.id_padre IS NULL
+                    ORDER BY c1.nombre";
             $query = $this->acceso->prepare($sql);
-            $query->execute([':nombre' => '%' . $nombre . '%']);
+            $query->execute();
             $this->objetos = $query->fetchAll();
             return $this->objetos;
-        }*/
+        }
+
     }
 

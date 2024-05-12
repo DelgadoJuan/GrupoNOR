@@ -10,6 +10,7 @@
             $this->acceso = $db->pdo;
         }
 
+        // Funcion para mostrar los productos activados en el ecommerce
         function llenar_productos($id=null){
             if ($id) {
                 $sql ="SELECT producto.id as id,

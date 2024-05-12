@@ -1,3 +1,5 @@
+import { verificar_sesion } from './sesion.js'
+
 //aqui vamos a aplicar js al index 
 $(document).ready(function() {
     var funcion;
@@ -147,7 +149,7 @@ $(document).ready(function() {
         })
     });
 
-    function verificar_sesion() {
+    /*function verificar_sesion() {
         funcion = 'verificar_sesion';
         $.post('../Controllers/UsuarioController.php', {funcion}, (response) => {
             console.log(response);
@@ -165,7 +167,7 @@ $(document).ready(function() {
                 location. href = 'login.php';
             }
         });
-    }
+    }*/
 
     function obtener_datos() {
         funcion = 'obtener_datos';

@@ -8,7 +8,7 @@ $(document).ready(function() {
         funcion = 'verificar_sesion';
         $.post('../Controllers/UsuarioController.php', {funcion}, (response) => {
             if(response != ''){
-                location.href = '../index.php';
+                location.href = './index.php';
             }
         });
     }
@@ -21,7 +21,7 @@ $(document).ready(function() {
         let pass = $('#pass').val();
         $.post('../Controllers/UsuarioController.php', {user,pass,funcion}, (response)=>{
             if(response === 'logueado'){
-                location.href = '../index.php';
+                location.href = './index.php';
             }
             else{
                 toastr.error('Usuario o contraseña incorrectas!');

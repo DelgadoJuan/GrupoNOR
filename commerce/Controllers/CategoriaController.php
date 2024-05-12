@@ -84,3 +84,9 @@ session_start();
             echo json_encode(['status' => 'error', 'message' => 'La categoría no existe']);
         }
     }
+
+    if ($_POST['funcion'] == 'obtener_categorias_activas') {
+        $categorias = $categoria->obtener_categorias_activas();
+        $jsonstring = json_encode($categorias);
+        echo $jsonstring;
+    }

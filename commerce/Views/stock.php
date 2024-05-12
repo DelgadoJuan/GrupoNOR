@@ -1,5 +1,5 @@
 <?php
-    include_once 'Layouts/General/header.php';
+    include_once './Layouts/General/header.php';
 ?>
 
 <section class="content">
@@ -202,6 +202,6 @@
 </section> 
 
 <?php
-    include_once 'Layouts/General/footer.php';
+    include_once './Layouts/General/footer.php';
 ?>
 <script src="./stock.js" type="module"></script>

@@ -60,7 +60,7 @@ session_start();
         
     }
 
-        if($_POST['funcion']=='eliminar_producto'){
+    if($_POST['funcion']=='eliminar_producto'){
         $id = $_POST['id'];
         // Verifica si el producto existe
         if (!$producto->existe($id)) {

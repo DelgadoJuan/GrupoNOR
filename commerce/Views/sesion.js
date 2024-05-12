@@ -1,7 +1,7 @@
 var funcion;
 
 function verificar_sesion() {
-    let funcion = 'verificar_sesion';
+    funcion = 'verificar_sesion';
     $.post('../Controllers/UsuarioController.php', {funcion}, (response) => {
         console.log(response);
         if(response != ''){
@@ -12,10 +12,11 @@ function verificar_sesion() {
             $('#avatar_nav').attr('src', '../Util/Img/Users/' + sesion.avatar);
             $('#avatar_menu').attr('src', '../Util/Img/Users/' + sesion.avatar);
             $('#usuario_menu').text(sesion.user);
+            $('#notificacion').show();
         }
         else{
             $('#nav_usuario').hide();
-            location.href = 'login.php';
+            $('#notificacion').hide();
         }
     });
 }

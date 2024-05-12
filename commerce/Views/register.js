@@ -6,10 +6,11 @@ $(document).ready(function() {
         funcion = 'verificar_sesion';
         $.post('../Controllers/UsuarioController.php', {funcion}, (response) => {
             if(response != ''){
-                location.href = '../index.php';
+                location.href = './index.php';
             }
         });
     }
+    
     $.validator.setDefaults({
         submitHandler: function () {
         let username = $('#username').val();

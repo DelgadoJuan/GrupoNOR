@@ -124,9 +124,9 @@ $(document).ready(function() {
         let formData = new FormData(this);
 
         // Validar los datos del producto
-        if (!validarProducto(formData)) {
+        /*if (!validarProducto(formData)) {
             return;
-        }
+        }*/
     
         // Agregar la función al objeto FormData
         formData.append('funcion', 'crear_producto');
@@ -208,9 +208,9 @@ $(document).ready(function() {
         formData.append('funcion', 'editar_producto');
 
         // Validar los datos del producto
-        if (!validarProducto(formData)) {
+        /*if (!validarProducto(formData)) {
             return;
-        }   
+        } */  
     
         // Enviar los datos del formulario al servidor
         $.ajax({
@@ -250,10 +250,10 @@ $(document).ready(function() {
             var cantidad = $('#addStockForm #cantidad').val();
 
             // Validar que la cantidad a añadir sea un número decimal normal
-            if (!isDecimal(cantidad)) {
+            /*if (!isDecimal(cantidad)) {
                 alert('La cantidad a añadir debe ser un número');
                 return;
-            }
+            }*/
 
             $.ajax({
                 url: '../Controllers/ProductoController.php',
@@ -281,7 +281,7 @@ $(document).ready(function() {
         });
 
         // Función para validar los datos del producto
-        function validarProducto(formData) {
+        /*function validarProducto(formData) {
             // Validar los campos del formulario
             for (var pair of formData.entries()) {
                 if (pair[0] === 'nombre' && jQuery.validator.isEmpty(pair[1])) {
@@ -298,12 +298,12 @@ $(document).ready(function() {
             }
         
             return true;
-        }
+        } */
 
         // Función para validar que un campo sea un número decimal normal
-        function isDecimal(value) {
+        /*function isDecimal(value) {
             return /^\d+(\.\d+)?$/.test(value);
-        }
+        } */
 
         $('th').on('click', function() {
             const columna = $(this).data('columna');
