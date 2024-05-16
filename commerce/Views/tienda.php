@@ -1,21 +1,11 @@
 <?php
-    include_once './Layouts/Tienda/header.php';
+    include_once('Layouts/Tienda/header.php');
+    $categoria = null;
+    $path = explode('/', $_SERVER['REQUEST_URI']);
+    if (count($path) > 2) {
+        $categoria = $path[2];
+    }
 ?>
-
-    <style>
-      .descripcion_producto{
-        color: #000:
-      }
-      .descripcion_producto:visited{
-        color: #000;
-      }
-      .descripcion_producto:focus{
-        border-bottom: 1px solid;
-      }
-      .descripcion_producto:hover{
-        border-bottom: 1px solid;
-      }
-    </style>
 
     <!-- Main content -->
     <section class="content">
@@ -25,6 +15,7 @@
         <div class="card-header">
           <h3 class="card-title">Productos</h3>
         </div>
+
         <div class="card-body">
           <div id="productos" class="row">
             <!-- cards-->
@@ -33,15 +24,10 @@
                 <div class="card-body">
                   <div class="row">
                     <div class="col-sm-12">
-                      <img src="Util/Img/perfil_negro.jpg" alt="perfil" class="img-fluid">
+                      <img src="../Util/Img/perfil_negro.jpg" alt="perfil" class="img-fluid">
                     </div>
                     <div class="col-sm-12">
-                      <span class="card-title float-left">Perfil negro</span></br>
-                      <a href="#" class="float-left descripcion_producto">Descripcion del producto</a></br>
-                      <span class="badge bg-success">Envio gratis</span></br>
-                      <span class="text-muted" style="text-decoration: line-through">$ 50000</span>
-                      <h4 class="mb-0">$ 35000</h4>
-                      <a href="#"><i class="fas fa-shopping-cart"></i></a>
+                      <!-- Se añaden los productos mediante JS -->
                     </div>
                   </div>
                 </div>
@@ -60,8 +46,13 @@
 
     </section>
     <!-- /.content -->
+    <?php
+    include_once('Layouts/Tienda/footer.php');
+    if ($categoria) {
+?>
+      <script src="/tienda.js" type="module"></script>
 <?php
-    include_once './Layouts/Tienda/footer.php';
+    }
 ?>
 <!-- Js del index -->
 <script src="./tienda.js" type="module"></script>

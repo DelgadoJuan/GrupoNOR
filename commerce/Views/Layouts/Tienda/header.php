@@ -15,6 +15,29 @@
   <link rel="stylesheet" href="../Util/Css/adminlte.min.css">
   <!-- Sweetalert2 -->
   <link rel="stylesheet" href="../Util/Css/sweetalert2.min.css">
+
+<style>
+    /* Estilo para manejar submenús anidados */
+  .dropdown-submenu {
+      position: relative;
+  }
+
+  .dropdown-submenu > .dropdown-menu {
+      top: 0;
+      left: 100%;
+      margin-top: -1px;
+      display: none; /* Ocultar inicialmente */
+  }
+
+  .dropdown-submenu:hover > .dropdown-menu {
+      display: block; /* Mostrar cuando se hace hover */
+  }
+
+  .navbar-nav .dropdown-menu {
+      margin-top: 0;
+  }
+</style>
+  
 </head>
 <body class="hold-transition sidebar-mini">
 <!-- Site wrapper -->
@@ -28,11 +51,11 @@
         <span class="brand-text font-weight-light">Grupo NOR</span>
     </a>
 
-    <!-- Categorías -->
-    <ul id="categorias" class="navbar-nav mx-auto">
-      
-      <!-- Agregar más categorías según sea necesario -->
-    </ul>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul id="categorias" class="navbar-nav">
+            <!-- Categorías se insertarán aquí -->
+        </ul>
+    </div>
 
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
@@ -114,14 +137,7 @@
   </nav>
   <!-- /.navbar -->
 
-  <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
-    <!-- Contenido de la página de la tienda -->
-  </div>
-  <!-- /.content-wrapper -->
-
   <!-- Footer -->
-  <!-- Agrega aquí el código para el pie de página si es necesario -->
 
 </div>
 <!-- ./wrapper -->
@@ -138,3 +154,7 @@
 <script src="../Util/Js/select2.min.js"></script>
 </body>
 </html>
+
+<style>
+  #categorias
+</style>

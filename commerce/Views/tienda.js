@@ -1,22 +1,36 @@
 import { verificar_sesion } from "./sesion.js";
 
-//aqui vamos a aplicar js al index 
 $(document).ready(function() {
     var funcion;
+    let limit = 20;
 
-    //funcion para verificar si existe una sesion abierta
     verificar_sesion();
-    llenar_productos();
+    let urlSegments = window.location.href.split('/');
+    let categoria = urlSegments[urlSegments.length - 1] === 'tienda' ? null : urlSegments[urlSegments.length - 1];
+    alert(categoria);
+    llenar_productos(categoria);
     obtenerCategorias();
 
-    //funcion para traer los productos
     async function llenar_productos(categoria = null){
         funcion = "llenar_productos";
-        let body = 'funcion=' + funcion;
-        if (categoria !== null) {
-            body += '&id_categoria=' + categoria;
+        let body = 'funcion=' + funcion + '&limit=' + limit;
+        let urlSegments = window.location.href.split('/');
+        let urlBase;
+
+        if (urlSegments[urlSegments.length - 2] === 'tienda') {
+            // If the current URL does not contain a category
+            urlBase = urlSegments.slice(0, -3).join('/');
+        } else {
+            // If the current URL contains a category
+            urlBase = urlSegments.slice(0, -2).join('/');
         }
-        let data = await fetch('../Controllers/ProductoController.php', {
+
+        if (categoria !== null) {
+            body += '&categoria=' + categoria;
+        }
+
+        let url = `${urlBase}/Controllers/ProductoController.php`;
+        let data = await fetch(url, {
             method: 'POST',
             headers: {'Content-Type': 'application/x-www-form-urlencoded'},
             body: body
@@ -25,17 +39,17 @@ $(document).ready(function() {
             let response = await data.text();
             try {
                 let productos = JSON.parse(response);
-                //console.log(productos);
                 let template = '';
                 productos.forEach(producto => {
+                    // Si la categoría no es null, agregarla a la URL de la imagen
+                    let fotoUrl = categoria !== null ? `../${producto.foto}` : producto.foto;
                     template+= ` 
-                    <!-- cards-->
                     <div class="col-sm-2">
                         <div class="card">
                             <div class="card-body">
                                 <div class="row">
                                 <div class="col-sm-12">
-                                    <img src="${producto.foto}" alt="perfil" class="img-fluid">
+                                    <img src="${fotoUrl}" alt="perfil" class="img-fluid">
                                 </div>
                                 <div class="col-sm-12">
                                     <span class="card-title float-left">${producto.nombre}</span></br></br>
@@ -46,7 +60,6 @@ $(document).ready(function() {
                         </div>
                     </div>
                     </div>
-                    <!-- end cards -->
                     `;
                 });
                 $('#productos').html(template);
@@ -64,62 +77,88 @@ $(document).ready(function() {
         }
     }
 
-    //funcion para obtener las categorias
-function obtenerCategorias() {
-    $.ajax({
-        url: '../Controllers/CategoriaController.php',
-        method: 'POST',
-        data: {
-            funcion: 'obtener_categorias_activas'
-        },
-        success: function(response) {
-            var categorias = JSON.parse(response);
-            var groupedCategorias = {};
-            categorias.forEach(function(categoria) {
-                if (!groupedCategorias[categoria.nombre]) {
-                    groupedCategorias[categoria.nombre] = {
-                        nombre: categoria.nombre,
-                        subcategorias: []
-                    };
-                }
-                if (categoria.nombre_subcategoria) {
-                    groupedCategorias[categoria.nombre].subcategorias.push(categoria.nombre_subcategoria);
-                }
-            });
-
-            var navbarHtml = '';
-            for (var nombre in groupedCategorias) {
-                var categoria = groupedCategorias[nombre];
-                if (categoria.subcategorias.length > 0) {
-                    navbarHtml += '<li class="nav-item dropdown">';
-                    navbarHtml += '<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">';
-                } else {
-                    navbarHtml += '<li class="nav-item">';
-                    navbarHtml += '<a class="nav-link" href="#" id="navbarDropdown" role="button">';
-                }
-                navbarHtml += categoria.nombre;
-                navbarHtml += '</a>';
-                if (categoria.subcategorias.length > 0) {
-                    navbarHtml += '<div class="dropdown-menu" aria-labelledby="navbarDropdown">';
-                    categoria.subcategorias.forEach(function(subcategoria) {
-                        navbarHtml += '<a class="dropdown-item" href="#">' + subcategoria + '</a>';
-                    });
-                    navbarHtml += '</div>';
-                }
-                navbarHtml += '</li>';
-            }
-            $('#categorias').html(navbarHtml);
-
-            // Agregar evento click a cada categoría
-            $('#categorias .nav-item').on('click', function() {
-                var categoria = $(this).text();
-                llenar_productos(categoria);
-            });
-        },
-        error: function() {
-            alert('Error al realizar la solicitud AJAX');
-        }
+    document.getElementById('loadMoreButton').addEventListener('click', function() {
+        limit += 20;
+        llenar_productos();
     });
-}
 
+    function obtenerCategorias() {
+        $.ajax({
+            url: '../Controllers/CategoriaController.php',
+            method: 'POST',
+            data: {
+                funcion: 'obtener_categorias_activas'
+            },
+            success: function(response) {
+                var categorias = JSON.parse(response);
+                var navbarHtml = '';
+    
+                function generateCategoryHtml(categoria, isSubcategory = false) {
+                    var html = '';
+                    if (isSubcategory) {
+                        html += '<li class="dropdown-submenu"><a href="#" class="dropdown-item subcategoria" data-id="' + categoria.id + '">' + categoria.nombre + '</a>';
+                    } else {
+                        html += '<li class="nav-item dropdown">';
+                        html += '<a href="#" class="nav-link categoria ' + ((categoria.subcategorias && categoria.subcategorias.length > 0) ? 'dropdown-toggle' : '') + '" role="button" aria-haspopup="true" aria-expanded="false" data-id="' + categoria.id + '">';
+                        html += categoria.nombre;
+                        html += '</a>';
+                    }
+    
+                    if (categoria.subcategorias && categoria.subcategorias.length > 0) {
+                        html += '<ul class="dropdown-menu">';
+                        categoria.subcategorias.forEach(function(subcategoria) {
+                            html += generateCategoryHtml(subcategoria, true);
+                        });
+                        html += '</ul>';
+                    }
+                    html += '</li>';
+                    return html;
+                }
+    
+                categorias.forEach(function(categoria) {
+                    navbarHtml += generateCategoryHtml(categoria, false);
+                });
+    
+                $('#categorias').html(navbarHtml);
+    
+                function handleItemClick(event) {
+                    event.preventDefault();
+                    let $this = $(this);
+                    let id_categoria = $this.data('id');
+                    let nombre_categoria = $this.text();
+                    limit = 20; // Resetear el límite
+                    llenar_productos(nombre_categoria);
+    
+                    // Cambiar la URL
+                    let base_url = window.location.origin + window.location.pathname;
+                    let nuevaUrl = '';
+                    if (base_url.endsWith('tienda')) {
+                        nuevaUrl = base_url + '/' + nombre_categoria;
+                    } else {
+                        nuevaUrl = base_url.replace(/\/[^\/]*$/, '/') + nombre_categoria;
+                    }
+                    history.pushState({id_categoria: id_categoria}, '', nuevaUrl);
+                }
+    
+                function handleMouseEnter() {
+                    $(this).children('.dropdown-menu').stop(true, true).slideDown();
+                }
+    
+                function handleMouseLeave() {
+                    $(this).children('.dropdown-menu').stop(true, true).slideUp();
+                }
+    
+                $('#categorias').off('click', '.categoria, .subcategoria', handleItemClick);
+                $('#categorias').off('mouseenter', '.nav-item', handleMouseEnter);
+                $('#categorias').off('mouseleave', '.nav-item', handleMouseLeave);
+    
+                $('#categorias').on('click', '.categoria, .subcategoria', handleItemClick);
+                $('#categorias').on('mouseenter', '.nav-item', handleMouseEnter);
+                $('#categorias').on('mouseleave', '.nav-item', handleMouseLeave);
+            },
+            error: function() {
+                alert('Error al realizar la solicitud AJAX');
+            }
+        });
+    }
 });

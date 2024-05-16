@@ -62,17 +62,45 @@
             $query->execute(array(':id' => $id));
         }
 
-        function obtener_categorias_activas() {
-            $sql = "SELECT c1.id, c1.nombre, c2.nombre AS nombre_subcategoria
-                    FROM categoria c1
-                    LEFT JOIN categoria c2 ON c1.id = c2.id_padre
-                    WHERE c1.estado='A' AND (c2.estado='A' OR c2.estado IS NULL) AND c1.id_padre IS NULL
-                    ORDER BY c1.nombre";
+        function obtener_categorias_activas($id_padre = null) {
+            $categorias = [];
+        
+            // Obtener las categorías (principales o subcategorías) para el id_padre dado
+            $sql = "SELECT id, nombre FROM categoria WHERE estado='A' AND id_padre " . ($id_padre ? "= :id_padre" : "IS NULL") . " ORDER BY nombre";
+            $query = $this->acceso->prepare($sql);
+            if ($id_padre) {
+                $query->bindParam(':id_padre', $id_padre);
+            }
+            $query->execute();
+            $categoriasResult = $query->fetchAll(PDO::FETCH_OBJ);
+        
+            foreach ($categoriasResult as $categoria) {
+                // Obtener las subcategorías de la categoría
+                $subcategorias = $this->obtener_categorias_activas($categoria->id);
+        
+                // Añadir la categoría y sus subcategorías al array de categorías
+                $categorias[] = [
+                    'id' => $categoria->id,
+                    'nombre' => $categoria->nombre,
+                    'subcategorias' => $subcategorias
+                ];
+            }
+        
+            return $categorias;
+        }
+
+        /*function obtener_categorias_activas() {
+            $sql = "SELECT c1.id, c1.nombre, GROUP_CONCAT(c2.nombre) AS nombre_subcategoria
+                FROM categoria c1
+                LEFT JOIN categoria c2 ON c1.id = c2.id_padre
+                WHERE c1.estado='A' AND (c2.estado='A' OR c2.estado IS NULL) AND c1.id_padre IS NULL
+                GROUP BY c1.id, c1.nombre
+                ORDER BY c1.nombre";
             $query = $this->acceso->prepare($sql);
             $query->execute();
             $this->objetos = $query->fetchAll();
             return $this->objetos;
-        }
+        }*/
 
     }
 

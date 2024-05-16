@@ -11,36 +11,33 @@
         }
 
         // Funcion para mostrar los productos activados en el ecommerce
-        function llenar_productos($id=null){
-            if ($id) {
-                $sql ="SELECT producto.id as id,
-                    producto.nombre as nombre,
-                    producto.cantidad_disponible as stock,
-                    producto.precio_unitario as precio,
-                    producto.foto as foto,
-                    producto.descripcion as descripcion
-                    FROM producto
-                    WHERE producto.estado = 'A' AND producto.id = :id";
-                $query = $this->acceso->prepare($sql); 
-                $query->execute(array(':id'=>$id));
-                $this->objetos = $query->fetchAll();
-                return $this->objetos;
+        function llenar_productos($limit = 20, $nombre_categoria = null){
+            $sql ="SELECT producto.id as id,
+            producto.nombre as nombre,
+            producto.cantidad_disponible as stock,
+            producto.precio_unitario as precio,
+            producto.foto as foto,
+            producto.descripcion as descripcion
+                FROM producto
+                LEFT JOIN categoria ON producto.id_categoria = categoria.id
+                WHERE producto.estado = 'A'";
+        
+            if ($nombre_categoria !== null) {
+                $sql .= " AND (categoria.nombre = :nombre_categoria OR categoria.id IN (SELECT id FROM categoria WHERE id_padre IN (SELECT id FROM categoria WHERE nombre = :nombre_categoria)))";
             }
-            else {
-                $sql ="SELECT producto.id as id,
-                    producto.nombre as nombre,
-                    producto.cantidad_disponible as stock,
-                    producto.precio_unitario as precio,
-                    producto.foto as foto,
-                    producto.descripcion as descripcion
-                    FROM producto
-                    WHERE producto.estado = 'A'";
-                $query = $this->acceso->prepare($sql); 
-                $query->execute();
-                $this->objetos = $query->fetchAll();
-                return $this->objetos;
+        
+            $sql .= " ORDER BY producto.vendido DESC
+                LIMIT :limit";
+            $query = $this->acceso->prepare($sql); 
+            $query->bindValue(':limit', (int) trim($limit), PDO::PARAM_INT);
+        
+            if ($nombre_categoria !== null) {
+                $query->bindValue(':nombre_categoria', trim($nombre_categoria), PDO::PARAM_STR);
             }
-            
+        
+            $query->execute();
+            $this->objetos = $query->fetchAll();
+            return $this->objetos;
         }
 
         //funcion para traer las imagenes del producto 
