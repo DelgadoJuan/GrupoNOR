@@ -1,10 +1,5 @@
 <?php
     include_once('Layouts/Tienda/header.php');
-    $categoria = null;
-    $path = explode('/', $_SERVER['REQUEST_URI']);
-    if (count($path) > 2) {
-        $categoria = $path[2];
-    }
 ?>
 
     <!-- Main content -->
@@ -15,7 +10,16 @@
         <div class="card-header">
           <h3 class="card-title">Productos</h3>
         </div>
-
+        <select id="sortSelect" class="form-control">
+            <option value="">Ordenar por</option>
+            <option value="precio_ascendente">Precio: menor a mayor</option>
+            <option value="precio_descendente">Precio: mayor a menor</option>
+            <option value="nombre_ascendente">Nombre: A - Z</option>
+            <option value="nombre_descendiente">Nombre: Z - A</option>
+            <option value="mas_vendido">Más vendido</option>
+            <option value="nuevo">Más nuevo a más viejo</option>
+            <option value="viejo">Más viejo a más nuevo</option>
+        </select>
         <div class="card-body">
           <div id="productos" class="row">
             <!-- cards-->
@@ -38,7 +42,7 @@
         </div>
         <!-- /.card-body -->
         <div class="card-footer">
-          Footer
+          <button id="loadMoreButton" class="btn btn-primary">Cargar más</button>
         </div>
         <!-- /.card-footer-->
       </div>
@@ -48,11 +52,7 @@
     <!-- /.content -->
     <?php
     include_once('Layouts/Tienda/footer.php');
-    if ($categoria) {
 ?>
-      <script src="/tienda.js" type="module"></script>
-<?php
-    }
-?>
+
 <!-- Js del index -->
 <script src="./tienda.js" type="module"></script>

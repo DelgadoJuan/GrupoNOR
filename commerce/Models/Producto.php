@@ -11,30 +11,63 @@
         }
 
         // Funcion para mostrar los productos activados en el ecommerce
-        function llenar_productos($limit = 20, $nombre_categoria = null){
-            $sql ="SELECT producto.id as id,
-            producto.nombre as nombre,
-            producto.cantidad_disponible as stock,
-            producto.precio_unitario as precio,
-            producto.foto as foto,
-            producto.descripcion as descripcion
-                FROM producto
-                LEFT JOIN categoria ON producto.id_categoria = categoria.id
-                WHERE producto.estado = 'A'";
-        
-            if ($nombre_categoria !== null) {
-                $sql .= " AND (categoria.nombre = :nombre_categoria OR categoria.id IN (SELECT id FROM categoria WHERE id_padre IN (SELECT id FROM categoria WHERE nombre = :nombre_categoria)))";
+        function llenar_productos($limit = 20, $id_categoria = null, $sortValue = null){
+            $orderBy = ' ORDER BY producto.vendido DESC';
+
+            if ($sortValue === 'precio_ascendente') {
+                $orderBy = ' ORDER BY producto.precio_unitario ASC';
+            } elseif ($sortValue === 'precio_descendente') {
+                $orderBy = ' ORDER BY producto.precio_unitario DESC';
+            } elseif ($sortValue === 'nombre_ascendente') {
+                $orderBy = ' ORDER BY producto.nombre ASC';
+            } elseif ($sortValue === 'nombre_descendiente') {
+                $orderBy = ' ORDER BY producto.nombre DESC';
+            } elseif ($sortValue === 'mas_vendido') {
+                $orderBy = ' ORDER BY producto.vendido DESC';
+            } elseif ($sortValue === 'nuevo') {
+                $orderBy = ' ORDER BY producto.fecha_registro DESC';
+            } elseif ($sortValue === 'viejo') {
+                $orderBy = ' ORDER BY producto.fecha_registro ASC';
             }
-        
-            $sql .= " ORDER BY producto.vendido DESC
-                LIMIT :limit";
+
+            if ($id_categoria !== null) {
+                $sql = "WITH RECURSIVE subcategorias AS (
+                    SELECT id FROM categoria WHERE id = :id_categoria
+                    UNION ALL
+                    SELECT c.id FROM categoria c
+                    INNER JOIN subcategorias s ON c.id_padre = s.id
+                )
+                SELECT producto.id as id,
+                producto.nombre as nombre,
+                producto.cantidad_disponible as stock,
+                producto.precio_unitario as precio,
+                producto.foto as foto,
+                producto.descripcion as descripcion
+                FROM producto
+                INNER JOIN subcategorias ON producto.id_categoria = subcategorias.id
+                WHERE producto.estado = 'A'"
+                . $orderBy .
+                " LIMIT :limit";
+            } else {
+                $sql = "SELECT producto.id as id,
+                producto.nombre as nombre,
+                producto.cantidad_disponible as stock,
+                producto.precio_unitario as precio,
+                producto.foto as foto,
+                producto.descripcion as descripcion
+                FROM producto
+                WHERE producto.estado = 'A'"
+                . $orderBy .
+                " LIMIT :limit";
+            }
+
             $query = $this->acceso->prepare($sql); 
             $query->bindValue(':limit', (int) trim($limit), PDO::PARAM_INT);
-        
-            if ($nombre_categoria !== null) {
-                $query->bindValue(':nombre_categoria', trim($nombre_categoria), PDO::PARAM_STR);
+
+            if ($id_categoria !== null) {
+                $query->bindValue(':id_categoria', trim($id_categoria), PDO::PARAM_INT);
             }
-        
+
             $query->execute();
             $this->objetos = $query->fetchAll();
             return $this->objetos;

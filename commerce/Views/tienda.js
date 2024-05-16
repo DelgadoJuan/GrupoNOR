@@ -6,12 +6,11 @@ $(document).ready(function() {
 
     verificar_sesion();
     let urlSegments = window.location.href.split('/');
-    let categoria = urlSegments[urlSegments.length - 1] === 'tienda' ? null : urlSegments[urlSegments.length - 1];
-    alert(categoria);
-    llenar_productos(categoria);
+    let id_categoria = urlSegments[urlSegments.length - 1] === 'tienda' ? null : urlSegments[urlSegments.length - 1];
+    llenar_productos(id_categoria, 'mas_vendido');
     obtenerCategorias();
 
-    async function llenar_productos(categoria = null){
+    async function llenar_productos(id_categoria = null, searchValue = null, sortValue = null){
         funcion = "llenar_productos";
         let body = 'funcion=' + funcion + '&limit=' + limit;
         let urlSegments = window.location.href.split('/');
@@ -25,8 +24,12 @@ $(document).ready(function() {
             urlBase = urlSegments.slice(0, -2).join('/');
         }
 
-        if (categoria !== null) {
-            body += '&categoria=' + categoria;
+        if (id_categoria !== null) {
+            body += '&id_categoria=' + id_categoria;
+        }
+
+        if (sortValue !== null) {
+            body += '&sortValue=' + sortValue;
         }
 
         let url = `${urlBase}/Controllers/ProductoController.php`;
@@ -42,7 +45,7 @@ $(document).ready(function() {
                 let template = '';
                 productos.forEach(producto => {
                     // Si la categoría no es null, agregarla a la URL de la imagen
-                    let fotoUrl = categoria !== null ? `../${producto.foto}` : producto.foto;
+                    let fotoUrl = id_categoria !== null ? `../${producto.foto}` : producto.foto;
                     template+= ` 
                     <div class="col-sm-2">
                         <div class="card">
@@ -63,6 +66,13 @@ $(document).ready(function() {
                     `;
                 });
                 $('#productos').html(template);
+
+                if (productos.length < limit) {
+                    document.getElementById('loadMoreButton').style.display = 'none';
+                } else {
+                    document.getElementById('loadMoreButton').style.display = 'block';
+                }
+
             } catch (error) {
                 console.error(error);
                 console.log(response);
@@ -79,7 +89,11 @@ $(document).ready(function() {
 
     document.getElementById('loadMoreButton').addEventListener('click', function() {
         limit += 20;
-        llenar_productos();
+        llenar_productos(id_categoria);
+    });
+
+    document.getElementById('sortSelect').addEventListener('change', function() {
+        llenar_productos(id_categoria, null, this.value);
     });
 
     function obtenerCategorias() {
@@ -127,7 +141,7 @@ $(document).ready(function() {
                     let id_categoria = $this.data('id');
                     let nombre_categoria = $this.text();
                     limit = 20; // Resetear el límite
-                    llenar_productos(nombre_categoria);
+                    llenar_productos(id_categoria);
     
                     // Cambiar la URL
                     let base_url = window.location.origin + window.location.pathname;

@@ -88,19 +88,4 @@
         
             return $categorias;
         }
-
-        /*function obtener_categorias_activas() {
-            $sql = "SELECT c1.id, c1.nombre, GROUP_CONCAT(c2.nombre) AS nombre_subcategoria
-                FROM categoria c1
-                LEFT JOIN categoria c2 ON c1.id = c2.id_padre
-                WHERE c1.estado='A' AND (c2.estado='A' OR c2.estado IS NULL) AND c1.id_padre IS NULL
-                GROUP BY c1.id, c1.nombre
-                ORDER BY c1.nombre";
-            $query = $this->acceso->prepare($sql);
-            $query->execute();
-            $this->objetos = $query->fetchAll();
-            return $this->objetos;
-        }*/
-
     }
-

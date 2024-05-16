@@ -8,8 +8,9 @@ session_start();
 
     if($_POST['funcion']=='llenar_productos'){
         $limit = isset($_POST['limit']) ? $_POST['limit'] : 20;
-        $id_categoria = isset($_POST['categoria']) ? $_POST['categoria'] : null;
-        $producto->llenar_productos($limit, $id_categoria);
+        $id_categoria = isset($_POST['id_categoria']) ? $_POST['id_categoria'] : null;
+        $sortValue = isset($_POST['sortValue']) ? $_POST['sortValue'] : null;
+        $producto->llenar_productos($limit, $id_categoria, $sortValue);
         $json=array();
         foreach($producto->objetos as $objeto){
             $json[]=array(
