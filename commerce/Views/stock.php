@@ -1,5 +1,47 @@
 <?php
+    include 'Util/Config/config.php';
+    session_start();
+
+    // Función para actualizar el valor de PRECIO_BASE en el archivo config.php
+    function actualizar_precio_base($nuevo_precio) {
+        $archivo = 'Util/Config/config.php';
+
+        // Leer el contenido del archivo
+        $contenido = file($archivo);
+
+        // Recorrer cada línea y buscar la definición de PRECIO_BASE
+        foreach ($contenido as &$linea) {
+            if (strpos($linea, "define('PRECIO_BASE'") !== false) {
+                // Actualizar la línea con el nuevo valor
+                $linea = "define('PRECIO_BASE', $nuevo_precio);\n";
+            }
+        }
+
+        // Escribir el contenido modificado de vuelta en el archivo
+        file_put_contents($archivo, implode('', $contenido));
+    }
+
+    // Verificar si se ha enviado el formulario
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["precio_base"])) {
+        // Validar y sanitizar el nuevo precio base
+        $nuevo_precio_base = filter_var($_POST["precio_base"], FILTER_SANITIZE_NUMBER_INT);
+
+        // Actualizar el precio base en el archivo de configuración
+        actualizar_precio_base($nuevo_precio_base);
+
+        // Redirigir para evitar reenvío del formulario
+        $_SESSION['precio_base_actualizado'] = true;
+        header("Location: {$_SERVER['REQUEST_URI']}");
+        exit();
+    }
+
     include_once 'Layouts/General/header.php';
+
+    // Verificar si se ha actualizado el precio base anteriormente
+    if (isset($_SESSION['precio_base_actualizado']) && $_SESSION['precio_base_actualizado'] === true) {
+        echo '<script>alert("¡Precio base actualizado con éxito!");</script>';
+        unset($_SESSION['precio_base_actualizado']); // Limpiar la variable de sesión
+    }
 ?>
 
 <section class="content">
@@ -17,6 +59,9 @@
                             <!-- Botón para abrir el modal -->
                             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#productModal">
                                 Agregar Producto
+                            </button>
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editPrecioBaseModal">
+                                Editar Precio Base
                             </button>
                         </div>
                         <!-- Agregar la tabla con la información del inventario -->
@@ -42,6 +87,32 @@
                         </table>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Código del modal para editar el precio base -->
+    <div class="modal fade" id="editPrecioBaseModal" tabindex="-1" role="dialog" aria-labelledby="productModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form action="" method="post" id="editPrecioBaseForm">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="productModalLabel">Editar Precio Base</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="precio_base">Precio Base:</label>
+                            <input type="text" id="precio_base" name="precio_base" value="<?php echo PRECIO_BASE; ?>" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

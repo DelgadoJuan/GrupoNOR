@@ -1,8 +1,10 @@
 <?php
 include_once '../Models/Producto.php';
+include_once '../Models/Categoria.php';
 include '../Util/Config/config.php';
 //esta variable esta siendo instanciada en Producto.php y a la vez en Conexion.php
 $producto = new Producto();
+$categoria = new Categoria();
 //sirve para saber cuando el usuario entra en su sesion
 session_start();
 
@@ -10,7 +12,8 @@ session_start();
         $limit = isset($_POST['limit']) ? $_POST['limit'] : 20;
         $id_categoria = isset($_POST['id_categoria']) ? $_POST['id_categoria'] : null;
         $sortValue = isset($_POST['sortValue']) ? $_POST['sortValue'] : null;
-        $producto->llenar_productos($limit, $id_categoria, $sortValue);
+        $searchValue = isset($_POST['searchValue']) ? $_POST['searchValue'] : null;
+        $producto->llenar_productos($limit, $id_categoria, $sortValue, $searchValue);
         $json=array();
         foreach($producto->objetos as $objeto){
             $json[]=array(
@@ -87,6 +90,59 @@ session_start();
     
         $jsonstring = json_encode($productos);
         echo $jsonstring;
+    }
+
+    if($_POST['funcion']=='crear_tinglado'){
+        $nombre = 'Tinglado Personalizado';
+        $id_categoria = $categoria->obtener_categoria_nombre('Tinglados')[0]->id;
+        $precio_unitario = $_POST['precio'];
+        $altura = $_POST['altura'];
+        $ancho = $_POST['ancho'];
+        $largo = $_POST['largo'];
+        $tipo_techo = '';
+
+        // Mapear los valores del tipo de techo
+        switch ($_POST['tipo_techo']) {
+            case 'a_dos_aguas':
+                $tipo_techo = 'A dos aguas';
+                break;
+            case 'plano':
+                $tipo_techo = 'Plano';
+                break;
+            case 'parabolico':
+                $tipo_techo = 'Parabólico';
+                break;
+            default:
+                $tipo_techo = ''; // Valor por defecto o manejo de errores
+                break;
+        }
+
+        $color = '';
+
+        // Mapear los valores del color
+        switch ($_POST['color']) {
+            case 'gris_metalico':
+                $color = 'Gris Metálico';
+                break;
+            case 'azul':
+                $color = 'Azul';
+                break;
+            default:
+                $color = ''; // Valor por defecto o manejo de errores
+                break;
+        }
+        $fecha_registro = date('Y-m-d H:i:s');
+        $estado = 'T';
+        $nuevo_tinglado_id = $producto->crear_tinglado($nombre, $id_categoria, $precio_unitario, $fecha_registro, $largo, $ancho, $altura, $tipo_techo, $color, $estado);
+        
+        // Verificar si se creó correctamente el nuevo producto
+        if ($nuevo_tinglado_id) {
+            // Si se creó correctamente, enviar el ID del nuevo producto en la respuesta JSON
+            echo json_encode(['message' => 'Tinglado creado', 'status' => 'success', 'producto_id' => $nuevo_tinglado_id]);
+        } else {
+            // Si hubo algún error al crear el producto, enviar un mensaje de error en la respuesta JSON
+            echo json_encode(['message' => 'Error al crear el tinglado', 'status' => 'error']);
+        }
     }
 
     if($_POST['funcion']=='crear_producto'){

@@ -6,17 +6,17 @@ $(document).ready(function() {
 
     verificar_sesion();
     let urlSegments = window.location.href.split('/');
-    let id_categoria = urlSegments[urlSegments.length - 1] === 'tienda' ? null : urlSegments[urlSegments.length - 1];
-    llenar_productos(id_categoria, 'mas_vendido');
+    let id_categoria = urlSegments[urlSegments.length - 1] === 'tienda.php' ? null : urlSegments[urlSegments.length - 1];
+    llenar_productos(id_categoria, 'mas_vendido', null);
     obtenerCategorias();
 
-    async function llenar_productos(id_categoria = null, searchValue = null, sortValue = null){
+    async function llenar_productos(id_categoria = null, sortValue = null, searchValue = null){
         funcion = "llenar_productos";
         let body = 'funcion=' + funcion + '&limit=' + limit;
         let urlSegments = window.location.href.split('/');
         let urlBase;
 
-        if (urlSegments[urlSegments.length - 2] === 'tienda') {
+        if (urlSegments[urlSegments.length - 2] === 'tienda.php') {
             // If the current URL does not contain a category
             urlBase = urlSegments.slice(0, -3).join('/');
         } else {
@@ -30,6 +30,10 @@ $(document).ready(function() {
 
         if (sortValue !== null) {
             body += '&sortValue=' + sortValue;
+        }
+
+        if (searchValue !== null) {
+            body += '&searchValue=' + searchValue;
         }
 
         let url = `${urlBase}/Controllers/ProductoController.php`;
@@ -89,11 +93,16 @@ $(document).ready(function() {
 
     document.getElementById('loadMoreButton').addEventListener('click', function() {
         limit += 20;
-        llenar_productos(id_categoria);
+        var sortValue = document.getElementById('sortSelect').value;
+        var searchInput = document.getElementById('inputSearch');
+        var searchValue = searchInput ? searchInput.value : null;
+        llenar_productos(id_categoria, sortValue, searchValue);
     });
 
     document.getElementById('sortSelect').addEventListener('change', function() {
-        llenar_productos(id_categoria, null, this.value);
+        var searchInput = document.getElementById('inputSearch');
+        var searchValue = searchInput ? searchInput.value : null;
+        llenar_productos(id_categoria, this.value, searchValue);
     });
 
     function obtenerCategorias() {
@@ -145,13 +154,11 @@ $(document).ready(function() {
     
                     // Cambiar la URL
                     let base_url = window.location.origin + window.location.pathname;
-                    let nuevaUrl = '';
-                    if (base_url.endsWith('tienda')) {
-                        nuevaUrl = base_url + '/' + nombre_categoria;
-                    } else {
-                        nuevaUrl = base_url.replace(/\/[^\/]*$/, '/') + nombre_categoria;
-                    }
-                    history.pushState({id_categoria: id_categoria}, '', nuevaUrl);
+                    let nuevaUrl = new URL(base_url);
+                    nuevaUrl.searchParams.set('nombre', nombre_categoria);
+                    nuevaUrl.searchParams.set('id', id_categoria);
+                    history.pushState({id_categoria: id_categoria}, '', nuevaUrl.toString());
+                    llenar_productos(id_categoria, 'mas_vendido');
                 }
     
                 function handleMouseEnter() {
@@ -175,4 +182,27 @@ $(document).ready(function() {
             }
         });
     }
+
+    let urlParams = new URLSearchParams(window.location.search);
+    id_categoria = urlParams.get('id');
+    if(id_categoria){
+        var searchValue = $(this).find('input[name="search"]').val();
+        var sortValue = $('#sortSelect').val();
+        llenar_productos(id_categoria, sortValue, searchValue);
+    }
+
+    // Add event listener to the search form
+    $('#searchForm').on('submit', function(e) {
+        // Prevent the form from submitting normally
+        e.preventDefault();
+
+        // Get the search value
+        var searchValue = $(this).find('input[name="search"]').val();
+        var sortValue = $('#sortSelect').val();
+        
+        // Send AJAX request to the server with the search value
+        llenar_productos(null, sortValue, searchValue);
+    });
+
+
 });

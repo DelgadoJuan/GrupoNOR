@@ -11,7 +11,7 @@
         }
 
         // Funcion para mostrar los productos activados en el ecommerce
-        function llenar_productos($limit = 20, $id_categoria = null, $sortValue = null){
+        function llenar_productos($limit = 20, $id_categoria = null, $sortValue = null, $searchValue = null){
             $orderBy = ' ORDER BY producto.vendido DESC';
 
             if ($sortValue === 'precio_ascendente') {
@@ -30,6 +30,12 @@
                 $orderBy = ' ORDER BY producto.fecha_registro ASC';
             }
 
+            // Agregar cláusula WHERE para búsqueda
+            $whereSearch = '';
+            if ($searchValue !== null) {
+                $whereSearch = " AND producto.nombre LIKE :searchValue";
+            }
+
             if ($id_categoria !== null) {
                 $sql = "WITH RECURSIVE subcategorias AS (
                     SELECT id FROM categoria WHERE id = :id_categoria
@@ -46,6 +52,7 @@
                 FROM producto
                 INNER JOIN subcategorias ON producto.id_categoria = subcategorias.id
                 WHERE producto.estado = 'A'"
+                . $whereSearch
                 . $orderBy .
                 " LIMIT :limit";
             } else {
@@ -57,6 +64,7 @@
                 producto.descripcion as descripcion
                 FROM producto
                 WHERE producto.estado = 'A'"
+                . $whereSearch
                 . $orderBy .
                 " LIMIT :limit";
             }
@@ -66,6 +74,11 @@
 
             if ($id_categoria !== null) {
                 $query->bindValue(':id_categoria', trim($id_categoria), PDO::PARAM_INT);
+            }
+
+            // Agregar valor de búsqueda a la consulta
+            if ($searchValue !== null) {
+                $query->bindValue(':searchValue', '%' . trim($searchValue) . '%', PDO::PARAM_STR);
             }
 
             $query->execute();
@@ -105,6 +118,40 @@
                 return $id_producto;
             } catch (Exception $e) {
                 $this->acceso->rollBack();
+                throw $e;
+            }
+        }
+
+        public function crear_tinglado($nombre, $id_categoria, $precio_unitario, $fecha_registro, $largo, $ancho, $altura, $tipo_techo, $color, $estado) {
+            $this->acceso->beginTransaction();
+            try {
+                // Verificar si el valor de descripción es necesario
+                $descripcion = 'Tinglado personalizado';
+        
+                $sql = "INSERT INTO producto(nombre, id_categoria, descripcion, precio_unitario, fecha_registro, largo, ancho, altura, tipo_techo, color, estado) 
+                        VALUES(:nombre, :id_categoria, :descripcion, :precio_unitario, :fecha_registro, :largo, :ancho, :altura, :tipo_techo, :color, :estado)";
+                $query = $this->acceso->prepare($sql);
+                $query->execute(array(
+                    ':nombre' => $nombre,
+                    ':id_categoria' => $id_categoria,
+                    ':descripcion' => $descripcion,
+                    ':precio_unitario' => $precio_unitario,
+                    ':fecha_registro' => $fecha_registro,
+                    ':largo' => $largo,
+                    ':ancho' => $ancho,
+                    ':altura' => $altura,
+                    ':tipo_techo' => $tipo_techo,
+                    ':color' => $color,
+                    ':estado' => $estado
+                ));
+                
+                // Obtener el ID del producto recién insertado
+                $id_producto = $this->acceso->lastInsertId();
+                $this->acceso->commit();
+                return $id_producto;
+            } catch (Exception $e) {
+                $this->acceso->rollBack();
+                error_log("Error al crear el tinglado: " . $e->getMessage()); // Log del error
                 throw $e;
             }
         }

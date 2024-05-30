@@ -23,6 +23,14 @@
             $this->objetos = $query->fetchAll();
             return $this->objetos;
         }
+
+        function obtener_categoria_nombre($nombre) {
+            $sql = "SELECT id FROM categoria WHERE nombre=:nombre";
+            $query = $this->acceso->prepare($sql);
+            $query->execute(array(':nombre' => $nombre));
+            $this->objetos = $query->fetchAll();
+            return $this->objetos;
+        }
     
         function agregarCategoria($nombre, $id_padre, $fecha_creacion, $descripcion) {
             $sql = "INSERT INTO categoria(nombre, id_padre, fecha_creacion, descripcion) VALUES(:nombre, :id_padre, :fecha_creacion, :descripcion)";

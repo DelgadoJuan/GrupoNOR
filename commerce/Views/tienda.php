@@ -50,7 +50,7 @@
 
     </section>
     <!-- /.content -->
-    <?php
+<?php
     include_once('Layouts/Tienda/footer.php');
 ?>
 

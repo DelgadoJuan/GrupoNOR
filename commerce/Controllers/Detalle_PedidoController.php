@@ -7,12 +7,33 @@ $detalle_pedido = new Detalle_Pedido();
 session_start();
 
     if($_POST['funcion']=='agregar_carrito'){
-        $id_producto =openssl_decrypt($_SESSION['product-verification'], CODE, KEY);
+        $id_producto = openssl_decrypt($_SESSION['product-verification'], CODE, KEY);
         $cantidad = $_POST['cantidad'];
-        $precio = floatval($_POST['precio']); // Convert the price to a float
+        $precio = floatval($_POST['precio']);
         $id_usuario = $_SESSION['id'];
-        $detalle_pedido->agregarDetallePedido(null, $id_producto, $cantidad, $precio, $id_usuario);
-        echo json_encode(['message' => 'Producto agregado al carrito', 'status' => 'success']);
+        $resultado = $detalle_pedido->agregarDetallePedido(null, $id_producto, $cantidad, $precio, $id_usuario);
+        $_SESSION['product-verification'] = null;
+
+        if ($resultado) {
+            echo json_encode(['message' => 'Producto agregado al carrito', 'status' => 'success']);
+        } else {
+            echo json_encode(['message' => 'Error al agregar el producto al carrito', 'status' => 'error']);
+        }
+    }
+
+    if ($_POST['funcion'] == 'agregar_carrito_tinglado') {
+        $id_producto = $_POST['id_producto'];
+        $cantidad = $_POST['cantidad'];
+        $precio = $_POST['precio'];
+        $id_usuario = $_SESSION['id'];
+        $resultado = $detalle_pedido->agregarDetallePedido(null, $id_producto, $cantidad, $precio, $id_usuario);
+        $_SESSION['product-verification'] = null;
+
+        if ($resultado) {
+            echo json_encode(['message' => 'Producto agregado al carrito', 'status' => 'success']);
+        } else {
+            echo json_encode(['message' => 'Error al agregar el producto al carrito', 'status' => 'error']);
+        }
     }
 
     if($_POST['funcion']=='obtener_carrito'){
@@ -29,6 +50,7 @@ session_start();
                 'precio'=>$objeto->precio_unitario
             );
         }
+        $_SESSION['carrito'] = $json;
         $jsonstring = json_encode($json);
         echo $jsonstring;
     }

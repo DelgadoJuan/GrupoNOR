@@ -116,4 +116,3 @@
 ?>
 
 <script src="./descripcion.js" type="module"></script>
-<script src="./carrito.js" type="module"></script>

@@ -1,4 +1,5 @@
 import { verificar_sesion } from "./sesion.js";
+import { agregar_carrito } from "./carrito.js";
 
 $(document).ready(function(){
     var funcion;
@@ -103,3 +104,10 @@ $(document).ready(function(){
     
 });
 
+$('#btn-carrito').click(function() {
+    var id_producto = $('#id_producto').text();
+    var cantidad = $('#product_quantity').val();
+    var precio = $('#precio_producto').text().trim().substring(2); 
+
+    agregar_carrito(id_producto, cantidad, precio);
+});

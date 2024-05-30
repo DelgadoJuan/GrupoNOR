@@ -1,5 +1,6 @@
 <?php
 include_once '../Models/Usuario.php';
+include '../Util/Config/config.php';
 //esta variable esta siendo instanciada en Usuario.php y a la vez en Conexion.php
 $usuario = new Usuario();
 //sive para saber cuando el usuario entra en su sesion
@@ -10,7 +11,7 @@ session_start();
     if($_POST['funcion']=='login'){
         $user = $_POST['user'];
         $pass = $_POST['pass'];
-        $usuario->loguearse($user, $pass);
+        $usuario->loguearse($user, openssl_encrypt($pass, CODE, KEY));
         if($usuario->objetos!=null){
             foreach($usuario->objetos as $objeto){
                 $_SESSION['id']=$objeto->id;
@@ -48,7 +49,7 @@ session_start();
 
     if($_POST['funcion']=='registrar_usuario'){
         $username = $_POST['username'];
-        $pass = $_POST['pass'];
+        $pass = openssl_encrypt($_POST['pass'], CODE, KEY);
         $nombres = $_POST['nombres'];
         $apellidos = $_POST['apellidos'];	
         $dni = $_POST['dni'];
@@ -56,7 +57,46 @@ session_start();
         $telefono = $_POST['telefono'];
         $usuario->registrar_usuario($username, $pass, $nombres, $apellidos, $dni, $email, $telefono);
         echo 'success';
-        
+    }
+
+    if($_POST['funcion']=='registrar_empleado'){
+        $username = $_POST['user'];
+        $pass = openssl_encrypt('GNT', CODE, KEY);
+        $nombres = $_POST['nombre'];
+        $apellidos = $_POST['apellido'];	
+        $dni = $_POST['dni'];
+        $email = $_POST['email'];
+        $tipo_empleado = $_POST['tipoEmpleado'];
+        $usuario->registrar_empleado($username, $pass, $nombres, $apellidos, $dni, $email, $tipo_empleado);
+        echo 'success';
+    }
+
+    if ($_POST['funcion'] == 'modificar_usuario') {
+        $id_usuario = $_POST['id_usuario'];
+        $username = $_POST['user'];
+        $nombres = $_POST['nombre'];
+        $apellidos = $_POST['apellido'];
+        $dni = $_POST['dni'];
+        $email = $_POST['email'];
+        $direccion = $_POST['direccion'];
+        $referencia = $_POST['referencia'];
+        $telefono = $_POST['telefono'];
+        $tipo_empleado = $_POST['tipoEmpleado'] ? $_POST['tipoEmpleado'] : 2;
+        $usuario->modificar_usuario($id_usuario, $username, $nombres, $apellidos, $dni, $email, $direccion, $referencia, $telefono, $tipo_empleado);
+        echo 'success';
+    }
+
+    if ($_POST['funcion'] == 'modificar_estado_usuario') {
+        $id_usuario = $_POST['id'];
+        $estado = $_POST['estado'];
+        $usuario->modificar_estado_usuario($id_usuario, $estado);
+        echo 'success';
+    }
+
+    if ($_POST['funcion'] == 'eliminar_usuario') {
+        $id_usuario = $_POST['id'];
+        $usuario->eliminar_usuario($id_usuario);
+        echo 'success';
     }
 
     if($_POST['funcion']=='obtener_datos'){
@@ -75,6 +115,27 @@ session_start();
         }
         $jsonstring = json_encode($json[0]);
         echo $jsonstring;
+    }
+
+    if ($_POST['funcion']=='obtener_usuarios') {
+        $usuario->obtener_usuarios();
+        foreach($usuario->objetos as $objeto){
+            $json[]=array(
+                'id'=>$objeto->id,
+                'user'=>$objeto->user,
+                'nombres'=>$objeto->nombres,
+                'apellidos'=>$objeto->apellidos,
+                'dni'=>$objeto->dni,
+                'email'=>$objeto->email,
+                'telefono'=>$objeto->telefono,
+                'id_tipo'=>$objeto->id_tipo,
+                'tipo_usuario'=>$objeto->tipo,
+                'estado'=>$objeto->estado,
+                'direccion'=>$objeto->direccion,
+                'referencia'=>$objeto->referencia
+            );
+        }
+        echo json_encode($json);
     }
 
     if($_POST['funcion']=='editar_datos'){
@@ -122,6 +183,19 @@ session_start();
         $usuario->editar_datos($id_usuario,$nombres, $apellidos, $dni, $email, $telefono, $nombre);
         echo 'success';
         
+    }
+
+    if($_POST['funcion']=='obtener_payer'){
+        $id_usuario = $_SESSION['id'];
+        $usuario->obtener_payer($id_usuario);
+        $objeto = $usuario->objetos[0];
+        $json = array(
+            'nombre'=>$objeto->nombres,
+            'apellido'=>$objeto->apellidos,
+            'email'=>$objeto->email,
+        );
+        $_SESSION['payer'] = $json;
+        echo json_encode($json);
     }
 
 
