@@ -1,3 +1,0 @@
-[submodule "commerce/vendor/mercadopago/dx-php"]
-	path = commerce/vendor/mercadopago/dx-php
-	url = https://github.com/mercadopago/sdk-php.git
