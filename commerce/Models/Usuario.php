@@ -9,6 +9,17 @@
         }
 
         //consultas a la bd
+
+        function loguearse($user, $pass){
+            $sql ="SELECT * FROM usuario 
+                    WHERE user=:user AND pass=:pass";
+            $query = $this->acceso->prepare($sql); 
+            $query->execute(array(':user'=>$user, ':pass'=>$pass));
+            $this->objetos = $query->fetchAll();
+            return $this->objetos;
+        }
+
+
         public function obtener_rol($id) {
             $sql = "SELECT tp.tipo FROM usuario u
                     JOIN tipo_usuario tp ON u.id_tipo = tp.id 
@@ -18,6 +29,7 @@
             $this->objetos = $query->fetchAll(PDO::FETCH_OBJ);
             return $this->objetos;
         }
+
         
         //funcion para verificar si el username ya existe
         function verificar_usuario($user){

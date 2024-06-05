@@ -67,14 +67,7 @@ $(document).ready(function(){
                 </div>
                 `;
 
-                // Evento click para el botón "Agregar al carrito"
-                $(document).on('click', '.agregar-carrito', function() {
-                    if (verificar_sesion()) { // Llama a tu función verificar_sesion
-                        window.location.href = 'carrito.php';
-                    } else {
-                        window.location.href = 'login.php';
-                    }
-                });
+                
                 
                 $('#btn-carrito').html(template3);
                 $('#imagenes').html(template);
