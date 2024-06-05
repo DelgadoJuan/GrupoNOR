@@ -43,7 +43,7 @@
 <div class="login-logo">
     <!-- logo -->
     <img src="../Util/Img/logoGrupoNOR.png" class="profile-user-img img-fluid img-circle">
-    <a href="../index.php"><b>Grupo</b>NOR</a>
+    <a href="./index.php"><b>Grupo</b>NOR</a>
 </div>
 <!-- /.login-logo -->
 <div class="card">

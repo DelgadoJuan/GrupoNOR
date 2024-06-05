@@ -2,5 +2,5 @@
 //controlador para cerrar sesion
 session_start();
 session_destroy();
-header('Location: ../index.php');
+header('Location: ../Views/index.php');
 

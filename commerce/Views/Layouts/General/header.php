@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   
+  
 
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -15,6 +16,7 @@
   <link rel="stylesheet" href="../Util/Css/adminlte.min.css">
 <!-- Sweetalert2 -->
   <link rel="stylesheet" href="../Util/Css/sweetalert2.min.css">
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.css">
 </head>
 <body class="hold-transition sidebar-mini">
 <!-- Site wrapper -->
@@ -60,28 +62,11 @@
 
       <!-- Messages Dropdown Menu -->
       <li id="notificacion" class="nav-item dropdown">
-        <a class="nav-link" data-toggle="dropdown" href="#">
+        <a class="nav-link" href="./carrito.php">
           <!-- icono carrito -->
           <i class="fas fa-shopping-cart"></i>
           <span class="badge badge-danger navbar-badge"></span>
         </a>
-        <div class="dropdown-menu">
-          <table class="table table-hover text-nowrap p-0">
-            <thead class="table-success">
-              <tr>
-                <th>Codigo</th>
-                <th>Nombre</th>
-                <th>Precio</th>
-                <th>Eliminar</th>
-              </tr>
-            </thead>
-            <tbody id="lista">
-
-            </tbody>
-          </table>
-          <a href="#" class="btn btn-warning btn-block">Finalizar compra</a>
-          <a href="#" class="btn btn-danger btn-block">Vaciar carrito</a>
-        </div>
       </li>
       <li class="nav-item" id="nav_register">
         <!-- Ruta a registrarse -->
@@ -791,3 +776,7 @@
 
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
+
+<?php
+
+?>

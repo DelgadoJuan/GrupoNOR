@@ -1,8 +1,7 @@
 <?php
 include_once '../Models/Usuario.php';
-include_once '../Util/Config/config.php';
-require '../vendor/autoload.php';
-//esta variable esta siendo instanciada en Usuasrio.php y a la vez en Conexion.php
+include '../Util/Config/config.php';
+//esta variable esta siendo instanciada en Usuario.php y a la vez en Conexion.php
 $usuario = new Usuario();
 //sive para saber cuando el usuario entra en su sesion
 session_start();
@@ -12,16 +11,15 @@ session_start();
     if($_POST['funcion']=='login'){
         $user = $_POST['user'];
         $pass = $_POST['pass'];
-        $usuario->verificar_usuario($user);
+        $usuario->loguearse($user, openssl_encrypt($pass, CODE, KEY));
         if($usuario->objetos!=null){
-            $pass_bd = openssl_decrypt($usuario->objetos[0]->pass,CODE,KEY);
-            if($pass_bd == $pass){
-                    $_SESSION['id']=$usuario->objetos[0]->id;
-                    $_SESSION['user']=$usuario->objetos[0]->user;
-                    $_SESSION['tipo_usuario']=$usuario->objetos[0]->id_tipo;
-                    $_SESSION['avatar']=$usuario->objetos[0]->avatar;
-                echo 'logueado';
-            } 
+            foreach($usuario->objetos as $objeto){
+                $_SESSION['id']=$objeto->id;
+                $_SESSION['user']=$objeto->user;
+                $_SESSION['tipo_usuario']=$objeto->id_tipo;
+                $_SESSION['avatar']=$objeto->avatar;
+            }
+            echo 'logueado';
         }
     }
     //aqui manejo la funcion de verificar sesion, verificando si existe un SESSION id
@@ -51,7 +49,7 @@ session_start();
 
     if($_POST['funcion']=='registrar_usuario'){
         $username = $_POST['username'];
-        $pass = openssl_encrypt($_POST['pass'],CODE,KEY);
+        $pass = openssl_encrypt($_POST['pass'], CODE, KEY);
         $nombres = $_POST['nombres'];
         $apellidos = $_POST['apellidos'];	
         $dni = $_POST['dni'];
@@ -59,7 +57,46 @@ session_start();
         $telefono = $_POST['telefono'];
         $usuario->registrar_usuario($username, $pass, $nombres, $apellidos, $dni, $email, $telefono);
         echo 'success';
-        
+    }
+
+    if($_POST['funcion']=='registrar_empleado'){
+        $username = $_POST['user'];
+        $pass = openssl_encrypt('GNT', CODE, KEY);
+        $nombres = $_POST['nombre'];
+        $apellidos = $_POST['apellido'];	
+        $dni = $_POST['dni'];
+        $email = $_POST['email'];
+        $tipo_empleado = $_POST['tipoEmpleado'];
+        $usuario->registrar_empleado($username, $pass, $nombres, $apellidos, $dni, $email, $tipo_empleado);
+        echo 'success';
+    }
+
+    if ($_POST['funcion'] == 'modificar_usuario') {
+        $id_usuario = $_POST['id_usuario'];
+        $username = $_POST['user'];
+        $nombres = $_POST['nombre'];
+        $apellidos = $_POST['apellido'];
+        $dni = $_POST['dni'];
+        $email = $_POST['email'];
+        $direccion = $_POST['direccion'];
+        $referencia = $_POST['referencia'];
+        $telefono = $_POST['telefono'];
+        $tipo_empleado = $_POST['tipoEmpleado'] ? $_POST['tipoEmpleado'] : 2;
+        $usuario->modificar_usuario($id_usuario, $username, $nombres, $apellidos, $dni, $email, $direccion, $referencia, $telefono, $tipo_empleado);
+        echo 'success';
+    }
+
+    if ($_POST['funcion'] == 'modificar_estado_usuario') {
+        $id_usuario = $_POST['id'];
+        $estado = $_POST['estado'];
+        $usuario->modificar_estado_usuario($id_usuario, $estado);
+        echo 'success';
+    }
+
+    if ($_POST['funcion'] == 'eliminar_usuario') {
+        $id_usuario = $_POST['id'];
+        $usuario->eliminar_usuario($id_usuario);
+        echo 'success';
     }
 
     if($_POST['funcion']=='obtener_datos'){
@@ -80,10 +117,31 @@ session_start();
         echo $jsonstring;
     }
 
+    if ($_POST['funcion']=='obtener_usuarios') {
+        $usuario->obtener_usuarios();
+        foreach($usuario->objetos as $objeto){
+            $json[]=array(
+                'id'=>$objeto->id,
+                'user'=>$objeto->user,
+                'nombres'=>$objeto->nombres,
+                'apellidos'=>$objeto->apellidos,
+                'dni'=>$objeto->dni,
+                'email'=>$objeto->email,
+                'telefono'=>$objeto->telefono,
+                'id_tipo'=>$objeto->id_tipo,
+                'tipo_usuario'=>$objeto->tipo,
+                'estado'=>$objeto->estado,
+                'direccion'=>$objeto->direccion,
+                'referencia'=>$objeto->referencia
+            );
+        }
+        echo json_encode($json);
+    }
+
     if($_POST['funcion']=='editar_datos'){
         $id_usuario = $_SESSION['id'];
         $nombres = $_POST['nombres_mod'];
-        $apellidos = $_POST['apellidos_mod'];	
+        $apellidos = $_POST['apellidos_mod'];
         $dni = $_POST['dni_mod'];
         $email = $_POST['email_mod'];
         $telefono = $_POST['telefono_mod'];
@@ -127,25 +185,17 @@ session_start();
         
     }
 
-
-    if($_POST['funcion']=='cambiar_contra'){
+    if($_POST['funcion']=='obtener_payer'){
         $id_usuario = $_SESSION['id'];
-        $user = $_SESSION['user'];
-        $pass_old = $_POST['pass_old'];
-        $pass_new = $_POST['pass_new'];
-        $usuario->verificar_usuario($user);
-        if(!empty($usuario->objetos)){
-            $pass_bd = openssl_decrypt($usuario->objetos[0]->pass,CODE,KEY);
-            if($pass_bd == $pass_old){
-                $pass_new_encriptada = openssl_encrypt($_POST['pass_new'],CODE,KEY);
-                $usuario->cambiar_contra($id_usuario, $pass_new_encriptada);
-                echo 'success';
-            }
-            else{
-                echo 'error';   
-            }
-        }
-        else{
-            echo 'error';
-        }
+        $usuario->obtener_payer($id_usuario);
+        $objeto = $usuario->objetos[0];
+        $json = array(
+            'nombre'=>$objeto->nombres,
+            'apellido'=>$objeto->apellidos,
+            'email'=>$objeto->email,
+        );
+        $_SESSION['payer'] = $json;
+        echo json_encode($json);
     }
+
+

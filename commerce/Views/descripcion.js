@@ -1,28 +1,10 @@
+import { verificar_sesion } from "./sesion.js";
+import { agregar_carrito } from "./carrito.js";
+
 $(document).ready(function(){
     var funcion;
     verificar_sesion();
     verificar_productos();
-
-    function verificar_sesion() {
-        funcion = 'verificar_sesion';
-        $.post('../Controllers/UsuarioController.php', {funcion}, (response) => {
-            console.log(response);
-            if(response != ''){
-                let sesion = JSON.parse(response);
-                $('#nav_login').hide();
-                $('#nav_register').hide();
-                $('#usuario_nav').text(sesion.user + ' #'+ sesion.id);
-                $('#avatar_nav').attr('src', '../Util/Img/Users/' + sesion.avatar);
-                $('#avatar_menu').attr('src', '../Util/Img/Users/' + sesion.avatar);
-                $('#usuario_menu').text(sesion.user);
-                $('#notificacion').show();
-            }
-            else{
-                $('#nav_usuario').hide();
-                $('#notificacion').hide();
-            }
-        });
-    }
 
     async function verificar_productos(){
         funcion = "verificar_productos";
@@ -42,15 +24,18 @@ $(document).ready(function(){
                     template += `
                         <div "></div>
                         <div class="col-12">
-                            <img class="img-fluid" id="imagen_principal" src="../Util/Img/Producto/${producto.imagenes[0].nombre}">
+                            <img class="img-fluid" id="imagen_principal" src="${producto.foto}">
 
                         </div>
                         <div class="col-12 product-image-thumbs">
+                        <button prod_img="${producto.foto}" class="imagen_pasarelas product-image-thumb">
+                            <img src="${producto.foto}">
+                        </button>
                         `;
                         producto.imagenes.forEach(imagen => {
                             template +=`
                                 <button prod_img="${imagen.nombre}" class="imagen_pasarelas product-image-thumb">
-                                    <img src="../Util/Img/Producto/${imagen.nombre}">
+                                    <img src="${imagen.nombre}">
                                 </button>
                             ` ;
                         });
@@ -61,7 +46,7 @@ $(document).ready(function(){
                 else{
                     template += `
                         <div class="col-12">
-                            <img class="product-image img-fluid" id="imagen_principal" src="../Util/Img/Producto/${producto.foto}">
+                            <img class="product-image img-fluid" id="imagen_principal" src="${producto.foto}">
 
                         </div>
                         `;
@@ -81,6 +66,15 @@ $(document).ready(function(){
                     </button>                            
                 </div>
                 `;
+
+                // Evento click para el botón "Agregar al carrito"
+                $(document).on('click', '.agregar-carrito', function() {
+                    if (verificar_sesion()) { // Llama a tu función verificar_sesion
+                        window.location.href = 'carrito.php';
+                    } else {
+                        window.location.href = 'login.php';
+                    }
+                });
                 
                 $('#btn-carrito').html(template3);
                 $('#imagenes').html(template);
@@ -94,7 +88,7 @@ $(document).ready(function(){
                 console.error(error);
                 console.log("La respuesta del servidor no es un JSON válido:", response);
                 if(response == 'error'){
-                    location.href = '../index.php'; 
+                    location.href = './tienda.php'; 
                 }
 
             }
@@ -113,9 +107,16 @@ $(document).ready(function(){
     $(document).on('click', '.imagen_pasarelas', (e)=>{
         let elemento = $(this)[0].activeElement;
         let img = $(elemento).attr('prod_img');
-        $('#imagen_principal').attr('src', '../Util/Img/Producto/' + img);
+        $('#imagen_principal').attr('src', img);
     });
 
     
 });
 
+$('#btn-carrito').click(function() {
+    var id_producto = $('#id_producto').text();
+    var cantidad = $('#product_quantity').val();
+    var precio = $('#precio_producto').text().trim().substring(2); 
+
+    agregar_carrito(id_producto, cantidad, precio);
+});

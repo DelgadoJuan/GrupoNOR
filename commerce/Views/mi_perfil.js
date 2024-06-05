@@ -1,3 +1,5 @@
+import { verificar_sesion } from './sesion.js'
+
 //aqui vamos a aplicar js al index 
 $(document).ready(function() {
     var funcion;
@@ -147,7 +149,7 @@ $(document).ready(function() {
         })
     });
 
-    function verificar_sesion() {
+    /*function verificar_sesion() {
         funcion = 'verificar_sesion';
         $.post('../Controllers/UsuarioController.php', {funcion}, (response) => {
             console.log(response);
@@ -165,7 +167,7 @@ $(document).ready(function() {
                 location. href = 'login.php';
             }
         });
-    }
+    }*/
 
     function obtener_datos() {
         funcion = 'obtener_datos';
@@ -343,36 +345,7 @@ $(document).ready(function() {
     //comprobar contraseña para actualizar
     $.validator.setDefaults({
         submitHandler: function () {
-            funcion = "cambiar_contra";
-            let pass_old = $('#pass_old').val();
-            let pass_new = $('#pass_new').val();
-            $.post('../Controllers/UsuarioController.php', {funcion, pass_old, pass_new}, (response)=>{
-                if(response == 'success') {
-                    Swal.fire({
-                        position: "center",
-                        icon: "success",
-                        title: "Se ha cambiado su contraseña",
-                        showConfirmButton: false,
-                        timer: 1500
-                    }).then(function(){
-                        $('#form_contra').trigger('reset');
-                    });
-                }
-                else if(response == 'error'){
-                    Swal.fire({
-                        icon: "warning",
-                        title: "Contraseña incorrecta", 
-                        text: "Ingrese su contraseña actual para poder cambiarla",
-                    });
-                }
-                else{
-                    Swal.fire({
-                        icon: "error",
-                        title: "Error", 
-                        text: "Hubo un problema al editar sus datos, comuniquese con el area de sistemas",
-                    });
-                }
-            });
+            alert("se valido todo");
         }
     });
     

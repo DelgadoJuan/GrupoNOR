@@ -8,6 +8,55 @@ class Detalle_pedido{
         $this->acceso = $db->pdo;
     }
 
+    // Funcion para obtener el carrito del usuario
+    function obtenerDetallesPedido($id_usuario){
+        $sql = "SELECT detalles_pedido.*, producto.nombre AS nombre_producto, producto.foto AS producto_foto 
+            FROM detalles_pedido 
+            INNER JOIN producto ON detalles_pedido.id_producto = producto.id 
+            WHERE detalles_pedido.id_usuario=:id_usuario AND detalles_pedido.id_pedido IS NULL";
+        $query = $this->acceso->prepare($sql);
+        $query->execute(array(':id_usuario'=>$id_usuario));
+        $this->objetos = $query->fetchAll();
+        return $this->objetos;
+    }
+
+    function agregarDetallePedido($id_pedido, $id_producto, $cantidad, $precio_unitario, $id_usuario){
+        try {
+            $precio_unitario = floatval($precio_unitario); // Convertir el precio a float
+            $sql = "INSERT INTO detalles_pedido (id_pedido, id_producto, id_usuario, cantidad, precio_unitario) 
+                    VALUES (:id_pedido, :id_producto, :id_usuario, :cantidad, :precio_unitario)";
+            $query = $this->acceso->prepare($sql);
+            $query->execute(array(
+                ':id_pedido' => $id_pedido,
+                ':id_producto' => $id_producto,
+                ':id_usuario' => $id_usuario,
+                ':cantidad' => $cantidad,
+                ':precio_unitario' => $precio_unitario
+            ));
+            return true; // Retornar true si la inserción fue exitosa
+        } catch (Exception $e) {
+            error_log("Error al agregar detalle de pedido: " . $e->getMessage()); // Log del error
+            return false; // Retornar false si hubo un error
+        }
+    }
+
+    public function cambiarCantidad($id, $cantidad) {
+        $sql = "UPDATE detalles_pedido SET cantidad = :cantidad WHERE id = :id";
+        $query = $this->acceso->prepare($sql);
+        $query->execute(array(':cantidad'=>$cantidad, ':id'=>$id));
+    }
+    
+    public function eliminarDetallePedido($id_detalle_pedido) {
+        $sql = "DELETE FROM detalles_pedido WHERE id = :id";
+        $query = $this->acceso->prepare($sql);
+        $query->execute(array(':id'=>$id_detalle_pedido));
+    }
+
+    public function carritoComprado($id_usuario, $id_pedido) {
+        $sql = "UPDATE detalles_pedido SET id_pedido = :id_pedido WHERE id_usuario = :id_usuario AND id_pedido IS NULL";
+        $query = $this->acceso->prepare($sql);
+        $query->execute(array(':id_pedido'=>$id_pedido, ':id_usuario'=>$id_usuario));
+    }
     
 }
 
