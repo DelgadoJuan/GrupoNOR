@@ -10,9 +10,10 @@ class Detalle_pedido{
 
     // Funcion para obtener el carrito del usuario
     function obtenerDetallesPedido($id_usuario){
-        $sql = "SELECT detalles_pedido.*, producto.nombre AS nombre_producto, producto.foto AS producto_foto 
+        $sql = "SELECT detalles_pedido.*, producto.nombre AS nombre_producto, producto.foto AS producto_foto, producto.precio_envio_km, categoria.nombre AS nombre_categoria 
             FROM detalles_pedido 
             INNER JOIN producto ON detalles_pedido.id_producto = producto.id 
+            INNER JOIN categoria ON producto.id_categoria = categoria.id
             WHERE detalles_pedido.id_usuario=:id_usuario AND detalles_pedido.id_pedido IS NULL";
         $query = $this->acceso->prepare($sql);
         $query->execute(array(':id_usuario'=>$id_usuario));

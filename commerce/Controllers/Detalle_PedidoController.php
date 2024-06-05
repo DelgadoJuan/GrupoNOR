@@ -1,8 +1,10 @@
 <?php
 include_once '../Models/Detalle_Pedido.php';
+include_once '../Models/Producto.php';
 include '../Util/Config/config.php';
 //esta variable esta siendo instanciada en Producto.php y a la vez en Conexion.php
 $detalle_pedido = new Detalle_Pedido();
+$producto = new Producto();
 //sirve para saber cuando el usuario entra en su sesion
 session_start();
 
@@ -40,14 +42,17 @@ session_start();
         $id_usuario = $_SESSION['id'];
         $detalle_pedido->obtenerDetallesPedido($id_usuario);
         $json=array();
+        
         foreach($detalle_pedido->objetos as $objeto){
             $json[]=array(
                 'id'=>$objeto->id,
                 'nombre_producto'=>$objeto->nombre_producto,
-                'foto'=>$objeto->producto_foto, // 
+                'foto'=>$objeto->producto_foto,
                 'id_producto'=>$objeto->id_producto,
                 'cantidad'=>$objeto->cantidad,
-                'precio'=>$objeto->precio_unitario
+                'precio'=>$objeto->precio_unitario,
+                'precio_envio_km'=>$objeto->precio_envio_km,
+                'nombre_categoria'=>$objeto->nombre_categoria
             );
         }
         $_SESSION['carrito'] = $json;

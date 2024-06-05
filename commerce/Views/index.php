@@ -28,7 +28,7 @@
                     <img src="../Util/Assets/Grupo Nor Logo 3[Recuperado].png" class="logo-img" />
                 </div>
                 <ul class="nav-list">
-                    <a class="nav-link" href=""> TIENDA </a>
+                    <a class="nav-link" href="./tienda.php"> TIENDA </a>
                     <a class="nav-link" href="#quienes-somos"> NOSOTROS </a>
                     <a class="nav-link" href="#servicio"> SERVICIOS </a>
                     <a class="nav-link" href="#proyects"> PROYECTOS </a>
@@ -205,7 +205,7 @@
                         profesionalismo y eficiencia.
                     </p>
                     <div class="landing-buttons">
-                        <Button class='btn-cotizar' onclick="window.location.href='/signup.html';">COTIZAR</Button>
+                        <Button class='btn-cotizar' onclick="window.location.href='./calculadora.php';">COTIZAR</Button>
                         <Button class='btn-contact' onclick="window.location.href='/signup.html';">CONTÁCTANOS</Button>
                     </div>
                     <p>¿Crees que tu experiencia nos puede ser útil? <a href="#" class="unete-btn"> Unete a nosotros</a>

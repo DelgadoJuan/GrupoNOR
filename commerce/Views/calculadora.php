@@ -3,6 +3,8 @@
     include '..\Util\Config\config.php';
 ?>
 <input type="hidden" id="precioBase" value="<?php echo PRECIO_BASE; ?>">
+<input type="hidden" id="precioMayor12" value="<?php echo PRECIO_MAYOR_12; ?>">
+<input type="hidden" id="precioMayor15" value="<?php echo PRECIO_MAYOR_15; ?>">
 
 <section>
     <div class="container">
@@ -10,15 +12,11 @@
         <form id="tingladoForm">
             <div class="form-group">
                 <label for="largo">Largo:</label>
-                <input type="number" id="largo" name="largo" class="form-control" required>
+                <input type="number" id="largo" name="largo" class="form-control" required required min="5" max="30">
             </div>
             <div class="form-group">
                 <label for="ancho">Ancho:</label>
-                <input type="number" id="ancho" name="ancho" class="form-control" required>
-            </div>
-            <div class="form-group">
-                <label for="altura">Altura:</label>
-                <input type="number" id="altura" name="altura" class="form-control" required>
+                <input type="number" id="ancho" name="ancho" class="form-control" required min="5" max="30">
             </div>
             <label for="tipoTecho">Tipo de Techo:</label>
             <select id="tipoTecho" name="tipoTecho">

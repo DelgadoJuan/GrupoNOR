@@ -1,5 +1,28 @@
 import { verificar_sesion } from "./sesion.js";
-import { agregar_carrito } from "./carrito.js";
+
+function agregar_carrito(id_producto, cantidad, precio) {
+    $.ajax({
+        url: '../Controllers/Detalle_PedidoController.php',
+        method: 'POST',
+        data: {
+            funcion: 'agregar_carrito',
+            id_producto: id_producto,
+            cantidad: cantidad,
+            precio: precio
+        },
+        success: function(response) {
+            var data = JSON.parse(response);
+            if (data.status === 'success') {
+                alert(data.message);
+            } else {
+                alert('Error al agregar el producto al carrito');
+            }
+        },
+        error: function() {
+            alert('Error al realizar la solicitud AJAX');
+        }
+    });
+}
 
 $(document).ready(function(){
     var funcion;

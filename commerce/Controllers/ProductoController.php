@@ -96,7 +96,6 @@ session_start();
         $nombre = 'Tinglado Personalizado';
         $id_categoria = $categoria->obtener_categoria_nombre('Tinglados')[0]->id;
         $precio_unitario = $_POST['precio'];
-        $altura = $_POST['altura'];
         $ancho = $_POST['ancho'];
         $largo = $_POST['largo'];
         $tipo_techo = '';
@@ -133,7 +132,7 @@ session_start();
         }
         $fecha_registro = date('Y-m-d H:i:s');
         $estado = 'T';
-        $nuevo_tinglado_id = $producto->crear_tinglado($nombre, $id_categoria, $precio_unitario, $fecha_registro, $largo, $ancho, $altura, $tipo_techo, $color, $estado);
+        $nuevo_tinglado_id = $producto->crear_tinglado($nombre, $id_categoria, $precio_unitario, $fecha_registro, $largo, $ancho, $tipo_techo, $color, $estado);
         
         // Verificar si se creó correctamente el nuevo producto
         if ($nuevo_tinglado_id) {

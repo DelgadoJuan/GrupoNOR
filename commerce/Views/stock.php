@@ -1,6 +1,15 @@
 <?php
-    include 'Util/Config/config.php';
     session_start();
+    include '../Util/Config/config.php';
+    include '../Models/Usuario.php';
+
+    // Verificar si el usuario tiene permisos de administrador
+    $usuario = new Usuario();
+    $rol = $usuario->obtener_rol($_SESSION['id'])[0];
+    if ($rol->tipo !== 'Administrador' && $rol->tipo !== 'Repositor') {
+        header('Location: ./index.php');
+        exit();
+    }
 
     // Función para actualizar el valor de PRECIO_BASE en el archivo config.php
     function actualizar_precio_base($nuevo_precio) {

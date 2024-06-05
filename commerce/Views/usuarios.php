@@ -158,11 +158,11 @@
                         </div>
                         <div class="form-group">
                             <label for="direccion">Dirección</label>
-                            <input type="text" class="form-control" id="direccion" name="direccion" required>
+                            <input type="text" class="form-control" id="direccion" name="direccion">
                         </div>
                         <div class="form-group">
                             <label for="referencia">Referencia</label>
-                            <input type="text" class="form-control" id="referencia" name="referencia" required>
+                            <input type="text" class="form-control" id="referencia" name="referencia">
                         </div>
                         <div class="form-group">
                             <label for="telefono">Teléfono</label>

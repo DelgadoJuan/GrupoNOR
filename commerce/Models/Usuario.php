@@ -122,4 +122,14 @@
             return $this->objetos;
         }
 
+        public function obtener_rol($id) {
+            $sql = "SELECT tp.tipo FROM usuario u
+                    JOIN tipo_usuario tp ON u.id_tipo = tp.id 
+                    WHERE u.id = :id";
+            $query = $this->acceso->prepare($sql);
+            $query->execute(array(':id' => $id));
+            $this->objetos = $query->fetchAll(PDO::FETCH_OBJ);
+            return $this->objetos;
+        }
+
     }

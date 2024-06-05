@@ -4,19 +4,49 @@ $(document).ready(function() {
     verificar_sesion();
 });
 
-document.getElementById('largo').addEventListener('input', calcular);
-document.getElementById('ancho').addEventListener('input', calcular);
-document.getElementById('altura').addEventListener('input', calcular);
+document.getElementById('largo').addEventListener('input', function() {
+    validarMedida('largo', 5, 30);
+    document.getElementById('tingladoForm').reportValidity();
+    calcular();
+});
+
+document.getElementById('ancho').addEventListener('input', function() {
+    validarMedida('ancho', 5, 30);
+    document.getElementById('tingladoForm').reportValidity();
+    calcular();
+});
+
+function validarMedida(idCampo, minimo, maximo) {
+    var campo = document.getElementById(idCampo);
+    var valor = parseFloat(campo.value);
+
+    if (isNaN(valor) || valor < minimo || valor > maximo) {
+        campo.setCustomValidity('El valor debe estar entre ' + minimo + ' y ' + maximo + '.');
+    } else {
+        campo.setCustomValidity('');
+    }
+}
 
 function calcular() {
     var largo = document.getElementById('largo').value;
     var ancho = document.getElementById('ancho').value;
-    var altura = document.getElementById('altura').value;
     var precioBase = document.getElementById('precioBase').value;
+    var precio_mayor_12 = document.getElementById('precioMayor12').value;
+    var precio_mayor_15 = document.getElementById('precioMayor15').value;
 
-    var volumen = largo * ancho * altura;
-    var resultado = volumen * precioBase;
+    var volumen = largo * ancho;
+    var precio;
 
+    // Definir los precios según el ancho del tinglado
+    if (ancho <= 12) {
+        precio = precioBase;
+    } else if (ancho <= 15) {
+        precio = precio_mayor_12;
+    } else {
+        precio = precio_mayor_15;
+    }
+
+    var resultado = volumen * precio;
     document.getElementById('resultado').textContent = '$' + resultado;
 }
 
@@ -24,7 +54,6 @@ $('#tingladoForm').on('submit', function(e) {
     e.preventDefault();
     var largo = $('#largo').val();
     var ancho = $('#ancho').val();
-    var altura = $('#altura').val();
     var tipo_techo = $('#tipoTecho').val();
     var color = $('#color').val();
     var precio = $('#resultado').text().trim().substring(1);
@@ -36,7 +65,6 @@ $('#tingladoForm').on('submit', function(e) {
             funcion: 'crear_tinglado',
             largo: largo,
             ancho: ancho,
-            altura: altura,
             tipo_techo: tipo_techo,
             color: color,
             precio: precio

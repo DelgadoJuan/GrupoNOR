@@ -122,14 +122,14 @@
             }
         }
 
-        public function crear_tinglado($nombre, $id_categoria, $precio_unitario, $fecha_registro, $largo, $ancho, $altura, $tipo_techo, $color, $estado) {
+        public function crear_tinglado($nombre, $id_categoria, $precio_unitario, $fecha_registro, $largo, $ancho, $tipo_techo, $color, $estado) {
             $this->acceso->beginTransaction();
             try {
                 // Verificar si el valor de descripción es necesario
                 $descripcion = 'Tinglado personalizado';
         
-                $sql = "INSERT INTO producto(nombre, id_categoria, descripcion, precio_unitario, fecha_registro, largo, ancho, altura, tipo_techo, color, estado) 
-                        VALUES(:nombre, :id_categoria, :descripcion, :precio_unitario, :fecha_registro, :largo, :ancho, :altura, :tipo_techo, :color, :estado)";
+                $sql = "INSERT INTO producto(nombre, id_categoria, descripcion, precio_unitario, fecha_registro, largo, ancho, tipo_techo, color, estado) 
+                        VALUES(:nombre, :id_categoria, :descripcion, :precio_unitario, :fecha_registro, :largo, :ancho, :tipo_techo, :color, :estado)";
                 $query = $this->acceso->prepare($sql);
                 $query->execute(array(
                     ':nombre' => $nombre,
@@ -139,7 +139,6 @@
                     ':fecha_registro' => $fecha_registro,
                     ':largo' => $largo,
                     ':ancho' => $ancho,
-                    ':altura' => $altura,
                     ':tipo_techo' => $tipo_techo,
                     ':color' => $color,
                     ':estado' => $estado
@@ -271,6 +270,19 @@
             $query->execute([':id' => $id]);
             return $query->fetchColumn();
         }
-    }
 
-    
+        function actualizarStock($id_producto, $cantidad){
+            $sql = "UPDATE producto SET cantidad_disponible = cantidad_disponible - :cantidad WHERE id = :id_producto";
+            $query = $this->acceso->prepare($sql);
+            $query->execute(array(':cantidad' => $cantidad, ':id_producto' => $id_producto));
+        }
+        
+        function verificarStock($id_producto, $cantidad){
+            $sql = "SELECT cantidad_disponible FROM producto WHERE id = :id_producto";
+            $query = $this->acceso->prepare($sql);
+            $query->execute(array(':id_producto' => $id_producto));
+            $stock = $query->fetchColumn();
+            return $stock >= $cantidad;
+        }
+
+    }
