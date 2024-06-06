@@ -1,0 +1,40 @@
+<?php
+
+//llamamos a la conexion de la bd
+
+    include_once 'Conexion.php';
+    class Pedido{
+        var $objetos;
+        public function __construct(){
+            $db = new Conexion();
+            $this->acceso = $db->pdo;
+        }
+    
+        public function crear_pedido($id_usuario, $fecha_registro, $total, $metodo_pago, $envio, $estado) {
+            $this->acceso->beginTransaction();
+        
+            try {
+                $sql = "INSERT INTO pedido (fecha, estado, metodo_pago, id_usuario, total) 
+                        VALUES(:fecha, :estado, :metodo_pago, :id_usuario, :total)";
+        
+                $query = $this->acceso->prepare($sql);
+        
+                $query->execute(array(
+                    ':id_usuario' => $id_usuario, 
+                    ':fecha' => $fecha_registro, 
+                    ':total' => $total, 
+                    ':metodo_pago' => $metodo_pago, 
+                    ':estado' => $estado
+                ));
+        
+                $id_pedido = $this->acceso->lastInsertId();
+        
+                $this->acceso->commit();
+        
+                return $id_pedido;
+            } catch (Exception $e) {
+                $this->acceso->rollBack();
+                throw $e;
+            }
+        }
+    }
