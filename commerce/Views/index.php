@@ -1,3 +1,23 @@
+<?php
+session_start();
+include '../Util/Config/config.php';
+include '../Models/Usuario.php';
+
+// Verificar si el usuario tiene permisos de administrador
+$usuario = new Usuario();
+$rol = null;
+
+// Verificar si el usuario está logueado
+if (isset($_SESSION['id'])) {
+    $rolUsuario = $usuario->obtener_rol($_SESSION['id']);
+    // Verificar si obtener_rol() devolvió un resultado
+    if (isset($rolUsuario[0])) {
+        $rol = $rolUsuario[0];
+    }
+}
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -32,11 +52,41 @@
                     <a class="nav-link" href="#quienes-somos"> NOSOTROS </a>
                     <a class="nav-link" href="#servicio"> SERVICIOS </a>
                     <a class="nav-link" href="#proyects"> PROYECTOS </a>
+                    <li class="dropdown">
+                        <a class="nav-link dropdown-toggle" href="#">ACCESOS</a>
+                        <ul class="dropdown-menu">
+                            <?php
+                                if($rol !== null) {
+                                    if ($rol->tipo === 'Administrador') {
+                                        echo '<li><a class="dropdown-item" href="./categoria.php">Categorias</a></li>
+                                        <li><a class="dropdown-item" href="./pedido.php">Pedidos de clientes</a></li>
+                                        <li><a class="dropdown-item" href="./stock.php">Stock</a></li>
+                                        <li><a class="dropdown-item" href="./usuarios.php">Lista usuarios</a></li>';
+                                    } elseif ($rol->tipo === 'Repositor') {
+                                        echo '<li><a class="dropdown-item" href="./categoria.php">Categorias</a></li>
+                                        <li><a class="dropdown-item" href="./pedido.php">Pedidos de clientes</a></li>
+                                        <li><a class="dropdown-item" href="./stock.php">Stock</a></li>';
+                                    } elseif ($rol->tipo === 'Empleado') {
+                                        echo ' <li><a class="dropdown-item" href="./categoria.php">Categorias</a></li>
+                                        <li><a class="dropdown-item" href="./pedido.php">Pedidos de clientes</a></li>
+                                        <li><a class="dropdown-item" href="./stock.php">Stock</a></li>';
+                                    }
+                                } else{
+                                    echo '<li><a class="dropdown-item" href="./register.php">Registrarse</a></li>';
+                                }
+                            ?>
+                        </ul>
+                    </li>
 
-                    <a class="nav-link-mobile" href=""> INICIAR SESIÓN </a>
+                    <?php
+                        if (empty($rol->tipo)) {
+                            echo '<a class="nav-link-mobile" href="./login.php"> INICIAR SESIÓN </a>';
+                            echo '<a class="nav-link-login" href="./login.php"> INICIAR SESION </a>';
+                        }
+                    ?>
                 </ul>
                 <!-- <p class="nav-spacer">I</p> -->
-                <a class="nav-link-login" href="Pages/login.html"> INICIAR SESION </a>
+                
                 <div class="ham">
                     <img src="../Util/Assets/menu.svg" class="ham-img" />
                 </div>
@@ -206,10 +256,8 @@
                     </p>
                     <div class="landing-buttons">
                         <Button class='btn-cotizar' onclick="window.location.href='./calculadora.php';">COTIZAR</Button>
-                        <Button class='btn-contact' onclick="window.location.href='/signup.html';">CONTÁCTANOS</Button>
+                        <Button class='btn-contact' onclick="window.location.href='#end';">CONTÁCTANOS</Button>
                     </div>
-                    <p>¿Crees que tu experiencia nos puede ser útil? <a href="#" class="unete-btn"> Unete a nosotros</a>
-                    </p>
                 </div>
 
                 <div class='landing-img-container'>
@@ -227,10 +275,10 @@
                     <div class="qs-img-background">
                         <img src="../Util/Assets/worker.jpg" alt="Trabajador" class="img-worker">
                         <div class="qs-list">
-                            ✓ Lorem ipsum dolor sit amet.<br>
-                            ✓ Voltapat pillesbeque ipsum.<br>
-                            ✓ Interdum et meluada flames.<br>
-                            ✓ Donet egistas dul.
+                            ✓ Presupuesto instantaneo.<br>
+                            ✓ Servicio de instlación.<br>
+                            ✓ Múltiples modos de pago.<br>
+                            ✓ Excelencia garantizada.
                         </div>
 
                     </div>
@@ -259,7 +307,7 @@
                         listos para instalar en cualquier punto del país. Confíe en nosotros
                         para cumplir sus proyectos con profesionalismo y eficiencia.
                     </p>
-                    <button id="btn-vermas">VER MÁS</button>
+                    <a href="./tienda.php"><button id="btn-vermas">VER MÁS</button></a>
                 </div>
 
             </div>
@@ -562,9 +610,7 @@
                     Coméntanos sobre
                     tu Proyecto
                 </h1>
-                <button>
-                    CONTÁCTANOS
-                </button>
+                
             </div>
 
             <div class="end-container-2">

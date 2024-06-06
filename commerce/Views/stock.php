@@ -1,8 +1,13 @@
 <?php
+    ob_start(); // Inicia el búfer de salida
     session_start();
     include '../Util/Config/config.php';
     include '../Models/Usuario.php';
-
+    // Verificar si el usuario está logueado
+    if (!isset($_SESSION['id'])) {
+        header('Location: ./index.php');
+        exit();
+    }
     // Verificar si el usuario tiene permisos de administrador
     $usuario = new Usuario();
     $rol = $usuario->obtener_rol($_SESSION['id'])[0];
@@ -10,6 +15,8 @@
         header('Location: ./index.php');
         exit();
     }
+    include_once 'Layouts/General/header.php'; // Mover esta línea después de las llamadas a header()
+    ob_end_flush(); // Vacía (envía) el búfer de salida
 
     // Función para actualizar el valor de PRECIO_BASE en el archivo config.php
     function actualizar_precio_base($nuevo_precio) {
@@ -44,7 +51,11 @@
         exit();
     }
 
+<<<<<<< HEAD
     include_once 'Layouts/General/header.php';
+=======
+    
+>>>>>>> desarrollo_nico
 
     // Verificar si se ha actualizado el precio base anteriormente
     if (isset($_SESSION['precio_base_actualizado']) && $_SESSION['precio_base_actualizado'] === true) {

@@ -75,28 +75,11 @@
 
         <!-- Messages Dropdown Menu -->
         <li id="notificacion" class="nav-item dropdown">
-          <a class="nav-link" data-toggle="dropdown" href="#">
+          <a class="nav-link"  href="./carrito.php">
             <!-- icono carrito -->
             <i class="fas fa-shopping-cart"></i>
             <span class="badge badge-danger navbar-badge"></span>
           </a>
-          <div class="dropdown-menu">
-            <table class="table table-hover text-nowrap p-0">
-              <thead class="table-success">
-                <tr>
-                  <th>Codigo</th>
-                  <th>Nombre</th>
-                  <th>Precio</th>
-                  <th>Eliminar</th>
-                </tr>
-              </thead>
-              <tbody id="lista">
-
-              </tbody>
-            </table>
-            <a href="#" class="btn btn-warning btn-block">Finalizar compra</a>
-            <a href="#" class="btn btn-danger btn-block">Vaciar carrito</a>
-          </div>
         </li>
         <li class="nav-item" id="nav_register">
           <!-- Ruta a registrarse -->

@@ -1,5 +1,22 @@
 <?php
-    include_once 'Layouts/General/header.php';
+    ob_start(); // Inicia el búfer de salida
+    session_start();
+    include '../Util/Config/config.php';
+    include '../Models/Usuario.php';
+    // Verificar si el usuario está logueado
+    if (!isset($_SESSION['id'])) {
+        header('Location: ./index.php');
+        exit();
+    }
+    // Verificar si el usuario tiene permisos de administrador
+    $usuario = new Usuario();
+    $rol = $usuario->obtener_rol($_SESSION['id'])[0];
+    if ($rol->tipo !== 'Administrador' && $rol->tipo !== 'Empleado') {
+        header('Location: ./index.php');
+        exit();
+    }
+    include_once 'Layouts/General/header.php'; // Mover esta línea después de las llamadas a header()
+    ob_end_flush(); // Vacía (envía) el búfer de salida
 ?>
 
 <section class="content">
@@ -158,11 +175,19 @@
                         </div>
                         <div class="form-group">
                             <label for="direccion">Dirección</label>
+<<<<<<< HEAD
                             <input type="text" class="form-control" id="direccion" name="direccion">
                         </div>
                         <div class="form-group">
                             <label for="referencia">Referencia</label>
                             <input type="text" class="form-control" id="referencia" name="referencia">
+=======
+                            <input type="text" class="form-control" id="direccion" name="direccion" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="referencia">Referencia</label>
+                            <input type="text" class="form-control" id="referencia" name="referencia" required>
+>>>>>>> desarrollo_nico
                         </div>
                         <div class="form-group">
                             <label for="telefono">Teléfono</label>

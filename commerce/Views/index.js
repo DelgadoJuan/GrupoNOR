@@ -1,6 +1,6 @@
 
-
 (function(){
+
     const listElements = document.querySelectorAll('.nav-item--show');
     const list = document.querySelector('.nav-list');
     const menu = document.querySelector('.ham');
@@ -56,7 +56,7 @@
 })();  
 
 
-//POPUP EMPLEO
+//POPUP NEWS
 
 document.querySelector(".close-btn").addEventListener('click',()=>{
     document.querySelector(".popup-center-news").classList.add('hide-popup-news');

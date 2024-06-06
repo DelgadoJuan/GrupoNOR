@@ -89,6 +89,8 @@ $(document).ready(function(){
                     </button>                            
                 </div>
                 `;
+
+                
                 
                 $('#btn-carrito').html(template3);
                 $('#imagenes').html(template);
