@@ -153,6 +153,7 @@ session_start();
         $fecha_registro = date('Y-m-d H:i:s');
         $sector = $_POST['sector'];
         $costo_unidad = $_POST['costo_unidad'];
+        $precio_envio_km = $_POST['precio_envio'];
         $foto = $_FILES['foto']['name'] ? $_FILES['foto']['name'] : null;
 
         // Validaciones
@@ -171,7 +172,7 @@ session_start();
             move_uploaded_file($_FILES['foto']['tmp_name'], $ruta);
         }
 
-        $id_producto = $producto->crear_producto($nombre, $id_categoria, $descripcion, $precio_unitario, $cantidad_disponible, $fecha_registro, $sector, $costo_unidad, $ruta);
+        $id_producto = $producto->crear_producto($nombre, $id_categoria, $descripcion, $precio_unitario, $cantidad_disponible, $fecha_registro, $sector, $costo_unidad, $ruta, $precio_envio_km);
     
         if (isset($_FILES['fotos'])) {
             foreach ($_FILES['fotos']['name'] as $key => $nombre_foto) {

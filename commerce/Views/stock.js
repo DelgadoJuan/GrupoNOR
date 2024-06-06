@@ -61,6 +61,7 @@ $(document).ready(function() {
                             <td>${producto.nombre_categoria ? producto.nombre_categoria : ''}</td>
                             <td>${producto.precio_unitario ? parseInt(producto.precio_unitario).toString().replace(/,/g, '') : 0}</td>
                             <td>${producto.costo_unidad ? parseInt(producto.costo_unidad).toString().replace(/,/g, '') : 0}</td>
+                            <td>${producto.precio_envio_km ? parseInt(producto.precio_envio_km).toString().replace(/,/g, '') : 0}</td>
                             <td>${producto.sector ? producto.sector : ''}</td>
                             <td>${producto.descripcion ? producto.descripcion : ''}</td>
                             <td>${producto.fecha_registro ? new Date(producto.fecha_registro).toLocaleString() : ''}</td>
@@ -168,6 +169,7 @@ $(document).ready(function() {
                 document.querySelector('#editProductForm #costo_unidad').value = producto.costo_unidad;
                 document.querySelector('#editProductForm #precio_unitario').value = producto.precio_unitario;
                 document.querySelector('#editProductForm #sector').value = producto.sector;
+                document.querySelector('#editProductForm #precio_envio').value = producto.precio_envio_km;
     
                 // Cargar la foto principal del producto
                 if (producto.foto) {

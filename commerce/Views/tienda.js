@@ -102,6 +102,7 @@ $(document).ready(function() {
     document.getElementById('sortSelect').addEventListener('change', function() {
         var searchInput = document.getElementById('inputSearch');
         var searchValue = searchInput ? searchInput.value : null;
+        console.log(id_categoria);
         llenar_productos(id_categoria, this.value, searchValue);
     });
 
@@ -147,10 +148,9 @@ $(document).ready(function() {
                 function handleItemClick(event) {
                     event.preventDefault();
                     let $this = $(this);
-                    let id_categoria = $this.data('id');
+                    id_categoria = $this.data('id');
                     let nombre_categoria = $this.text();
                     limit = 20; // Resetear el límite
-                    llenar_productos(id_categoria);
     
                     // Cambiar la URL
                     let base_url = window.location.origin + window.location.pathname;

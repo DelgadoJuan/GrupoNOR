@@ -12,7 +12,7 @@
     $order_id = isset($_GET['merchant_order_id']) ? $_GET['merchant_order_id'] : null;
 
     $id_usuario = $_SESSION['id'];
-    $fecha_registro = date('Y-m-d');
+    $fecha_registro = date('Y-m-d H:i:s');
     switch($payment_type) {
         case 'credit_card':
             $metodo_pago = 'Credito';

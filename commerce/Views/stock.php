@@ -51,11 +51,7 @@
         exit();
     }
 
-<<<<<<< HEAD
     include_once 'Layouts/General/header.php';
-=======
-    
->>>>>>> desarrollo_nico
 
     // Verificar si se ha actualizado el precio base anteriormente
     if (isset($_SESSION['precio_base_actualizado']) && $_SESSION['precio_base_actualizado'] === true) {
@@ -92,6 +88,7 @@
                                     <th data-columna="c.nombre">Categoría <i class="fas fa-sort"></i></th>
                                     <th data-columna="p.precio_unitario">Precio unitario <i class="fas fa-sort"></i></th>
                                     <th data-columna="p.costo_unidad">Costo unitario <i class="fas fa-sort"></i></th>
+                                    <th data-columna="p.precio_envio">Precio de envío <i class="fas fa-sort"></i></th>
                                     <th data-columna="p.sector">Sector <i class="fas fa-sort"></i></th>
                                     <th data-columna="p.descripcion">Descripción <i class="fas fa-sort"></i></th>
                                     <th data-columna="p.fecha_registro">Fecha de registro <i class="fas fa-sort"></i></th>
@@ -176,6 +173,10 @@
                             <input type="number" class="form-control" id="precio_unitario" name="precio_unitario">
                         </div>
                         <div class="form-group">
+                            <label for="precio_envio">Precio de envio:</label>
+                            <input type="number" class="form-control" id="precio_envio" name="precio_envio">
+                        </div>
+                        <div class="form-group">
                             <label for="sector">Sector:</label>
                             <input type="text" class="form-control" id="sector" name="sector">
                         </div>
@@ -233,6 +234,10 @@
                                 <div class="form-group">
                                     <label for="precio_unitario">Precio por Unidad:</label>
                                     <input type="number" class="form-control" id="precio_unitario" name="precio_unitario">
+                                </div>
+                                <div class="form-group">
+                                    <label for="precio_envio">Precio de envio:</label>
+                                    <input type="number" class="form-control" id="precio_envio" name="precio_envio">
                                 </div>
                                 <div class="form-group">
                                     <label for="sector">Sector:</label>

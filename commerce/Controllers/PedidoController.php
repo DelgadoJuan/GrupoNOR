@@ -58,3 +58,57 @@ session_start();
             echo json_encode(array('status' => 'error', 'message' => 'Error al procesar el pedido: ' . $e->getMessage()));
         }
     }
+
+    if($_POST['funcion']=='obtener_pedidos'){
+        $pedido->obtener_pedidos();
+        $json=array();
+        
+        foreach($pedido->objetos as $objeto){
+            $json[]=array(
+                'id'=>$objeto->id,
+                'fecha'=>$objeto->fecha,
+                'total'=>$objeto->total,
+                'metodo_pago'=>$objeto->metodo_pago,
+                'envio'=>$objeto->precio_envio,
+                'estado'=>$objeto->estado,
+                'ruta_pdf'=>$objeto->ruta_pdf,
+                'nombres'=>$objeto->nombres,
+                'apellidos'=>$objeto->apellidos,
+                'dni'=>$objeto->dni
+            );
+        }
+        $jsonstring = json_encode($json);
+        echo $jsonstring;
+    }
+
+    if($_POST['funcion']=='obtener_pedidos_usuario'){
+        $id_usuario = $_SESSION['id_usuario'];
+        $pedido->obtener_pedidos_usuario($id_usuario);
+        $json=array();
+        
+        foreach($pedido->objetos as $objeto){
+            $json[]=array(
+                'id'=>$objeto->id,
+                'fecha'=>$objeto->fecha,
+                'total'=>$objeto->total,
+                'metodo_pago'=>$objeto->metodo_pago,
+                'envio'=>$objeto->envio,
+                'estado'=>$objeto->estado
+            );
+        }
+        $jsonstring = json_encode($json);
+        echo $jsonstring;
+    }
+
+    if($_POST['funcion']=='modificar_pedido'){
+        $id = $_POST['id'];
+        $estado = $_POST['estado'];
+        $ruta_pdf = "../Util/Pdf/" . basename($_FILES['factura']['name']);
+    
+        if(move_uploaded_file($_FILES['factura']['tmp_name'], $ruta_pdf)) {
+            $pedido->modificar_pedido($id, $estado, $ruta_pdf);
+            echo json_encode(['message' => 'Pedido modificado', 'status' => 'success']);
+        } else {
+            echo json_encode(['message' => 'Error al subir el archivo', 'status' => 'error']);
+        }
+    }

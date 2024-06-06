@@ -175,19 +175,11 @@
                         </div>
                         <div class="form-group">
                             <label for="direccion">Dirección</label>
-<<<<<<< HEAD
                             <input type="text" class="form-control" id="direccion" name="direccion">
                         </div>
                         <div class="form-group">
                             <label for="referencia">Referencia</label>
                             <input type="text" class="form-control" id="referencia" name="referencia">
-=======
-                            <input type="text" class="form-control" id="direccion" name="direccion" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="referencia">Referencia</label>
-                            <input type="text" class="form-control" id="referencia" name="referencia" required>
->>>>>>> desarrollo_nico
                         </div>
                         <div class="form-group">
                             <label for="telefono">Teléfono</label>
