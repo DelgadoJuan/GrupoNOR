@@ -5,10 +5,11 @@ $(document).ready(function() {
     let limit = 20;
 
     verificar_sesion();
-    let urlSegments = window.location.href.split('/');
-    let id_categoria = urlSegments[urlSegments.length - 1] === 'tienda.php' ? null : urlSegments[urlSegments.length - 1];
-    llenar_productos(id_categoria, 'mas_vendido', null);
     obtenerCategorias();
+
+    let urlParams = new URLSearchParams(window.location.search);
+    let id_categoria = urlParams.get('id');
+    llenar_productos(id_categoria, 'mas_vendido', null);
 
     async function llenar_productos(id_categoria = null, sortValue = null, searchValue = null){
         funcion = "llenar_productos";
@@ -49,14 +50,14 @@ $(document).ready(function() {
                 let template = '';
                 productos.forEach(producto => {
                     // Si la categoría no es null, agregarla a la URL de la imagen
-                    let fotoUrl = id_categoria !== null ? `../${producto.foto}` : producto.foto;
+                    //let fotoUrl = id_categoria !== null ? `../${producto.foto}` : producto.foto;
                     template+= ` 
                     <div class="col-sm-2">
                         <div class="card">
                             <div class="card-body">
                                 <div class="row">
                                 <div class="col-sm-12">
-                                    <img src="${fotoUrl}" alt="perfil" class="img-fluid">
+                                    <img src="${producto.foto}" alt="perfil" class="img-fluid">
                                 </div>
                                 <div class="col-sm-12">
                                     <span class="card-title float-left">${producto.nombre}</span></br></br>
@@ -117,6 +118,7 @@ $(document).ready(function() {
                 var categorias = JSON.parse(response);
                 var navbarHtml = '';
     
+                navbarHtml += '<li class="nav-item"><a href="./calculadora.php" class="nav-link">Cotización</a></li>';
                 function generateCategoryHtml(categoria, isSubcategory = false) {
                     var html = '';
                     if (isSubcategory) {
@@ -183,7 +185,7 @@ $(document).ready(function() {
         });
     }
 
-    let urlParams = new URLSearchParams(window.location.search);
+    urlParams = new URLSearchParams(window.location.search);
     id_categoria = urlParams.get('id');
     if(id_categoria){
         var searchValue = $(this).find('input[name="search"]').val();

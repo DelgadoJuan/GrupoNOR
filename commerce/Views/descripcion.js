@@ -24,9 +24,82 @@ function agregar_carrito(id_producto, cantidad, precio) {
     });
 }
 
+function obtenerCategorias() {
+        $.ajax({
+            url: '../Controllers/CategoriaController.php',
+            method: 'POST',
+            data: {
+                funcion: 'obtener_categorias_activas'
+            },
+            success: function(response) {
+                var categorias = JSON.parse(response);
+                var navbarHtml = '';
+    
+                navbarHtml += '<li class="nav-item"><a href="./calculadora.php" class="nav-link">Cotización</a></li>';
+                function generateCategoryHtml(categoria, isSubcategory = false) {
+                    var html = '';
+                    if (isSubcategory) {
+                        html += '<li class="dropdown-submenu"><a href="#" class="dropdown-item subcategoria" data-id="' + categoria.id + '">' + categoria.nombre + '</a>';
+                    } else {
+                        html += '<li class="nav-item dropdown">';
+                        html += '<a href="#" class="nav-link categoria ' + ((categoria.subcategorias && categoria.subcategorias.length > 0) ? 'dropdown-toggle' : '') + '" role="button" aria-haspopup="true" aria-expanded="false" data-id="' + categoria.id + '">';
+                        html += categoria.nombre;
+                        html += '</a>';
+                    }
+    
+                    if (categoria.subcategorias && categoria.subcategorias.length > 0) {
+                        html += '<ul class="dropdown-menu">';
+                        categoria.subcategorias.forEach(function(subcategoria) {
+                            html += generateCategoryHtml(subcategoria, true);
+                        });
+                        html += '</ul>';
+                    }
+                    html += '</li>';
+                    return html;
+                }
+    
+                categorias.forEach(function(categoria) {
+                    navbarHtml += generateCategoryHtml(categoria, false);
+                });
+    
+                $('#categorias').html(navbarHtml);
+    
+                function handleItemClick(event) {
+                    event.preventDefault();
+                    let $this = $(this);
+                    let id_categoria = $this.data('id');
+                    let nombre_categoria = $this.text();
+    
+                    // Cambiar la URL
+                    window.location.href = './tienda.php?nombre=' + encodeURIComponent(nombre_categoria) + '&id=' + encodeURIComponent(id_categoria);
+                }
+    
+                function handleMouseEnter() {
+                    $(this).children('.dropdown-menu').stop(true, true).slideDown();
+                }
+    
+                function handleMouseLeave() {
+                    $(this).children('.dropdown-menu').stop(true, true).slideUp();
+                }
+    
+                $('#categorias').off('click', '.categoria, .subcategoria', handleItemClick);
+                $('#categorias').off('mouseenter', '.nav-item', handleMouseEnter);
+                $('#categorias').off('mouseleave', '.nav-item', handleMouseLeave);
+    
+                $('#categorias').on('click', '.categoria, .subcategoria', handleItemClick);
+                $('#categorias').on('mouseenter', '.nav-item', handleMouseEnter);
+                $('#categorias').on('mouseleave', '.nav-item', handleMouseLeave);
+            },
+            error: function() {
+                alert('Error al realizar la solicitud AJAX');
+            }
+        });
+    }
+
 $(document).ready(function(){
     var funcion;
     verificar_sesion();
+    obtenerCategorias();
     verificar_productos();
 
     async function verificar_productos(){
@@ -40,7 +113,6 @@ $(document).ready(function(){
             let response = await data.text();
             try {
                 let producto = JSON.parse(response);
-                //console.log(producto);
                 let template ='';
                 let template2 ='';
                 if (producto.imagenes.length > 0) {
@@ -69,8 +141,7 @@ $(document).ready(function(){
                 else{
                     template += `
                         <div class="col-12">
-                            <img class="product-image img-fluid" id="imagen_principal" src="${producto.foto}">
-
+                            <img class="img-fluid" id="imagen_principal" src="${producto.nombre_categoria === 'Tinglados' ? '../Util/Assets/tinglado3.jpeg' : producto.foto}">
                         </div>
                         `;
                 }
@@ -82,24 +153,43 @@ $(document).ready(function(){
                 }
 
                 let template3 = ` 
-                <div prod_id="${producto.id}" nombre_prod="${producto.nombre}" precio_prod="${producto.precio}" class="input-group mb-3 card-footer">                   
-                    <button class="agregar-carrito btn btn-primary btn-flat">
-                        <i class="fas fa-cart-plus fa-lg mr-2"></i>
-                        Agregar al carrito
-                    </button>                            
-                </div>
-                `;
+                <div class="input-group mb-3 card-footer">`;
 
+                if (producto.nombre_categoria === "Tinglados") {
+                    let tipoTechoDiv = document.createElement('div');
+                    tipoTechoDiv.innerHTML = `
+                        <label for="tipoTecho">Tipo de techo:</label>
+                        <select id="tipoTecho">
+                            <option value="a_dos_aguas">A Dos Aguas</option>
+                            <option value="plano">Plano</option>
+                            <option value="parabolico">Parabólico</option>
+                        </select>
+                    `;
+                    document.getElementById('product_options').appendChild(tipoTechoDiv);
                 
-                
-                $('#btn-carrito').html(template3);
+                    let colorDiv = document.createElement('div');
+                    colorDiv.innerHTML = `
+                        <label for="color">Color:</label>
+                        <select id="color">
+                            <option value="gris_metalico">Gris Metálico</option>
+                            <option value="azul">Azul</option>
+                        </select>
+                    `;
+                    document.getElementById('product_options').appendChild(colorDiv);
+                }
+
                 $('#imagenes').html(template);
                 $('#id_producto').text(producto.nombre + " #" + producto.id);
                 $('#precio_producto').text("$ "+producto.precio);
                 $('#product-desc').text(producto.descripcion);
                 $('#nombre_producto').text(producto.nombre);
 
+                $('#product_quantity').attr('max', producto.stock);
                 
+                if (producto.stock < 20) {
+                    $('#warningStock').text('¡Quedan '+ producto.stock + ' unidades!');
+                }
+
             } catch (error) {
                 console.error(error);
                 console.log("La respuesta del servidor no es un JSON válido:", response);
@@ -129,10 +219,10 @@ $(document).ready(function(){
     
 });
 
-$('#btn-carrito').click(function() {
-    var id_producto = $('#id_producto').text();
-    var cantidad = $('#product_quantity').val();
-    var precio = $('#precio_producto').text().trim().substring(2); 
+document.querySelector('.agregar-carrito').addEventListener('click', () => {
+    const id_producto = document.getElementById('id_producto').textContent;
+    const cantidad = document.getElementById('product_quantity').value;
+    const precio = document.getElementById('precio_producto').textContent.trim().substring(2);
 
     agregar_carrito(id_producto, cantidad, precio);
 });

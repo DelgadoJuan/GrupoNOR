@@ -39,6 +39,7 @@ session_start();
             $precio = $producto->objetos[0]->precio_unitario;
             $foto = $producto->objetos[0]->foto;
             $descripcion = $producto->objetos[0]->descripcion;
+            $nombre_categoria = $producto->objetos[0]->nombre_categoria;
             $producto->capturar_imagenes($id_producto);
             $imagenes =  array();
             foreach($producto->objetos as $objeto){
@@ -54,6 +55,7 @@ session_start();
                 'precio'=>intval($precio),
                 'foto'=>$foto,
                 'descripcion'=>$descripcion,
+                'nombre_categoria'=>$nombre_categoria,
                 'imagenes'=>$imagenes
             );
             
@@ -83,10 +85,7 @@ session_start();
     }
 
     if($_POST['funcion']=='obtener_productos'){
-        $ordenar_por = isset($_POST['ordenar_por']) ? $_POST['ordenar_por'] : null;
-        $nombre = isset($_POST['nombre']) ? $_POST['nombre'] : null;
-        $direccion = isset($_POST['direccion']) ? $_POST['direccion'] : 'ASC';
-        $productos = $producto->obtener_productos($ordenar_por, $nombre, $direccion);
+        $productos = $producto->obtener_productos();
     
         $jsonstring = json_encode($productos);
         echo $jsonstring;
@@ -98,6 +97,7 @@ session_start();
         $precio_unitario = $_POST['precio'];
         $ancho = $_POST['ancho'];
         $largo = $_POST['largo'];
+        $cantidad = 1;
         $tipo_techo = '';
 
         // Mapear los valores del tipo de techo
@@ -132,7 +132,7 @@ session_start();
         }
         $fecha_registro = date('Y-m-d H:i:s');
         $estado = 'T';
-        $nuevo_tinglado_id = $producto->crear_tinglado($nombre, $id_categoria, $precio_unitario, $fecha_registro, $largo, $ancho, $tipo_techo, $color, $estado);
+        $nuevo_tinglado_id = $producto->crear_tinglado($nombre, $id_categoria, $precio_unitario, $fecha_registro, $largo, $ancho, $tipo_techo, $color, $estado, $cantidad);
         
         // Verificar si se creó correctamente el nuevo producto
         if ($nuevo_tinglado_id) {

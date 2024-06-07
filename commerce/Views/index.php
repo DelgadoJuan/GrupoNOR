@@ -52,31 +52,30 @@ if (isset($_SESSION['id'])) {
                     <a class="nav-link" href="#quienes-somos"> NOSOTROS </a>
                     <a class="nav-link" href="#servicio"> SERVICIOS </a>
                     <a class="nav-link" href="#proyects"> PROYECTOS </a>
-                    <li class="dropdown">
-                        <a class="nav-link dropdown-toggle" href="#">ACCESOS</a>
-                        <ul class="dropdown-menu">
-                            <?php
-                                if($rol !== null) {
-                                    if ($rol->tipo === 'Administrador') {
-                                        echo '<li><a class="dropdown-item" href="./categoria.php">Categorias</a></li>
-                                        <li><a class="dropdown-item" href="./pedido.php">Pedidos de clientes</a></li>
-                                        <li><a class="dropdown-item" href="./stock.php">Stock</a></li>
-                                        <li><a class="dropdown-item" href="./usuarios.php">Lista usuarios</a></li>';
-                                    } elseif ($rol->tipo === 'Repositor') {
-                                        echo '<li><a class="dropdown-item" href="./categoria.php">Categorias</a></li>
-                                        <li><a class="dropdown-item" href="./pedido.php">Pedidos de clientes</a></li>
-                                        <li><a class="dropdown-item" href="./stock.php">Stock</a></li>';
-                                    } elseif ($rol->tipo === 'Empleado') {
-                                        echo ' <li><a class="dropdown-item" href="./categoria.php">Categorias</a></li>
-                                        <li><a class="dropdown-item" href="./pedido.php">Pedidos de clientes</a></li>
-                                        <li><a class="dropdown-item" href="./stock.php">Stock</a></li>';
-                                    }
-                                } else{
-                                    echo '<li><a class="dropdown-item" href="./register.php">Registrarse</a></li>';
-                                }
-                            ?>
-                        </ul>
-                    </li>
+                    <?php if($rol !== null && $rol->tipo !== 'Cliente') : ?>
+                        <li class="dropdown">
+                            <a class="nav-link dropdown-toggle" href="#">ACCESOS</a>
+                            <ul class="dropdown-menu">
+                                <?php
+                                    if($rol !== null) {
+                                        if ($rol->tipo === 'Administrador') {
+                                            echo '<li><a class="dropdown-item" href="./categoria.php">Categorias</a></li>
+                                            <li><a class="dropdown-item" href="./pedidoAdmin.php">Pedidos de clientes</a></li>
+                                            <li><a class="dropdown-item" href="./stock.php">Stock</a></li>
+                                            <li><a class="dropdown-item" href="./usuarios.php">Lista usuarios</a></li>';
+                                        } elseif ($rol->tipo === 'Repositor') {
+                                            echo '<li><a class="dropdown-item" href="./categoria.php">Categorias</a></li>
+                                            <li><a class="dropdown-item" href="./stock.php">Stock</a></li>';
+                                        } elseif ($rol->tipo === 'Empleado') {
+                                            echo ' <li><a class="dropdown-item" href="./categoria.php">Categorias</a></li>
+                                            <li><a class="dropdown-item" href="./pedidoAdmin.php">Pedidos de clientes</a></li>
+                                            <li><a class="dropdown-item" href="./stock.php">Stock</a></li>';
+                                        }
+                                    } 
+                                ?>
+                            </ul>
+                        </li>
+                    <?php endif; ?>
 
                     <?php
                         if (empty($rol->tipo)) {

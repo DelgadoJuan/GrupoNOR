@@ -6,7 +6,11 @@ $(document).ready(function() {
 
 function redireccionar() {
     // Redirige al usuario a tienda.php
-    window.location.href = './tienda.php';
+    if (error) {
+        window.location.href = './carrito.php';
+    } else {
+        window.location.href = './tienda.php';
+    }
 }
 
 // Tiempo en segundos antes de redireccionar al usuario

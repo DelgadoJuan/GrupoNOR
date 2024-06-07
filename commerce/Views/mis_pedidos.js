@@ -9,7 +9,7 @@ function obtenerPedidos() {
     $.ajax({
         url: '../Controllers/PedidoController.php', // Reemplaza esto con la ruta a tu archivo PHP
         method: 'POST',
-        data: { funcion: 'obtener_pedidos' },
+        data: { funcion: 'obtener_pedidos_usuario' , id_usuario: localStorage.getItem('id_usuario')},
         success: function(response) {
             var pedidos = JSON.parse(response);
             var tbody = $('#ordersTable tbody');
@@ -18,8 +18,6 @@ function obtenerPedidos() {
             pedidos.forEach(function(pedido) {
                 var row = $('<tr>');
                 row.append($('<td>').text(pedido.id || 'N/A'));
-                row.append($('<td>').text((pedido.nombres || 'N/A') + ' ' + (pedido.apellidos || 'N/A'))); // Reemplaza esto con el nombre del cliente
-                row.append($('<td>').text(pedido.dni || 'N/A')); // Reemplaza esto con el DNI del cliente
                 row.append($('<td>').text(pedido.fecha ? new Date(pedido.fecha).toLocaleString() : 'N/A'));
                 row.append($('<td>').text(pedido.envio ? Math.trunc(pedido.envio) : 0));
                 row.append($('<td>').text(pedido.total ? Math.trunc(pedido.total) : 0));
@@ -28,27 +26,11 @@ function obtenerPedidos() {
 
                 var acciones = $('<td>');
                 var viewDetailsButton = $('<button>').attr('id', 'viewDetails-' + pedido.id).addClass('btn btn-info').append($('<i>').addClass('fas fa-eye'));
-                var editOrderButton = $('<button>').attr('id', 'editOrder-' + pedido.id).addClass('btn btn-success').append($('<i>').addClass('fas fa-edit'));
-                var deleteOrderButton = $('<button>').attr('id', 'deleteOrder-' + pedido.id).addClass('btn btn-danger').append($('<i>').addClass('fas fa-trash-alt'));
                 var viewInvoiceButton = $('<button>').attr('id', 'viewInvoice-' + pedido.id).addClass('btn').append($('<i>').addClass('fas fa-file-invoice'));
 
                 viewDetailsButton.on('click', function() {
                     // Aquí puedes redirigir a la vista de detalles del pedido
                     window.location.href = './resumen_pedido.php?id=' + encodeURIComponent(pedido.id);
-                });
-
-                editOrderButton.on('click', function() {
-                    // Aquí puedes abrir el modal de edición
-                    $('#orderId').val(pedido.id);
-                    $('#editOrderModal').modal('show');
-                });
-
-                deleteOrderButton.on('click', function() {
-                    // Aquí puedes eliminar el pedido
-                    // Asegúrate de confirmar la acción antes de eliminar el pedido
-                    if (confirm('¿Estás seguro de que quieres eliminar este pedido?')) {
-                        eliminarPedido(pedido.id);
-                    }
                 });
 
                 if (pedido.ruta_pdf) {
@@ -61,7 +43,7 @@ function obtenerPedidos() {
                     viewInvoiceButton.addClass('btn-secondary').prop('disabled', true);
                 }
 
-                acciones.append(viewDetailsButton, editOrderButton, deleteOrderButton, viewInvoiceButton);
+                acciones.append(viewDetailsButton, viewInvoiceButton);
 
                 row.append(acciones);
 
@@ -72,28 +54,6 @@ function obtenerPedidos() {
         },
         error: function() {
             alert('Error al obtener los pedidos del servidor');
-        }
-    });
-}
-
-function eliminarPedido(id) {
-    $.ajax({
-        url: '../Controllers/PedidoController.php',
-        method: 'POST',
-        data: {
-            funcion: 'eliminar_pedido',
-            id: id
-        },
-        success: function(response) {
-            var data = JSON.parse(response);
-            if (data.status === 'success') {
-                obtenerPedidos();
-            } else {
-                alert('Error al eliminar el pedido');
-            }
-        },
-        error: function() {
-            alert('Error al eliminar el pedido');
         }
     });
 }

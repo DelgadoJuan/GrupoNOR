@@ -1,6 +1,5 @@
 <?php
     ob_start(); // Inicia el búfer de salida
-    session_start();
     include '../Util/Config/config.php';
     include '../Models/Usuario.php';
     // Verificar si el usuario está logueado

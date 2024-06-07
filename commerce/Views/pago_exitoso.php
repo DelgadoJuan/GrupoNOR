@@ -29,7 +29,6 @@
     }
     $total = 0;
     $envio = isset($_SESSION['costo_envio']) ? $_SESSION['costo_envio'] : 0;
-    var_dump($envio);
     $total += $envio;
     $estado = 'Pendiente';
     
@@ -45,29 +44,29 @@
         $error = false;
     
         foreach($detalle_pedido->objetos as $objeto){
-            $total += floatval($objeto->precio_unitario) * $objeto->cantidad;
-            // Verificar el stock antes de descontar
-            if($producto->verificarStock($objeto->id_producto, $objeto->cantidad)){
-                // Descontar del stock
-                $producto->actualizarStock($objeto->id_producto, $objeto->cantidad);
-            } else {
-                // Si no hay suficiente stock, establecer un error
-                $error = true;
-                break;
+            if ($objeto->nombre_producto !== 'Tinglado Personalizado') {
+                $total += floatval($objeto->precio_unitario) * $objeto->cantidad;
+                // Verificar el stock antes de descontar
+                if($producto->verificarStock($objeto->id_producto, $objeto->cantidad)){
+                    // Descontar del stock
+                    $producto->actualizarStock($objeto->id_producto, $objeto->cantidad);
+                } else {
+                    // Si no hay suficiente stock, establecer un error
+                    $error = true;
+                    break;
+                }
             }
         }
     
         if ($error) {
             // Deshacer la transacción si hubo un error
             $detalle_pedido->acceso->rollBack();
-            echo json_encode(array('status' => 'error', 'message' => 'No hay suficiente stock para uno o más productos.'));
         } else {
             // Confirmar la transacción si todo fue exitoso
             $detalle_pedido->acceso->commit();
             // Crear el pedido
             $idPedido = $pedido->crear_pedido($id_usuario, $fecha_registro, $total, $metodo_pago, $envio, $estado);
             $detalle_pedido->carritoComprado($id_usuario, $idPedido);
-            echo json_encode(array('message' => 'Pedido creado', 'status' => 'success'));
         }
     } catch (Exception $e) {
         // Deshacer la transacción en caso de excepción
@@ -90,8 +89,15 @@
             <div class="col-md-6 offset-md-3">
                 <div class="card mt-5">
                     <div class="card-body text-center">
-                        <h1 class="card-title">Pago Exitoso</h1>
-                        <p class="card-text">Tu pago ha sido procesado con éxito. ¡Gracias por tu compra!</p>
+                        <?php 
+                            if ($error) {
+                                echo '<h1 class="card-title">Error</h1>';
+                                echo '<p class="card-text">No queda stock de un determinado producto</p';
+                            } else {
+                                echo '<h1 class="card-title">Pago Exitoso</h1>';
+                                echo '<p class="card-text">Tu pago ha sido procesado con éxito. ¡Gracias por tu compra!</p>';
+                            }
+                        ?>
                         <p class="card-text" id="redireccion-info">Serás redireccionado en <span id="contador-segundos">5</span> segundos.</p>
                     </div>
                 </div>
@@ -104,6 +110,9 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.7.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        const error = <?php echo json_encode($error); ?>;     
+    </script>
 </body>
 </html>
 

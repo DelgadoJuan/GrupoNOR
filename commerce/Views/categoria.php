@@ -1,20 +1,10 @@
 <?php
     ob_start(); // Inicia el búfer de salida
-    session_start();
     include '../Util/Config/config.php';
-    include '../Models/Usuario.php';
-    // Verificar si el usuario está logueado
-    if (!isset($_SESSION['id'])) {
-        header('Location: ./index.php');
-        exit();
-    }
-    // Verificar si el usuario tiene permisos de administrador
-    $usuario = new Usuario();
-    $rol = $usuario->obtener_rol($_SESSION['id'])[0];
-    if ($rol->tipo !== 'Administrador' && $rol->tipo !== 'Repositor') {
-        header('Location: ./index.php');
-        exit();
-    }
+
+    // Specify the allowed roles for this page
+    $allowed_roles = ['Administrador', 'Repositor'];
+
     include_once 'Layouts/General/header.php'; // Mover esta línea después de las llamadas a header()
     ob_end_flush(); // Vacía (envía) el búfer de salida
 ?>
@@ -29,8 +19,6 @@
                     </div>
                     <div class="card-body">
                         <div class="d-flex justify-content-between mb-3">
-                            <!-- Agregar un input para el filtrado por nombre -->
-                            <input type="text" id="filterName" class="form-control" placeholder="Filtrar por nombre">
                             <!-- Botón para abrir el modal -->
                             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addCategoryModal">
                                 Agregar Categoría
@@ -40,11 +28,11 @@
                         <table id="categoryTable" class="table table-striped">
                             <thead>
                                 <tr>
-                                    <th data-columna="c.nombre">Nombre <i class="fas fa-sort"></i></th>
-                                    <th data-columna="cp.nombre">Categoria padre <i class="fas fa-sort"></i></th>
-                                    <th data-columna="c.descripcion">Descripción <i class="fas fa-sort"></i></th>
-                                    <th data-columna="c.fecha_creacion">Fecha de registro <i class="fas fa-sort"></i></th>
-                                    <th data-columna="c.estado">Estado <i class="fas fa-sort"></i></th>
+                                    <th data-columna="c.nombre">Nombre</th>
+                                    <th data-columna="cp.nombre">Categoria padre</th>
+                                    <th data-columna="c.descripcion">Descripción</th>
+                                    <th data-columna="c.fecha_creacion">Fecha de registro</th>
+                                    <th data-columna="c.estado">Estado</th>
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
@@ -130,3 +118,4 @@
     include_once 'Layouts/General/footer.php';
 ?>
 <script src="./categoria.js" type="module"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>

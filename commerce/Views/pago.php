@@ -59,8 +59,8 @@
             ],
             "payer" => $payer,
             "back_urls" => [
-                "success" => "https://fe3d-190-138-186-169.ngrok-free.app/GrupoNOR/commerce/Views/pago_exitoso.php",
-                "failure" => "https://fe3d-190-138-186-169.ngrok-free.app/GrupoNOR/commerce/Views/stock.php"
+                "success" => "https://1a87-190-138-186-169.ngrok-free.app/GrupoNOR/commerce/Views/pago_exitoso.php",
+                "failure" => "https://1a87-190-138-186-169.ngrok-free.app/GrupoNOR/commerce/Views/stock.php"
             ],
             "statement_descriptor" => "NAME_DISPLAYED_IN_USER_BILLING",
             "payment_methods" => [

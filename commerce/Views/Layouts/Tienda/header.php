@@ -53,7 +53,6 @@
 
       <div class="collapse navbar-collapse" id="navbarNav">
           <ul id="categorias" class="navbar-nav">
-              <li> <a class="nav-link" href="../Views/calculadora.php">Calculadora</a> </li>
               <!-- Categorías se insertarán aquí -->
           </ul>
       </div>
@@ -103,7 +102,7 @@
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
             <a class="dropdown-item" href="mi_perfil.php"><i class="fas fa-user-cog"></i> Mi perfil</a>
-            <a class="dropdown-item" href="#"><i class="fas fa-shopping-basket"> </i> Mis pedidos</a>
+            <a class="dropdown-item" href="mis_pedidos.php"><i class="fas fa-shopping-basket"> </i> Mis pedidos</a>
             <!-- Controlador para cerrar sesion -->
             <a class="dropdown-item" href="../Controllers/logout.php"><i class="fas fa-user-times"></i> Cerrar sesión</a>
           </div>

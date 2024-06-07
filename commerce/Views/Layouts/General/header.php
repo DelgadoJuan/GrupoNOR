@@ -1,3 +1,26 @@
+<?php
+  session_start();
+  include '../Models/Usuario.php';
+
+  // Verificar si el usuario tiene permisos de administrador
+  $usuario = new Usuario();
+
+  // Verificar si el usuario está logueado
+  if (isset($_SESSION['id'])) {
+      $rolUsuario = $usuario->obtener_rol($_SESSION['id']);
+      // Verificar si obtener_rol() devolvió un resultado
+      if (isset($rolUsuario[0])) {
+          $rol = $rolUsuario[0];
+      }
+  }
+
+  // Check if the user role is allowed
+  if (!in_array($rol->tipo, $allowed_roles)) {
+      header('Location: ./index.php');
+      exit();
+  }
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -30,16 +53,6 @@
           <img src="../Util/Img/logoGrupoNOR.png" alt="Company Logo" class="brand-image img-circle elevation-3" style="opacity: .8; width: 30px;">
           <span class="brand-text font-weight-light">Grupo NOR</span>
       </a>
-    <!-- Left navbar links -->
-    <ul class="navbar-nav">
-      
-      <li class="nav-item d-none d-sm-inline-block">
-        <a href="./index.php" class="nav-link">Inicio</a>
-      </li>
-      <li class="nav-item d-none d-sm-inline-block">
-        <a href="#" class="nav-link">Contact</a>
-      </li>
-    </ul>
 
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
@@ -94,8 +107,24 @@
           <span id="usuario_nav"> Usuario logueado</span>
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-          <a class="dropdown-item" href="mi_perfil.php"><i class="fas fa-user-cog"></i> Mi perfil</a>
-          <a class="dropdown-item" href="#"><i class="fas fa-shopping-basket"> </i> Mis pedidos</a>
+          <?php
+            if($rol !== null) {
+                if ($rol->tipo === 'Repositor') {
+                    echo '<a class="dropdown-item" href="mi_perfil.php"><i class="fas fa-user-cog"></i> Mi perfil</a>';
+                    echo '<a class="dropdown-item" href="stock.php"><i class="fas fa-cubes"></i> Stock</a>';
+                    echo '<a class="dropdown-item" href="categoria.php"><i class="fas fa-tags"></i> Categorías</a>';
+                } else if ($rol->tipo === 'Empleado') {
+                    echo '<a class="dropdown-item" href="mi_perfil.php"><i class="fas fa-user-cog"></i> Mi perfil</a>';
+                    echo '<a class="dropdown-item" href="pedidoAdmin.php"><i class="fas fa-shopping-basket"></i> Pedidos</a>';
+                } else {
+                    echo '<a class="dropdown-item" href="mi_perfil.php"><i class="fas fa-user-cog"></i> Mi perfil</a>';
+                    echo '<a class="dropdown-item" href="pedidoAdmin.php"><i class="fas fa-shopping-basket"></i> Pedidos</a>';
+                    echo '<a class="dropdown-item" href="usuarios.php"><i class="fas fa-users"></i> Usuarios</a>';
+                    echo '<a class="dropdown-item" href="stock.php"><i class="fas fa-cubes"></i> Stock</a>';
+                    echo '<a class="dropdown-item" href="categoria.php"><i class="fas fa-tags"></i> Categorías</a>';
+                }
+            }
+          ?>
           <!-- Controlador para cerrar sesion -->
           <a class="dropdown-item" href="../Controllers/logout.php"><i class="fas fa-user-times"></i> Cerrar sesión</a>
         </div>

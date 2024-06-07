@@ -60,4 +60,10 @@
             $query = $this->acceso->prepare($sql);
             $query->execute(array(':estado'=>$estado, ':ruta_pdf'=>$ruta_pdf, ':id'=>$id));
         }
+
+        public function eliminar_pedido($id_pedido) {
+            $sql = "DELETE FROM pedido WHERE id = :id";
+            $query = $this->acceso->prepare($sql);
+            $query->execute(array(':id'=>$id_pedido));
+        }
     }

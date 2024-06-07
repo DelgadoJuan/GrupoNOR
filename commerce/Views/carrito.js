@@ -1,8 +1,81 @@
 import { verificar_sesion } from "./sesion.js";
 
+function obtenerCategorias() {
+    $.ajax({
+        url: '../Controllers/CategoriaController.php',
+        method: 'POST',
+        data: {
+            funcion: 'obtener_categorias_activas'
+        },
+        success: function(response) {
+            var categorias = JSON.parse(response);
+            var navbarHtml = '';
+
+            navbarHtml += '<li class="nav-item"><a href="./calculadora.php" class="nav-link">Cotización</a></li>';
+            function generateCategoryHtml(categoria, isSubcategory = false) {
+                var html = '';
+                if (isSubcategory) {
+                    html += '<li class="dropdown-submenu"><a href="#" class="dropdown-item subcategoria" data-id="' + categoria.id + '">' + categoria.nombre + '</a>';
+                } else {
+                    html += '<li class="nav-item dropdown">';
+                    html += '<a href="#" class="nav-link categoria ' + ((categoria.subcategorias && categoria.subcategorias.length > 0) ? 'dropdown-toggle' : '') + '" role="button" aria-haspopup="true" aria-expanded="false" data-id="' + categoria.id + '">';
+                    html += categoria.nombre;
+                    html += '</a>';
+                }
+
+                if (categoria.subcategorias && categoria.subcategorias.length > 0) {
+                    html += '<ul class="dropdown-menu">';
+                    categoria.subcategorias.forEach(function(subcategoria) {
+                        html += generateCategoryHtml(subcategoria, true);
+                    });
+                    html += '</ul>';
+                }
+                html += '</li>';
+                return html;
+            }
+
+            categorias.forEach(function(categoria) {
+                navbarHtml += generateCategoryHtml(categoria, false);
+            });
+
+            $('#categorias').html(navbarHtml);
+
+            function handleItemClick(event) {
+                event.preventDefault();
+                let $this = $(this);
+                let id_categoria = $this.data('id');
+                let nombre_categoria = $this.text();
+
+                // Cambiar la URL
+                window.location.href = './tienda.php?nombre=' + encodeURIComponent(nombre_categoria) + '&id=' + encodeURIComponent(id_categoria);
+            }
+
+            function handleMouseEnter() {
+                $(this).children('.dropdown-menu').stop(true, true).slideDown();
+            }
+
+            function handleMouseLeave() {
+                $(this).children('.dropdown-menu').stop(true, true).slideUp();
+            }
+
+            $('#categorias').off('click', '.categoria, .subcategoria', handleItemClick);
+            $('#categorias').off('mouseenter', '.nav-item', handleMouseEnter);
+            $('#categorias').off('mouseleave', '.nav-item', handleMouseLeave);
+
+            $('#categorias').on('click', '.categoria, .subcategoria', handleItemClick);
+            $('#categorias').on('mouseenter', '.nav-item', handleMouseEnter);
+            $('#categorias').on('mouseleave', '.nav-item', handleMouseLeave);
+        },
+        error: function() {
+            alert('Error al realizar la solicitud AJAX');
+        }
+    });
+}
+
 $(document).ready(function(){
     // Lógica para inicializar el carrito
     verificar_sesion();
+    obtenerCategorias();
     obtenerCarrito();
     obtenerDatosCliente();
     obtenerDirecciones();
@@ -70,11 +143,16 @@ function obtenerCarrito() {
                 var itemSubtotal = cartItems[i].precio * cartItems[i].cantidad;
                 subtotal += itemSubtotal;
                 cartItemsHtml += '<tr>';
-                cartItemsHtml += '<td><img src="' + cartItems[i].foto + '" alt="' + cartItems[i].nombre_producto + '" style="width: 50px; height: 50px;"></td>';
+                cartItemsHtml += '<td><img src="' + (cartItems[i].nombre_categoria === 'Tinglados' ? '../Util/Assets/tinglado3.jpeg' : cartItems[i].foto) + '" alt="' + cartItems[i].nombre_producto + '" style="width: 50px; height: 50px;"></td>';
                 cartItemsHtml += '<td>' + cartItems[i].nombre_producto + '</td>';
                 cartItemsHtml += '<td>' + cartItems[i].precio + '</td>';
-                cartItemsHtml += '<td><input type="number" class="cantidadInput" value="' + cartItems[i].cantidad + '" min="1" data-id="' + cartItems[i].id + '"></td>';
+                cartItemsHtml += '<td><input type="number" class="cantidadInput" value="' + cartItems[i].cantidad + '" min="1" max="' + cartItems[i].stock + '" data-id="' + cartItems[i].id + '"></td>';
                 cartItemsHtml += '<td>' + itemSubtotal + '</td>';
+                if (cartItems[i].cantidad > cartItems[i].stock) {
+                    cartItemsHtml += '<td><i class="fas fa-exclamation-triangle" title="La cantidad en el carrito es mayor que el stock disponible"></i></td>';
+                } else {
+                    cartItemsHtml += '<td></td>';
+                }
                 cartItemsHtml += '<td><button class="btn btn-danger delete-button" data-id="' + cartItems[i].id + '"><i class="fas fa-trash-alt"></i></button></td>';
                 cartItemsHtml += '</tr>';
             }

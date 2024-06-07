@@ -12,6 +12,8 @@ session_start();
         $id_producto = openssl_decrypt($_SESSION['product-verification'], CODE, KEY);
         $cantidad = $_POST['cantidad'];
         $precio = floatval($_POST['precio']);
+        //$tipoTecho = $_POST['tipoTecho'];
+        //$color = $_POST['color'];
         $id_usuario = $_SESSION['id'];
         $resultado = $detalle_pedido->agregarDetallePedido(null, $id_producto, $cantidad, $precio, $id_usuario);
         $_SESSION['product-verification'] = null;
@@ -52,6 +54,7 @@ session_start();
                 'cantidad'=>$objeto->cantidad,
                 'precio'=>$objeto->precio_unitario,
                 'precio_envio_km'=>$objeto->precio_envio_km,
+                'stock'=>$objeto->stock,
                 'nombre_categoria'=>$objeto->nombre_categoria
             );
         }
@@ -62,6 +65,15 @@ session_start();
 
     if($_POST['funcion']=='eliminar_carrito'){
         $id_detalle_pedido = $_POST['id_detalle_pedido'];
+
+        $detalle_pedido->obtener_Detalle_Pedido_Id($id_detalle_pedido);
+        $id_producto = $detalle_pedido->objetos[0]->id_producto;
+        $nombre_producto = $detalle_pedido->objetos[0]->nombre_producto;
+
+        if ($nombre_producto === 'Tinglado Personalizado') {
+            $producto->eliminar_producto($id_producto);
+        }
+
         $detalle_pedido->eliminarDetallePedido($id_detalle_pedido);
         echo json_encode(['message' => 'Producto eliminado del carrito', 'status' => 'success']);
     }
@@ -72,4 +84,24 @@ session_start();
     
         $detalle_pedido = new Detalle_Pedido();
         $detalle_pedido->cambiarCantidad($id, $cantidad);
+    }
+
+    if ($_POST['funcion'] == 'obtener_Detalle_Pedido_Id') {
+        $id_pedido = $_POST['id_pedido'];
+        $detalle_pedido->obtener_Detalle_Pedido_Id($id_pedido);
+        $json = array();
+        
+        foreach($detalle_pedido->objetos as $objeto){
+            $json[]=array(
+                'id_producto'=>$objeto->id_producto,
+                'nombre_producto'=>$objeto->nombre_producto,
+                'producto_foto'=>$objeto->producto_foto,
+                'precio_unitario'=>$objeto->precio_unitario,
+                'cantidad'=>$objeto->cantidad,
+                'tipo_techo'=>$objeto->tipo_techo,
+                'color'=>$objeto->color
+            );
+        }
+        $jsonstring = json_encode($json);
+        echo $jsonstring;
     }

@@ -1,35 +1,22 @@
 <?php
     ob_start(); // Inicia el búfer de salida
-    session_start();
     include '../Util/Config/config.php';
-    include '../Models/Usuario.php';
     // Verificar si el usuario está logueado
-    if (!isset($_SESSION['id'])) {
-        header('Location: ./index.php');
-        exit();
-    }
-    // Verificar si el usuario tiene permisos de administrador
-    $usuario = new Usuario();
-    $rol = $usuario->obtener_rol($_SESSION['id'])[0];
-    if ($rol->tipo !== 'Administrador' && $rol->tipo !== 'Repositor') {
-        header('Location: ./index.php');
-        exit();
-    }
+    $allowed_roles = ['Administrador', 'Repositor'];
     include_once 'Layouts/General/header.php'; // Mover esta línea después de las llamadas a header()
-    ob_end_flush(); // Vacía (envía) el búfer de salida
 
-    // Función para actualizar el valor de PRECIO_BASE en el archivo config.php
-    function actualizar_precio_base($nuevo_precio) {
-        $archivo = 'Util/Config/config.php';
+    // Función para actualizar un valor definido en el archivo config.php
+    function actualizar_valor_config($nombre_constante, $nuevo_valor) {
+        $archivo = '../Util/Config/config.php';
 
         // Leer el contenido del archivo
         $contenido = file($archivo);
 
-        // Recorrer cada línea y buscar la definición de PRECIO_BASE
+        // Recorrer cada línea y buscar la definición de la constante
         foreach ($contenido as &$linea) {
-            if (strpos($linea, "define('PRECIO_BASE'") !== false) {
+            if (strpos($linea, "define('$nombre_constante'") !== false) {
                 // Actualizar la línea con el nuevo valor
-                $linea = "define('PRECIO_BASE', $nuevo_precio);\n";
+                $linea = "define('$nombre_constante', $nuevo_valor);\n";
             }
         }
 
@@ -37,27 +24,54 @@
         file_put_contents($archivo, implode('', $contenido));
     }
 
-    // Verificar si se ha enviado el formulario
-    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["precio_base"])) {
-        // Validar y sanitizar el nuevo precio base
-        $nuevo_precio_base = filter_var($_POST["precio_base"], FILTER_SANITIZE_NUMBER_INT);
+    // Verificar si se ha enviado el formulario para actualizar los precios
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        if (isset($_POST["precio_base"]) && isset($_POST["precio_mayor_12"]) && isset($_POST["precio_mayor_15"])) {
+            // Validar y sanitizar los nuevos precios
+            $nuevo_precio_base = filter_var($_POST["precio_base"], FILTER_SANITIZE_NUMBER_INT);
+            $nuevo_precio_mayor_12 = filter_var($_POST["precio_mayor_12"], FILTER_SANITIZE_NUMBER_INT);
+            $nuevo_precio_mayor_15 = filter_var($_POST["precio_mayor_15"], FILTER_SANITIZE_NUMBER_INT);
 
-        // Actualizar el precio base en el archivo de configuración
-        actualizar_precio_base($nuevo_precio_base);
+            // Actualizar los precios en el archivo de configuración
+            actualizar_valor_config('PRECIO_BASE', $nuevo_precio_base);
+            actualizar_valor_config('PRECIO_MAYOR_12', $nuevo_precio_mayor_12);
+            actualizar_valor_config('PRECIO_MAYOR_15', $nuevo_precio_mayor_15);
 
-        // Redirigir para evitar reenvío del formulario
-        $_SESSION['precio_base_actualizado'] = true;
-        header("Location: {$_SERVER['REQUEST_URI']}");
-        exit();
+            // Redirigir para evitar reenvío del formulario
+            $_SESSION['precios_actualizados'] = true;
+            header("Location: {$_SERVER['REQUEST_URI']}");
+            exit();
+        }
+        // Verificar si se ha enviado el formulario para actualizar el precio de envío
+        if (isset($_POST["precio_envio_km"])) {
+            // Validar y sanitizar el nuevo precio de envío
+            $nuevo_precio_envio = filter_var($_POST["precio_envio_km"], FILTER_SANITIZE_NUMBER_INT);
+
+            // Actualizar el precio de envío en el archivo de configuración
+            actualizar_valor_config('PRECIO_ENVIO_KM', $nuevo_precio_envio);
+
+            // Redirigir para evitar reenvío del formulario
+            $_SESSION['precio_envio_actualizado'] = true;
+            header("Location: {$_SERVER['REQUEST_URI']}");
+            exit();
+        }
     }
 
     include_once 'Layouts/General/header.php';
 
-    // Verificar si se ha actualizado el precio base anteriormente
-    if (isset($_SESSION['precio_base_actualizado']) && $_SESSION['precio_base_actualizado'] === true) {
-        echo '<script>alert("¡Precio base actualizado con éxito!");</script>';
-        unset($_SESSION['precio_base_actualizado']); // Limpiar la variable de sesión
+    // Verificar si se han actualizado los precios anteriormente
+    if (isset($_SESSION['precios_actualizados']) && $_SESSION['precios_actualizados'] === true) {
+        echo '<script>alert("¡Precios actualizados con éxito!");</script>';
+        unset($_SESSION['precios_actualizados']); // Limpiar la variable de sesión
     }
+
+    // Verificar si se ha actualizado el precio de envío anteriormente
+    if (isset($_SESSION['precio_envio_actualizado']) && $_SESSION['precio_envio_actualizado'] === true) {
+        echo '<script>alert("¡Precio de envío actualizado con éxito!");</script>';
+        unset($_SESSION['precio_envio_actualizado']); // Limpiar la variable de sesión
+    }
+
+    ob_end_flush(); // Vacía (envía) el búfer de salida
 ?>
 
 <section class="content">
@@ -70,31 +84,32 @@
                     </div>
                     <div class="card-body">
                         <div class="d-flex justify-content-between mb-3">
-                            <!-- Agregar un input para el filtrado por nombre -->
-                            <input type="text" id="filterName" class="form-control" placeholder="Filtrar por nombre">
                             <!-- Botón para abrir el modal -->
                             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#productModal">
                                 Agregar Producto
                             </button>
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editPrecioBaseModal">
-                                Editar Precio Base
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editPrecioKm2Modal">
+                                Editar Precios por km2
+                            </button>
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editPrecioEnvioModal">
+                                Editar Precios de envio
                             </button>
                         </div>
                         <!-- Agregar la tabla con la información del inventario -->
                         <table id="inventoryTable" class="table table-striped">
                             <thead>
                                 <tr>
-                                    <th data-columna="p.nombre">Nombre <i class="fas fa-sort"></i></th>
-                                    <th data-columna="c.nombre">Categoría <i class="fas fa-sort"></i></th>
-                                    <th data-columna="p.precio_unitario">Precio unitario <i class="fas fa-sort"></i></th>
-                                    <th data-columna="p.costo_unidad">Costo unitario <i class="fas fa-sort"></i></th>
-                                    <th data-columna="p.precio_envio">Precio de envío <i class="fas fa-sort"></i></th>
-                                    <th data-columna="p.sector">Sector <i class="fas fa-sort"></i></th>
-                                    <th data-columna="p.descripcion">Descripción <i class="fas fa-sort"></i></th>
-                                    <th data-columna="p.fecha_registro">Fecha de registro <i class="fas fa-sort"></i></th>
-                                    <th data-columna="p.fecha_actualizacion">Fecha de actualización <i class="fas fa-sort"></i></th>
-                                    <th data-columna="p.cantidad_disponible">Cantidad disponible <i class="fas fa-sort"></i></th>
-                                    <th data-columna="p.estado">Estado <i class="fas fa-sort"></i></th>
+                                    <th data-columna="p.nombre">Nombre</th>
+                                    <th data-columna="c.nombre">Categoría</th>
+                                    <th data-columna="p.precio_unitario">Precio unitario</th>
+                                    <th data-columna="p.costo_unidad">Costo unitario</th>
+                                    <th data-columna="p.precio_envio">Precio de envío</th>
+                                    <th data-columna="p.sector">Sector</th>
+                                    <th data-columna="p.descripcion">Descripción</th>
+                                    <th data-columna="p.fecha_registro">Fecha de registro</th>
+                                    <th data-columna="p.fecha_actualizacion">Fecha de actualización</th>
+                                    <th data-columna="p.cantidad_disponible">Cantidad disponible</th>
+                                    <th data-columna="p.estado">Estado</th>
                                     <th>Acciones</th>
                                 </tr>
                             </thead>
@@ -109,20 +124,54 @@
     </div>
 
     <!-- Código del modal para editar el precio base -->
-    <div class="modal fade" id="editPrecioBaseModal" tabindex="-1" role="dialog" aria-labelledby="productModalLabel" aria-hidden="true">
+    <div class="modal fade" id="editPrecioKm2Modal" tabindex="-1" role="dialog" aria-labelledby="productModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <form action="" method="post" id="editPrecioBaseForm">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="productModalLabel">Editar Precio Base</h5>
+                        <h5 class="modal-title" id="productModalLabel">Editar precio por Km2</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
-                            <label for="precio_base">Precio Base:</label>
+                            <label for="precio_base">Precio:</label>
                             <input type="text" id="precio_base" name="precio_base" value="<?php echo PRECIO_BASE; ?>" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="precio_mayor_12">Precio mayor a 12:</label>
+                            <input type="text" id="precio_mayor_12" name="precio_mayor_12" value="<?php echo PRECIO_MAYOR_12; ?>" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="precio_mayor_15">Precio mayor a 15:</label>
+                            <input type="text" id="precio_mayor_15" name="precio_mayor_15" value="<?php echo PRECIO_MAYOR_15; ?>" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Código del modal para editar el precio base -->
+    <div class="modal fade" id="editPrecioEnvioModal" tabindex="-1" role="dialog" aria-labelledby="productModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form action="" method="post" id="editPrecioEnvioForm">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="productModalLabel">Editar precio de envio por Km</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="precio_envio_km">Precio:</label>
+                            <input type="text" id="precio_envio_km" name="precio_envio_km" value="<?php echo PRECIO_ENVIO_KM; ?>" required>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -301,3 +350,4 @@
     include_once 'Layouts/General/footer.php';
 ?>
 <script src="./stock.js" type="module"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>

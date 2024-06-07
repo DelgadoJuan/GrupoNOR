@@ -3,7 +3,7 @@
         session_start();
         $_SESSION['product-verification'] = $_GET['id'];
         //echo $_SESSION['product-verification'];
-        include_once './Layouts/General/header.php';
+        include_once './Layouts/Tienda/header.php';
     }
 ?>
     
@@ -36,53 +36,27 @@
                 </div>
             <div class="col-12 col-sm-6">
                 <h4  id="id_producto" class="my-3"></h2>
-                <hr>
-                <div class="card card-light">
-                    <div id="informacion_envio" class="card-body">
-                        <!-- ver esto despues -->
-                        <h4>Envio</h4>
-                    </div>
-                </div>               
-                <!-- Ver esto despues -->
-                <h4 class="mt-3">Tamaño</h4>
-                <div class="btn-group btn-group-toggle " data-toggle="buttons">
-                <label class="btn btn-default text-center">
-                    <input type="radio" name="color_option" id="color_option_b1" autocomplete="off">
-                    <span class="text-xl">S</span>
-                    <br>
-                    Small
-                </label>
-                <label class="btn btn-default text-center">
-                    <input type="radio" name="color_option" id="color_option_b2" autocomplete="off">
-                    <span class="text-xl">M</span>
-                    <br>
-                    Medium
-                </label>
-                <label class="btn btn-default text-center">
-                    <input type="radio" name="color_option" id="color_option_b3" autocomplete="off">
-                    <span class="text-xl">L</span>
-                    <br>
-                    Large
-                </label>
-                <label class="btn btn-default text-center">
-                    <input type="radio" name="color_option" id="color_option_b4" autocomplete="off">
-                    <span class="text-xl">XL</span>
-                    <br>
-                    Xtra-Large
-                </label>
-                </div>
+                <hr>             
                 <div class="mt-4">
                     <h4>Cantidad</h4>
                     <input type="number" id="product_quantity" min="1" value="1">
                 </div>
+                <div class="mt-4">
+                    <span id="warningStock" class="text-danger"></span>
+                </div>
+
+                <div id="product_options" class="mt-4"></div>
 
                 <div class="bg-gray py-2 px-3 mt-4 border">
                     <h2 class="mb-0" id="precio_producto">
                     </h2>
                 </div>
 
-                <div id="btn-carrito" class="mt-4">
-                    
+                <div class="mt-4">
+                    <button class="agregar-carrito btn btn-primary btn-flat">
+                        <i class="fas fa-cart-plus fa-lg mr-2"></i>
+                        Agregar al carrito
+                    </button>                            
                 </div>
 
                 </div>
@@ -111,7 +85,7 @@
 
 
 <?php
-    include_once 'Layouts/General/footer.php';
+    include_once 'Layouts/Tienda/footer.php';
     
 ?>
 

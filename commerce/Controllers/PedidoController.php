@@ -82,22 +82,27 @@ session_start();
     }
 
     if($_POST['funcion']=='obtener_pedidos_usuario'){
-        $id_usuario = $_SESSION['id_usuario'];
-        $pedido->obtener_pedidos_usuario($id_usuario);
-        $json=array();
-        
-        foreach($pedido->objetos as $objeto){
-            $json[]=array(
-                'id'=>$objeto->id,
-                'fecha'=>$objeto->fecha,
-                'total'=>$objeto->total,
-                'metodo_pago'=>$objeto->metodo_pago,
-                'envio'=>$objeto->envio,
-                'estado'=>$objeto->estado
-            );
+        if(isset($_SESSION['id'])){
+            $id_usuario = $_SESSION['id'];
+            $pedido->obtener_pedidos_usuario($id_usuario);
+            $json=array();
+            foreach($pedido->objetos as $objeto){
+                $json[]=array(
+                    'id'=>$objeto->id,
+                    'fecha'=>$objeto->fecha,
+                    'total'=>$objeto->total,
+                    'metodo_pago'=>$objeto->metodo_pago,
+                    'envio'=>$objeto->precio_envio,
+                    'estado'=>$objeto->estado,
+                    'ruta_pdf'=>$objeto->ruta_pdf
+                );
+            }
+            $jsonstring = json_encode($json);
+            echo $jsonstring;
+        }else{
+            echo json_encode(array('message' => 'No se ha iniciado sesión', 'status' => 'error'));
         }
-        $jsonstring = json_encode($json);
-        echo $jsonstring;
+
     }
 
     if($_POST['funcion']=='modificar_pedido'){
@@ -111,4 +116,16 @@ session_start();
         } else {
             echo json_encode(['message' => 'Error al subir el archivo', 'status' => 'error']);
         }
+    }
+
+    if($_POST['funcion']=='eliminar_pedido'){
+        $id_pedido = $_POST['id'];
+
+        $detalle_pedido->obtener_Detalle_Pedido_Id($id_pedido);
+        foreach($detalle_pedido->objetos as $objeto){
+            $producto->reestablecerStock($objeto->id_producto, $objeto->cantidad);
+        }
+
+        $pedido->eliminar_pedido($id_pedido);
+        echo json_encode(['message' => 'Pedido eliminado', 'status' => 'success']);
     }

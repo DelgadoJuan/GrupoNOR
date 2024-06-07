@@ -7,11 +7,7 @@ $categoria = new Categoria();
 session_start();
 
     if($_POST['funcion']=='obtener_categorias'){
-        // Llama al método obtener_categorias
-        $ordenar_por = isset($_POST['ordenar_por']) ? $_POST['ordenar_por'] : null;
-        $nombre = isset($_POST['nombre']) ? $_POST['nombre'] : null;
-        $direccion = isset($_POST['direccion']) ? $_POST['direccion'] : 'ASC';
-        $categorias = $categoria->obtener_categorias($ordenar_por, $nombre, $direccion);
+        $categorias = $categoria->obtener_categorias();
 
         $jsonstring = json_encode($categorias);
         echo $jsonstring;
