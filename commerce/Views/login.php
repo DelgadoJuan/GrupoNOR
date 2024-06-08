@@ -15,36 +15,44 @@
   <link rel="stylesheet" href="../Util/Css/toastr.min.css">
 </head>
 </head>
-<body class="hold-transition login-page">
-<div class="login-box">
-  <div class="login-logo">
+<body class="hold-transition login-page" style="background: #fff;">
+<div class="login-box" style="box-shadow:none">
+  <div class="login-logo" style="align-items:end; box-shadow:none">
     <!-- logo -->
-    <img src="../Util/Img/logoGrupoNOR.png" class="profile-user-img img-fluid img-circle">
-    <a href="./index.php"><b>Grupo</b>NOR</a>
+    <img src="../Util/Assets/Grupo Nor Logo 2 [Recuperado].png" class=" img-fluid border-0 float-end" style="width:8em">
   </div>
   <!-- /.login-logo -->
-  <div class="card">
-    <div class="card-body login-card-body">
-      <p class="login-box-msg">Inicie sesión</p>
-      <form id="form-login">
-        <div class="input-group mb-3">
-          <input id="user" type="text" class="form-control" placeholder="Usuario" required>
+  <div class="card mt-5" style="background: transparent; border:none; box-shadow: none">
+    <div class="card-body login-card-body" style="background: transparent; border:none;">
+
+    <div class="card mb-5" style="box-shadow:none; border:none; text-align:center;">
+        <h2 style="font-size:2.25em; color: #303030">
+            Bienvenido
+        </h2>
+        <p style="opacity:.8">
+            Por favor ingrese sus datos
+        </p>
+    </div>
+
+      <form id="form-login" class="mb-5" style="background: transparent; border:none;">
+        <div class="input-group mb-5">
+          <input id="user" type="text" class="form-control" style="background: transparent; border:none; border-radius: 0; border-bottom: 2px solid rgba(80, 80, 80, 0.5)" placeholder="Usuario" required>
           <div class="input-group-append">
-            <div class="input-group-text">
+            <div class="input-group-text" style=" border:none; border-radius:0; border-bottom: 2px solid rgba(80, 80, 80, 0.5)">
               <span class="fas fa-user"></span>
             </div>
           </div>
         </div>
-        <div class="input-group mb-3">
-          <input id="pass" type="password" class="form-control" placeholder="Contraseña" required>
+        <div class="input-group mb-5">
+          <input id="pass" type="password" class="form-control" style="background: transparent; border:none; border-radius: 0; border-bottom: 2px solid rgba(80, 80, 80, 0.5)" placeholder="Contraseña" required>
           <div class="input-group-append">
-            <div class="input-group-text">
+            <div class="input-group-text" style=" border:none; border-radius:0; border-bottom: 2px solid rgba(80, 80, 80, 0.5)">
               <span class="fas fa-lock"></span>
             </div>
           </div>
         </div>
         <div class="social-auth-links text-center mb-3">
-        <button type="submit" href="#" class="btn btn-block btn-primary">
+        <button type="submit" href="#" class="btn btn-lg btn-block mb-4" style="border:none; border-radius: 100px; background-color:rgba(185, 70, 74, 1); color:#ffff">
         Iniciar sesión
         </button>
         </div>
@@ -53,12 +61,16 @@
       
       <!-- /.social-auth-links -->
 
-      <p class="mb-1">
-        <a href="">He olvidado mi contraseña</a>
+      <p class="mb-0">
+        <p style="opacity: .75;">No puedes iniciar sesión? <a style="color: #303030; font-width: 1000;" href="">Recuperar contraseña</a></p>
+        
       </p>
       <p class="mb-0">
-        <a href="register.php" class="text-center">Registrarse</a>
+        <p style="opacity: .75;">No tienes una cuenta? <a style="color: #303030; font-width: 1000;"  href="register.php" class="text-center">Registrarse</a></p>
+        
       </p>
+
+
     </div>
     <!-- /.login-card-body -->
   </div>

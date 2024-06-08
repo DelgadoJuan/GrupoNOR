@@ -99,17 +99,17 @@
                         <table id="inventoryTable" class="table table-striped">
                             <thead>
                                 <tr>
-                                    <th data-columna="p.nombre">Nombre</th>
-                                    <th data-columna="c.nombre">Categoría</th>
-                                    <th data-columna="p.precio_unitario">Precio unitario</th>
-                                    <th data-columna="p.costo_unidad">Costo unitario</th>
-                                    <th data-columna="p.precio_envio">Precio de envío</th>
-                                    <th data-columna="p.sector">Sector</th>
-                                    <th data-columna="p.descripcion">Descripción</th>
-                                    <th data-columna="p.fecha_registro">Fecha de registro</th>
-                                    <th data-columna="p.fecha_actualizacion">Fecha de actualización</th>
-                                    <th data-columna="p.cantidad_disponible">Cantidad disponible</th>
-                                    <th data-columna="p.estado">Estado</th>
+                                    <th data-columna="p.nombre"><p style="opacity:.4">Nombre</th>
+                                    <th data-columna="c.nombre"><p style="opacity:.4">Categoría</th>
+                                    <th data-columna="p.precio_unitario"><p style="opacity:.4">Precio unitario</th>
+                                    <th data-columna="p.costo_unidad"><p style="opacity:.4">Costo unitario</th>
+                                    <th data-columna="p.precio_envio"><p style="opacity:.4">Precio de envío</th>
+                                    <th data-columna="p.sector"><p style="opacity:.4">Sector</th>
+                                    <th data-columna="p.descripcion"><p style="opacity:.4">Descripción</th>
+                                    <th data-columna="p.fecha_registro"><p style="opacity:.4">Fecha de registro</th>
+                                    <th data-columna="p.fecha_actualizacion"><p style="opacity:.4">Fecha de actualización</th>
+                                    <th data-columna="p.cantidad_disponible"><p style="opacity:.4">Cantidad disponible</th>
+                                    <th data-columna="p.estado"><p style="opacity:.4">Estado</th>
                                     <th>Acciones</th>
                                 </tr>
                             </thead>

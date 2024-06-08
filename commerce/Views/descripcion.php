@@ -10,7 +10,7 @@
 <title> <?php echo $_GET['name'] ?> </title>
 
 <!-- Content Header (Page header) -->
-<section class="content-header">
+<section class="content-header" style="padding: 0 1.5em">
     <div class="container-fluid">
         <div class="row mb-2">
         <div class="col-sm-6">
@@ -29,17 +29,17 @@
     <section class="content">
 
     <!-- Default box -->
-    <div class="card card-solid">
+    <div class="card card-solid" style="padding: 0 1.5em; max-width:2560px;margin:auto; ">
         <div class="card-body">
             <div class="row">
                 <div id="imagenes" class="col-12 col-sm-6">            
                 </div>
             <div class="col-12 col-sm-6">
-                <h4  id="id_producto" class="my-3"></h2>
+                <h4  id="id_producto" class="my-3" style="font-weight: 700;"></h2>
                 <hr>             
                 <div class="mt-4">
                     <h4>Cantidad</h4>
-                    <input type="number" id="product_quantity" min="1" value="1">
+                    <input class="rounded" style="width: 100%; height:2em" type="number" id="product_quantity" min="1" value="1">
                 </div>
                 <div class="mt-4">
                     <span id="warningStock" class="text-danger"></span>
@@ -47,13 +47,13 @@
 
                 <div id="product_options" class="mt-4"></div>
 
-                <div class="bg-gray py-2 px-3 mt-4 border">
+                <div class="bg-gray py-2 px-3 mt-4 border rounded">
                     <h2 class="mb-0" id="precio_producto">
                     </h2>
                 </div>
 
-                <div class="mt-4">
-                    <button class="agregar-carrito btn btn-primary btn-flat">
+                <div class="mt-4" class="input-group mb-3 card-footer" style="background:none; padding:0;">
+                    <button class="agregar-carrito btn btn-primary btn-flat btn-block rounded" style="width:100%; height:100%; padding: .75em 0;">
                         <i class="fas fa-cart-plus fa-lg mr-2"></i>
                         Agregar al carrito
                     </button>                            

@@ -41,18 +41,19 @@
   <link rel="stylesheet" href="../Util/Css/sweetalert2.min.css">
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.css">
 </head>
-<body class="hold-transition sidebar-mini">
+<body class="hold-transition">
 <!-- Site wrapper -->
 <div class="wrapper">
   <!-- Navbar -->
-  <nav class="main-header navbar navbar-expand navbar-white navbar-light">
-
-  <!-- Brand -->
-  <a class="navbar-brand" href="../Views/index.php" style="margin-left: -50px;">
+  <nav class="navbar navbar-expand navbar-white navbar-light">
+    <!-- Left navbar links -->
+    <ul class="navbar-nav">
+    <a class="navbar-brand mr-4" href="../Views/index.php">
           <!-- Icono de la empresa -->
-          <img src="../Util/Img/logoGrupoNOR.png" alt="Company Logo" class="brand-image img-circle elevation-3" style="opacity: .8; width: 30px;">
-          <span class="brand-text font-weight-light">Grupo NOR</span>
+          <img src="../Util/Assets/Grupo Nor Logo 2 [Recuperado].png" alt="Company Logo" class="" style="opacity: 1; width: 6em; margin-left:1em">
       </a>
+
+    </ul>
 
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
@@ -108,7 +109,7 @@
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
           <?php
-            if($rol !== null) {
+            if($rol !== null ) {
                 if ($rol->tipo === 'Repositor') {
                     echo '<a class="dropdown-item" href="mi_perfil.php"><i class="fas fa-user-cog"></i> Mi perfil</a>';
                     echo '<a class="dropdown-item" href="stock.php"><i class="fas fa-cubes"></i> Stock</a>';
@@ -116,12 +117,15 @@
                 } else if ($rol->tipo === 'Empleado') {
                     echo '<a class="dropdown-item" href="mi_perfil.php"><i class="fas fa-user-cog"></i> Mi perfil</a>';
                     echo '<a class="dropdown-item" href="pedidoAdmin.php"><i class="fas fa-shopping-basket"></i> Pedidos</a>';
-                } else {
+                } else if ($rol->tipo === 'Administrador'){
                     echo '<a class="dropdown-item" href="mi_perfil.php"><i class="fas fa-user-cog"></i> Mi perfil</a>';
                     echo '<a class="dropdown-item" href="pedidoAdmin.php"><i class="fas fa-shopping-basket"></i> Pedidos</a>';
                     echo '<a class="dropdown-item" href="usuarios.php"><i class="fas fa-users"></i> Usuarios</a>';
                     echo '<a class="dropdown-item" href="stock.php"><i class="fas fa-cubes"></i> Stock</a>';
                     echo '<a class="dropdown-item" href="categoria.php"><i class="fas fa-tags"></i> Categorías</a>';
+                } else {
+                    echo '<a class="dropdown-item" href="mi_perfil.php"><i class="fas fa-user-cog"></i> Mi perfil</a>';
+                    echo '<a class="dropdown-item" href="mis_pedidos.php"><i class="fas fa-shopping-basket"></i> Mis pedidos</a>';
                 }
             }
           ?>
@@ -132,13 +136,3 @@
     </ul>
   </nav>
   <!-- /.navbar -->
-
-  <!-- Main Sidebar Container -->
-  
-
-  <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
-
-<?php
-
-?>

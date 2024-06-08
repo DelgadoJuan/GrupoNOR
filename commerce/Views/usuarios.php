@@ -8,31 +8,29 @@
 ?>
 
 <section class="content">
-    <div class="container-fluid">
+    <div class="container-fluid mt-5">
         <div class="row">
             <div class="col-md-12">
                 <!-- Card -->
-                <div class="card">
+                <div class="card mb-0" style="box-shadow: none;border:none;">
                     <!-- Card Header -->
-                    <div class="card-header">
-                        <h3 class="card-title">Usuarios</h3>
+                    <div class="card-header mb-0" style="box-shadow: none;border:none;">
+                        <h1 class="card-title mb-0" style="font-weight: 700; font-size:1.75em; ">Usuarios</h1>
                         <!-- Botón para agregar empleado -->
-                        <div class="d-flex justify-content-end mb-3">
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addEmployeeModal">
+                        <div class="d-flex justify-content-end mb-3" style="gap: .5em;">
+                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addEmployeeModal">
                                 Agregar Empleado
                             </button>
-                        </div>
-                        <!-- Botones para cambiar entre tablas -->
-                        <div class="card-tools">
                             <button id="showClients" class="btn btn-primary">Mostrar Clientes</button>
                             <button id="showEmployees" class="btn btn-secondary">Mostrar Empleados</button>
                         </div>
+                        <!-- Botones para cambiar entre tablas -->
                     </div>
                     <!-- Card Body -->
                     <div class="card-body">
                         <div id="TablesDiv" class="table-responsive">
                             <!-- Tabla de clientes -->
-                            <table id="clientsTable" class="table">
+                            <table id="clientsTable" class="table mb-4 pb-4">
                                 <thead>
                                     <tr>
                                         <th>DNI</th>
@@ -52,7 +50,7 @@
                                 </tbody>
                             </table>
                             <!-- Tabla de empleados -->
-                            <table id="employeesTable" class="table">
+                            <table id="employeesTable" class="table border-0">
                                 <thead>
                                     <tr>
                                         <th>DNI</th>
@@ -163,11 +161,11 @@
                         </div>
                         <div class="form-group">
                             <label for="direccion">Dirección</label>
-                            <input type="text" class="form-control" id="direccion" name="direccion">
+                            <input type="text" class="form-control" id="direccion" name="direccion" required>
                         </div>
                         <div class="form-group">
                             <label for="referencia">Referencia</label>
-                            <input type="text" class="form-control" id="referencia" name="referencia">
+                            <input type="text" class="form-control" id="referencia" name="referencia" required>
                         </div>
                         <div class="form-group">
                             <label for="telefono">Teléfono</label>

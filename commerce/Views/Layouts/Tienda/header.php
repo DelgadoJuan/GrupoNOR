@@ -16,6 +16,8 @@
   <!-- Sweetalert2 -->
   <link rel="stylesheet" href="../Util/Css/sweetalert2.min.css">
 
+  <link rel="stylesheet" href="..\Util\Css\styles.css">
+
 <style>
     /* Estilo para manejar submenús anidados */
   .dropdown-submenu {
@@ -39,16 +41,15 @@
 </style>
   
 </head>
-<body class="hold-transition sidebar-mini">
+<body class="hold-transition">
   <!-- Site wrapper -->
   <div class="wrapper">
     <!-- Navbar -->
-    <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+    <nav class="navbar navbar-expand navbar-white navbar-light" style="align-items:center;">
       <!-- Brand -->
-      <a class="navbar-brand" href="../Views/index.php" style="margin-left: -50px;">
+      <a class="navbar-brand mr-4" href="../Views/index.php">
           <!-- Icono de la empresa -->
-          <img src="../Util/Img/logoGrupoNOR.png" alt="Company Logo" class="brand-image img-circle elevation-3" style="opacity: .8; width: 30px;">
-          <span class="brand-text font-weight-light">Grupo NOR</span>
+          <img src="../Util/Assets/Grupo Nor Logo 2 [Recuperado].png" alt="Company Logo" class="" style="opacity: 1; width: 10em; margin-left:1em">
       </a>
 
       <div class="collapse navbar-collapse" id="navbarNav">
@@ -61,50 +62,47 @@
       <ul class="navbar-nav ml-auto">
         <!-- Navbar Search -->
         <li class="nav-item">
-          <a class="nav-link" data-widget="navbar-search" href="#" role="button">
-            <i class="fas fa-search"></i>
-          </a>
           <div class="search-container">
-              <form id="searchForm">
-                <input id="inputSearch" type="text" placeholder="Buscar.." name="search">
-                <button type="submit"><i class="fa fa-search"></i></button>
+              <form id="searchForm" class="header-search-form">
+                <input id="inputSearch" type="text" placeholder="Buscar" name="search" class="header-search-input">
+                <button type="submit" class="header-search-btn"><i class="fa fa-search"></i></button>
               </form>
           </div>
         </li>
 
         <!-- Messages Dropdown Menu -->
-        <li id="notificacion" class="nav-item dropdown">
-          <a class="nav-link"  href="./carrito.php">
+        <li id="notificacion" class="nav-item dropdown ml-2 mr-2" style="height:100%">
+          <a class="nav-link rounded"  href="./carrito.php">
             <!-- icono carrito -->
-            <i class="fas fa-shopping-cart"></i>
+            <i class="fas fa-shopping-cart" style="color:rgb(80, 80, 80);"></i>
             <span class="badge badge-danger navbar-badge"></span>
           </a>
         </li>
         <li class="nav-item" id="nav_register">
           <!-- Ruta a registrarse -->
-          <a class="nav-link"  href="register.php" role="button">
+          <a class="nav-link ml-3 mr-3 rounded"  href="register.php" role="button">
             <!-- Icono de registrarse -->
-            <i class="fas fa-user-plus"></i> Registrarse 
+            <i class="fas fa-user-plus mr-2" style="color:rgb(80, 80, 80);"></i> Registrarse 
           </a>
         </li>
         <li class="nav-item" id="nav_login">
           <!-- Ruta al LogIn -->
-          <a class="nav-link"  href="login.php" role="button">
+          <a class="nav-link mr-3 rounded"  href="login.php" role="button">
             <!-- Icono de usuarios -->
-            <i class="far fa-user"></i> Iniciar sesión 
+            <i class="far fa-user mr-2" style="color:rgb(80, 80, 80);"></i> Iniciar sesión 
           </a>
         </li>
         <li class="nav-item dropdown" id="nav_usuario">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <a class="nav-link dropdown-toggle rounded" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <!-- avatar del usuario -->
             <img id="avatar_nav" src="" width="30" height="30" class="img-fluid img-circle">
-            <span id="usuario_nav"> Usuario logueado</span>
+            <span id="usuario_nav" class="ml-2 mr-2" style="color:rgb(80, 80, 80);"> Usuario logueado</span>
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-            <a class="dropdown-item" href="mi_perfil.php"><i class="fas fa-user-cog"></i> Mi perfil</a>
-            <a class="dropdown-item" href="mis_pedidos.php"><i class="fas fa-shopping-basket"> </i> Mis pedidos</a>
+            <a class="dropdown-item text-dark" href="mi_perfil.php"><i class="fas fa-user-cog mr-2" style="color:rgb(80, 80, 80);"></i> Mi perfil</a>
+            <a class="dropdown-item text-dark" href="#"><i class="fas fa-shopping-basket mr-2" style="color:rgb(80, 80, 80);"> </i> Mis pedidos</a>
             <!-- Controlador para cerrar sesion -->
-            <a class="dropdown-item" href="../Controllers/logout.php"><i class="fas fa-user-times"></i> Cerrar sesión</a>
+            <a class="dropdown-item text-dark" href="../Controllers/logout.php"><i class="fas fa-user-times" style="color:rgb(80, 80, 80);"></i> Cerrar sesión</a>
           </div>
         </li>
       </ul>

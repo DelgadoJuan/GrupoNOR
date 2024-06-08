@@ -12,9 +12,7 @@
     $total = 0;
 
     // Verifica si el carrito está vacío
-    if (empty($cartItems)) {
-        echo "El carrito está vacío.";
-    } else {
+    if (!empty($cartItems)) {
         foreach ($cartItems as $cartItem) {
             $total += floatval($cartItem->precio_unitario) * $cartItem->cantidad;
         }
@@ -38,19 +36,20 @@
             }
         </style>
     </head>
+    
     <body>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-8">
-                    <h1>Carrito de compras</h1>
-                    <table class="table">
+        <div class="text-dark mb-5 mt-5 ml-5 mr-5 border-0" style="display: flex;flex:1;flex-wrap:wrap;border:none;">
+            <div class="row border-0" style="border:none;">
+                <div class="col-md-8 mr-4 border-0">
+                    <h1 class="card-title mb-4 text-dark border-0" style="font-weight: 700; font-size:1.75em;border:none; ">Carrito de compras</h1>
+                    <table class="table border-0">
                         <thead>
-                            <tr>
+                            <tr style="opacity:.5; font-weight:700;">
                                 <th></th>
-                                <th>Producto</th>
-                                <th>Precio</th>
-                                <th>Cantidad</th>
-                                <th>Subtotal</th>
+                                <th class=" text-dark" style="font-weight:700;">Producto</th>
+                                <th class=" text-dark" style="font-weight:700;">Precio</th>
+                                <th class=" text-dark" style="font-weight:700;">Cantidad</th>
+                                <th class=" text-dark" style="font-weight:700;">Subtotal</th>
                             </tr>
                         </thead>
                         <tbody id="cart-items">
@@ -58,9 +57,10 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="col-md-4">
-                    <h2>Resumen del carrito</h2>
-                    <div id="cart-summary">
+                
+                <div class="col-md-4" style="display: flex;flex:2;flex-direction:column;">
+                    <h3 class=" text-dark mb-4" style="font-size:1.5em">Resumen del carrito</h3>
+                    <div id="cart-summary" style="margin-top:auto;">
                         <p id="cart-subtotal">Subtotal: $<span id="subtotalPrice">0</span></p>
                         <div>
                             <label for="direccion">Selecciona una dirección:</label>
@@ -71,7 +71,7 @@
                         <p id="cart-shipping">Envío: $<span id="shippingPrice">0</span></p>
                         <p id="cart-total">Total: $<span id="totalPrice">0</span></p>
                     </div>
-                    <a id="pagarButton" href="./pago.php" class="btn btn-primary" disabled>Ir a pagar</a>
+                    <a id="pagarButton" href="./pago.php" class="boton-checkout" style="background-color:rgb(6, 160, 227);border:none;opacity:1;margin-top:auto" disabled></button>
                 </div>
             </div>
         </div>

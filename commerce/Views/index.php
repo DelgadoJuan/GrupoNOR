@@ -81,9 +81,12 @@ if (isset($_SESSION['id'])) {
                         if (empty($rol->tipo)) {
                             echo '<a class="nav-link-mobile" href="./login.php"> INICIAR SESIÓN </a>';
                             echo '<a class="nav-link-login" href="./login.php"> INICIAR SESION </a>';
+                        }else{
+                            echo '<a class="nav-link-mobile" href="../Controllers/logout.php"> CERRAR SESIÓN </a>';
+                            echo '<a class="nav-link-login" href="../Controllers/logout.php"> CERRAR SESIÓN </a>';
                         }
                     ?>
-                </ul>
+                
                 <!-- <p class="nav-spacer">I</p> -->
                 
                 <div class="ham">

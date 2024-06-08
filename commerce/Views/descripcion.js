@@ -119,7 +119,7 @@ $(document).ready(function(){
                     template += `
                         <div "></div>
                         <div class="col-12">
-                            <img class="img-fluid" id="imagen_principal" src="${producto.foto}">
+                            <img class="img-fluid rounded" style="width:100%; height: 35em; object-fit: cover;" id="imagen_principal" src="${producto.foto}">
 
                         </div>
                         <div class="col-12 product-image-thumbs">
@@ -141,7 +141,7 @@ $(document).ready(function(){
                 else{
                     template += `
                         <div class="col-12">
-                            <img class="img-fluid" id="imagen_principal" src="${producto.nombre_categoria === 'Tinglados' ? '../Util/Assets/tinglado3.jpeg' : producto.foto}">
+                            <img class="product-image img-fluid" id="imagen_principal" src="${producto.nombre_categoria === 'Tinglados' ? '../Util/Assets/tinglado3.jpeg' : producto.foto}">
                         </div>
                         `;
                 }

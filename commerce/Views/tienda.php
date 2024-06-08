@@ -3,22 +3,22 @@
 ?>
 
     <!-- Main content -->
-    <section class="content">
+    <section class="content border-0 " style="border:none;">
 
       <!-- Default box -->
-      <div class="card">
-        <div class="card-header">
-          <h3 class="card-title">Productos</h3>
+      <div class="card mt-3 mb-3 border-0 " style="padding:1em; background:none; border:none">
+        <div class="card-header mb-0" style="border:none;">
+          <h3 class="card-title mb-0" style="color: #505050; font-weight:600; font-size:1.5em">Productos</h3>
         </div>
-        <select id="sortSelect" class="form-control">
-            <option value="">Ordenar por</option>
-            <option value="precio_ascendente">Precio: menor a mayor</option>
-            <option value="precio_descendente">Precio: mayor a menor</option>
-            <option value="nombre_ascendente">Nombre: A - Z</option>
-            <option value="nombre_descendiente">Nombre: Z - A</option>
-            <option value="mas_vendido">Más vendido</option>
-            <option value="nuevo">Más nuevo a más viejo</option>
-            <option value="viejo">Más viejo a más nuevo</option>
+        <select id="sortSelect" class="form-control " style="color: #505050; margin: 1em; background:none;">
+            <option style="color: #505050" value="">Ordenar por</option>
+            <option style="color: #505050" value="precio_ascendente">Precio: menor a mayor</option>
+            <option style="color: #505050" value="precio_descendente">Precio: mayor a menor</option>
+            <option style="color: #505050" value="nombre_ascendente">Nombre: A - Z</option>
+            <option style="color: #505050" value="nombre_descendiente">Nombre: Z - A</option>
+            <option style="color: #505050" value="mas_vendido">Más vendido</option>
+            <option style="color: #505050" value="nuevo">Más nuevo a más viejo</option>
+            <option style="color: #505050" value="viejo">Más viejo a más nuevo</option>
         </select>
         <div class="card-body">
           <div id="productos" class="row">
@@ -41,8 +41,8 @@
           </div>
         </div>
         <!-- /.card-body -->
-        <div class="card-footer">
-          <button id="loadMoreButton" class="btn btn-primary">Cargar más</button>
+        <div class="card-footer" style="background-color: transparent;">
+          <button id="loadMoreButton" class="btn btn-primary btn-lg btn-block" style="background-color: #ac2e32; border-color: #ac2e32;">Cargar más</button>
         </div>
         <!-- /.card-footer-->
       </div>

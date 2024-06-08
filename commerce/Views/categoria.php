@@ -10,30 +10,32 @@
 ?>
 
 <section class="content">
-    <div class="container-fluid">
+    <div class="container-fluid mt-5">
         <div class="row">
             <div class="col-md-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Categorías Actuales</h3>
+                <div class="card" style="box-shadow: none;border:none;">
+                    <div class="card-header mb-0" style="box-shadow: none;border:none;">
+                        <h1 class="card-title mb-0" style="font-weight: 700; font-size:1.75em; ">Categorías Actuales</h1>
                     </div>
                     <div class="card-body">
-                        <div class="d-flex justify-content-between mb-3">
+                        <div class="d-flex justify-content-between mb-5">
+                            <!-- Agregar un input para el filtrado por nombre -->
+                            <input type="text" id="filterName" class="form-control" style="width:100%; max-width: 25em; border:none; background: rgba(200,200,200,.3)" placeholder="Filtrar por Nombre">
                             <!-- Botón para abrir el modal -->
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addCategoryModal">
+                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addCategoryModal">
                                 Agregar Categoría
                             </button>
                         </div>
                         <!-- Agregar la tabla con la información de las categorías -->
-                        <table id="categoryTable" class="table table-striped">
+                        <table id="categoryTable" class="table table-striped table-hover border-0" style="border:none;box-shadow:none;">
                             <thead>
                                 <tr>
-                                    <th data-columna="c.nombre">Nombre</th>
-                                    <th data-columna="cp.nombre">Categoria padre</th>
-                                    <th data-columna="c.descripcion">Descripción</th>
-                                    <th data-columna="c.fecha_creacion">Fecha de registro</th>
-                                    <th data-columna="c.estado">Estado</th>
-                                    <th>Acciones</th>
+                                    <th data-columna="c.nombre"><p style="opacity:.4">Nombre</p></th>
+                                    <th data-columna="cp.nombre"><p style="opacity:.4">Categoría Padre</p></th>
+                                    <th data-columna="c.descripcion"><p style="opacity:.4">Descripción</p></th>
+                                    <th data-columna="c.fecha_creacion"><p style="opacity:.4">Fecha de Registro</p></th>
+                                    <th data-columna="c.estado"><p style="opacity:.4">Estado</p></th>
+                                    <th><p style="opacity:.4">Acciones</p></th>
                                 </tr>
                             </thead>
                             <tbody>
