@@ -51,7 +51,7 @@
                 producto.descripcion as descripcion
                 FROM producto
                 INNER JOIN subcategorias ON producto.id_categoria = subcategorias.id
-                WHERE producto.estado = 'A'"
+                WHERE producto.estado = 'A' AND producto.cantidad_disponible > 0"
                 . $whereSearch
                 . $orderBy .
                 " LIMIT :limit";
@@ -63,7 +63,7 @@
                 producto.foto as foto,
                 producto.descripcion as descripcion
                 FROM producto
-                WHERE producto.estado = 'A'"
+                WHERE producto.estado = 'A' AND producto.cantidad_disponible > 0"
                 . $whereSearch
                 . $orderBy .
                 " LIMIT :limit";
@@ -99,19 +99,19 @@
         }
 
         //consultas a la bd
-        public function crear_producto($nombre, $id_categoria, $descripcion, $precio_unitario, $cantidad_disponible, $fecha_registro, $sector, $costo_unidad, $foto = null) {
+        public function crear_producto($nombre, $id_categoria, $descripcion, $precio_unitario, $cantidad_disponible, $fecha_registro, $sector, $costo_unidad, $foto = null, $precio_envio_km) {
             $this->acceso->beginTransaction();
             try {
                 if ($foto) {
-                    $sql = "INSERT INTO producto(nombre, id_categoria, descripcion, precio_unitario, cantidad_disponible, fecha_registro, sector, costo_unidad, foto) 
-                            VALUES(:nombre, :id_categoria, :descripcion, :precio_unitario, :cantidad_disponible, :fecha_registro, :sector, :costo_unidad, :foto)";
+                    $sql = "INSERT INTO producto(nombre, id_categoria, descripcion, precio_unitario, cantidad_disponible, fecha_registro, sector, costo_unidad, foto, precio_envio_km) 
+                            VALUES(:nombre, :id_categoria, :descripcion, :precio_unitario, :cantidad_disponible, :fecha_registro, :sector, :costo_unidad, :foto, :precio_envio_km)";
                     $query = $this->acceso->prepare($sql); 
-                    $query->execute(array(':nombre'=>$nombre, ':id_categoria'=>$id_categoria, ':descripcion'=>$descripcion, ':precio_unitario'=>$precio_unitario, ':cantidad_disponible'=>$cantidad_disponible, ':fecha_registro'=>$fecha_registro, ':sector'=>$sector, ':costo_unidad'=>$costo_unidad, ':foto'=>$foto));
+                    $query->execute(array(':nombre'=>$nombre, ':id_categoria'=>$id_categoria, ':descripcion'=>$descripcion, ':precio_unitario'=>$precio_unitario, ':cantidad_disponible'=>$cantidad_disponible, ':fecha_registro'=>$fecha_registro, ':sector'=>$sector, ':costo_unidad'=>$costo_unidad, ':foto'=>$foto, ':precio_envio_km'=>$precio_envio_km));
                 } else {
-                    $sql = "INSERT INTO producto(nombre, id_categoria, descripcion, precio_unitario, cantidad_disponible, fecha_registro, sector, costo_unidad) 
-                            VALUES(:nombre, :id_categoria, :descripcion, :precio_unitario, :cantidad_disponible, :fecha_registro, :sector, :costo_unidad)";
+                    $sql = "INSERT INTO producto(nombre, id_categoria, descripcion, precio_unitario, cantidad_disponible, fecha_registro, sector, costo_unidad, precio_envio_km) 
+                            VALUES(:nombre, :id_categoria, :descripcion, :precio_unitario, :cantidad_disponible, :fecha_registro, :sector, :costo_unidad, :precio_envio_km)";
                     $query = $this->acceso->prepare($sql); 
-                    $query->execute(array(':nombre'=>$nombre, ':id_categoria'=>$id_categoria, ':descripcion'=>$descripcion, ':precio_unitario'=>$precio_unitario, ':cantidad_disponible'=>$cantidad_disponible, ':fecha_registro'=>$fecha_registro, ':sector'=>$sector, ':costo_unidad'=>$costo_unidad));
+                    $query->execute(array(':nombre'=>$nombre, ':id_categoria'=>$id_categoria, ':descripcion'=>$descripcion, ':precio_unitario'=>$precio_unitario, ':cantidad_disponible'=>$cantidad_disponible, ':fecha_registro'=>$fecha_registro, ':sector'=>$sector, ':costo_unidad'=>$costo_unidad, ':precio_envio_km'=>$precio_envio_km));
                 }
                 $id_producto = $this->acceso->lastInsertId();
                 $this->acceso->commit();
@@ -122,14 +122,14 @@
             }
         }
 
-        public function crear_tinglado($nombre, $id_categoria, $precio_unitario, $fecha_registro, $largo, $ancho, $altura, $tipo_techo, $color, $estado) {
+        public function crear_tinglado($nombre, $id_categoria, $precio_unitario, $fecha_registro, $largo, $ancho, $tipo_techo, $color, $estado, $cantidad) {
             $this->acceso->beginTransaction();
             try {
                 // Verificar si el valor de descripción es necesario
                 $descripcion = 'Tinglado personalizado';
         
-                $sql = "INSERT INTO producto(nombre, id_categoria, descripcion, precio_unitario, fecha_registro, largo, ancho, altura, tipo_techo, color, estado) 
-                        VALUES(:nombre, :id_categoria, :descripcion, :precio_unitario, :fecha_registro, :largo, :ancho, :altura, :tipo_techo, :color, :estado)";
+                $sql = "INSERT INTO producto(nombre, id_categoria, descripcion, precio_unitario, fecha_registro, largo, ancho, tipo_techo, color, estado, cantidad_disponible) 
+                        VALUES(:nombre, :id_categoria, :descripcion, :precio_unitario, :fecha_registro, :largo, :ancho, :tipo_techo, :color, :estado, :cantidad)";
                 $query = $this->acceso->prepare($sql);
                 $query->execute(array(
                     ':nombre' => $nombre,
@@ -139,10 +139,10 @@
                     ':fecha_registro' => $fecha_registro,
                     ':largo' => $largo,
                     ':ancho' => $ancho,
-                    ':altura' => $altura,
                     ':tipo_techo' => $tipo_techo,
                     ':color' => $color,
-                    ':estado' => $estado
+                    ':estado' => $estado,
+                    ':cantidad' => $cantidad
                 ));
                 
                 // Obtener el ID del producto recién insertado
@@ -156,26 +156,21 @@
             }
         }
 
-        function obtener_productos($ordenar_por = null, $nombre = null, $direccion = 'ASC') {
-            $sql ="SELECT p.id, p.nombre, p.descripcion, p.precio_unitario, p.fecha_registro, p.fecha_actualizacion, p.costo_unidad, p.cantidad_disponible, p.sector, p.estado, c.nombre as nombre_categoria 
-            FROM producto p 
-            INNER JOIN categoria c ON p.id_categoria = c.id";
-            $params = [];
-            if ($nombre) {
-                $sql .= " WHERE p.nombre LIKE :nombre";
-                $params[':nombre'] = '%' . $nombre . '%';
-            }
-            if ($ordenar_por) {
-                $sql .= " ORDER BY " . $ordenar_por . " " . $direccion;
-            }
+        function obtener_productos() {
+            $sql = "SELECT p.id, p.nombre, p.descripcion, p.precio_unitario, p.fecha_registro, p.fecha_actualizacion, p.costo_unidad, p.cantidad_disponible, p.sector, p.estado, p.precio_envio_km, c.nombre as nombre_categoria 
+                    FROM producto p 
+                    INNER JOIN categoria c ON p.id_categoria = c.id
+                    WHERE p.estado <> 'T'";
             $query = $this->acceso->prepare($sql);
-            $query->execute($params);
+            $query->execute();
             $this->objetos = $query->fetchAll();
             return $this->objetos;
         }
 
         public function obtener_producto($id){
-            $sql ="SELECT * FROM producto WHERE id=:id";
+            $sql ="SELECT p.*, c.nombre as nombre_categoria FROM producto
+            p INNER JOIN categoria c ON p.id_categoria = c.id
+            WHERE p.id = :id";
             $query = $this->acceso->prepare($sql); 
             $query->execute(array(':id'=>$id));
             $this->objetos = $query->fetchAll();
@@ -271,6 +266,25 @@
             $query->execute([':id' => $id]);
             return $query->fetchColumn();
         }
-    }
 
-    
+        function actualizarStock($id_producto, $cantidad){
+            $sql = "UPDATE producto SET cantidad_disponible = cantidad_disponible - :cantidad WHERE id = :id_producto";
+            $query = $this->acceso->prepare($sql);
+            $query->execute(array(':cantidad' => $cantidad, ':id_producto' => $id_producto));
+        }
+        
+        function verificarStock($id_producto, $cantidad){
+            $sql = "SELECT cantidad_disponible FROM producto WHERE id = :id_producto";
+            $query = $this->acceso->prepare($sql);
+            $query->execute(array(':id_producto' => $id_producto));
+            $stock = $query->fetchColumn();
+            return $stock >= $cantidad;
+        }
+
+        function reestablecerStock($id_producto, $cantidad){
+            $sql = "UPDATE producto SET cantidad_disponible = cantidad_disponible + :cantidad WHERE id = :id_producto";
+            $query = $this->acceso->prepare($sql);
+            $query->execute(array(':cantidad' => $cantidad, ':id_producto' => $id_producto));
+        }
+
+    }

@@ -37,4 +37,33 @@
                 throw $e;
             }
         }
+
+        public function obtener_pedidos(){
+            $sql = "SELECT p.*, u.nombres, u.apellidos, u.dni FROM pedido
+                    p INNER JOIN usuario u ON p.id_usuario = u.id";
+            $query = $this->acceso->prepare($sql);
+            $query->execute();
+            $this->objetos = $query->fetchAll();
+            return $this->objetos;
+        }
+
+        public function obtener_pedidos_usuario($id_usuario){
+            $sql = "SELECT * FROM pedido WHERE id_usuario=:id_usuario";
+            $query = $this->acceso->prepare($sql);
+            $query->execute(array(':id_usuario'=>$id_usuario));
+            $this->objetos = $query->fetchAll();
+            return $this->objetos;
+        }
+
+        public function modificar_pedido($id, $estado, $ruta_pdf) {
+            $sql = "UPDATE pedido SET estado = :estado, ruta_pdf = :ruta_pdf WHERE id = :id";
+            $query = $this->acceso->prepare($sql);
+            $query->execute(array(':estado'=>$estado, ':ruta_pdf'=>$ruta_pdf, ':id'=>$id));
+        }
+
+        public function eliminar_pedido($id_pedido) {
+            $sql = "DELETE FROM pedido WHERE id = :id";
+            $query = $this->acceso->prepare($sql);
+            $query->execute(array(':id'=>$id_pedido));
+        }
     }

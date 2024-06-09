@@ -1,13 +1,9 @@
 <?php
     ob_start(); // Inicia el búfer de salida
-    session_start();
     include '../Util/Config/config.php';
-    include '../Models/Usuario.php';
-    // Verificar si el usuario está logueado
-    if (!isset($_SESSION['id'])) {
-        header('Location: ./index.php');
-        exit();
-    }
+    // Specify the allowed roles for this page
+    $allowed_roles = ['Administrador', 'Repositor', 'Cliente', 'Empleado'];
+
     include_once 'Layouts/General/header.php'; // Mover esta línea después de las llamadas a header()
     ob_end_flush(); // Vacía (envía) el búfer de salida
 ?>
@@ -133,7 +129,6 @@
             <label>Referencia: </label>
             <input id="referencia" class="form-control" placeholder="Ingrese alguna referencia">
           </div>
-
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>

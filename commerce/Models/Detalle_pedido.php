@@ -10,12 +10,24 @@ class Detalle_pedido{
 
     // Funcion para obtener el carrito del usuario
     function obtenerDetallesPedido($id_usuario){
-        $sql = "SELECT detalles_pedido.*, producto.nombre AS nombre_producto, producto.foto AS producto_foto 
+        $sql = "SELECT detalles_pedido.*, producto.nombre AS nombre_producto, producto.foto AS producto_foto, producto.precio_envio_km, producto.cantidad_disponible AS stock, categoria.nombre AS nombre_categoria 
             FROM detalles_pedido 
             INNER JOIN producto ON detalles_pedido.id_producto = producto.id 
+            INNER JOIN categoria ON producto.id_categoria = categoria.id
             WHERE detalles_pedido.id_usuario=:id_usuario AND detalles_pedido.id_pedido IS NULL";
         $query = $this->acceso->prepare($sql);
         $query->execute(array(':id_usuario'=>$id_usuario));
+        $this->objetos = $query->fetchAll();
+        return $this->objetos;
+    }
+
+    function obtener_Detalle_Pedido_Id($id_pedido){
+        $sql = "SELECT dp.id_producto, dp.precio_unitario, dp.cantidad, p.nombre AS nombre_producto, p.foto AS producto_foto, p.tipo_techo, p.color
+            FROM detalles_pedido dp
+            INNER JOIN producto p ON dp.id_producto = p.id
+            WHERE dp.id_pedido=:id_pedido";
+        $query = $this->acceso->prepare($sql);
+        $query->execute(array(':id_pedido'=>$id_pedido));
         $this->objetos = $query->fetchAll();
         return $this->objetos;
     }

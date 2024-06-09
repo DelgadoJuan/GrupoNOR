@@ -6,7 +6,7 @@ $(document).ready(function() {
 
     bsCustomFileInput.init();
     verificar_sesion();
-    obtenerProductos($('#sortCharacteristic').val(), $('#filterName').val());
+    obtenerProductos();
     
     // Función para modificar el estado de un producto
     function modificarEstadoProducto(id, estado) {
@@ -20,7 +20,14 @@ $(document).ready(function() {
             },
             success: function(response) {
                 alert('Estado modificado correctamente');
-                obtenerProductos($('#sortCharacteristic').val(), $('#filterName').val()); // Actualizar la tabla
+                obtenerProductos(); // Actualizar la tabla
+
+                // Encuentra el botón de estado para este producto y actualiza su estado
+                let button = document.querySelector(`.toggle-status-button[data-id="${id}"]`);
+                if (button) {
+                    button.dataset.status = estado === 'A' ? 'I' : 'A';
+                    button.innerHTML = `<i class="${estado === 'A' ? 'fas fa-toggle-off' : 'fas fa-toggle-on'}"></i>`;
+                }
             }
         });
     }
@@ -36,48 +43,58 @@ $(document).ready(function() {
             },
             success: function(response) {
                 alert('Producto eliminado correctamente');
-                obtenerProductos($('#sortCharacteristic').val(), $('#filterName').val()); // Actualizar la tabla
+                obtenerProductos(); // Actualizar la tabla
             }
         });
     }
 
     // Función para obtener todos los productos y llenar la tabla de stock
-    function obtenerProductos(ordenar_por, nombre, direccion) {
+    function obtenerProductos() {
         $.ajax({
             url: '../Controllers/ProductoController.php',
             method: 'POST',
-            data: {
-                funcion: 'obtener_productos', ordenar_por: ordenar_por, nombre: nombre, direccion: direccion 
-            },
+            data: { funcion: 'obtener_productos' },
             success: function(response) {
                 let productos = JSON.parse(response);
                 let tbody = document.querySelector('#inventoryTable tbody');
                 tbody.innerHTML = '';
-
+    
                 productos.forEach(producto => {
                     let row = `
                         <tr>
-                            <td>${producto.nombre ? producto.nombre : ''}</td>
-                            <td>${producto.nombre_categoria ? producto.nombre_categoria : ''}</td>
-                            <td>${producto.precio_unitario ? parseInt(producto.precio_unitario).toString().replace(/,/g, '') : 0}</td>
-                            <td>${producto.costo_unidad ? parseInt(producto.costo_unidad).toString().replace(/,/g, '') : 0}</td>
-                            <td>${producto.sector ? producto.sector : ''}</td>
-                            <td>${producto.descripcion ? producto.descripcion : ''}</td>
-                            <td>${producto.fecha_registro ? new Date(producto.fecha_registro).toLocaleString() : ''}</td>
-                            <td>${producto.fecha_actualizacion ? new Date(producto.fecha_actualizacion).toLocaleString() : ''}</td>
-                            <td class='cantidad-column'>${producto.cantidad_disponible ? producto.cantidad_disponible : 0}</td>
-                            <td><button class="btn btn-warning toggle-status-button" data-id="${producto.id}" data-status="${producto.estado}"><i class="${producto.estado == 'A' ? 'fas fa-toggle-on' : 'fas fa-toggle-off'}"></i></button></td>
-                                <td>
-                                    <button class="btn btn-primary add-quantity-button" data-id="${producto.id}" data-toggle="modal" data-target="#addStockModal"><i class="fas fa-plus"></i></button>
-                                    <button class="btn btn-info edit-button" data-id="${producto.id}" data-toggle="modal" data-target="#editProductModal"><i class="fas fa-edit"></i></button>
-                                    <button class="btn btn-danger delete-button" data-id="${producto.id}"><i class="fas fa-trash"></i></button>
-                                </td>
+                            <td>${producto.nombre ? producto.nombre : 'N/A'}</td>
+                            <td>${producto.nombre_categoria ? producto.nombre_categoria : 'N/A'}</td>
+                            <td>${producto.precio_unitario ? parseInt(producto.precio_unitario).toString().replace(/,/g, '') : 'N/A'}</td>
+                            <td>${producto.costo_unidad ? parseInt(producto.costo_unidad).toString().replace(/,/g, '') : 'N/A'}</td>
+                            <td>${producto.precio_envio_km ? parseInt(producto.precio_envio_km).toString().replace(/,/g, '') : 'N/A'}</td>
+                            <td>${producto.sector ? producto.sector : 'N/A'}</td>
+                            <td>${producto.descripcion ? producto.descripcion : 'N/A'}</td>
+                            <td>${producto.fecha_registro ? new Date(producto.fecha_registro).toLocaleString() : 'N/A'}</td>
+                            <td>${producto.fecha_actualizacion ? new Date(producto.fecha_actualizacion).toLocaleString() : 'N/A'}</td>
+                            <td class='cantidad-column'>${producto.cantidad_disponible ? producto.cantidad_disponible : 'N/A'}</td>
+                            <td data-order="${producto.estado == 'A' ? 1 : 0}">
+                                <button class="btn btn-warning toggle-status-button" data-id="${producto.id}" data-status="${producto.estado}">
+                                    <i class="${producto.estado == 'A' ? 'fas fa-toggle-on' : 'fas fa-toggle-off'}"></i>
+                                </button>
+                            </td>
+                            <td>
+                                <button class="btn btn-primary add-quantity-button" data-id="${producto.id}" data-toggle="modal" data-target="#addStockModal"><i class="fas fa-plus"></i></button>
+                                <button class="btn btn-info edit-button" data-id="${producto.id}" data-toggle="modal" data-target="#editProductModal"><i class="fas fa-edit"></i></button>
+                                <button class="btn btn-danger delete-button" data-id="${producto.id}"><i class="fas fa-trash"></i></button>
+                            </td>
                         </tr>
                     `;
     
                     // Agregar la fila al cuerpo de la tabla
                     tbody.innerHTML += row;
                 });
+    
+                // Destruir la instancia existente de DataTables antes de crear una nueva
+                if ($.fn.DataTable.isDataTable('#inventoryTable')) {
+                    $('#inventoryTable').DataTable().destroy();
+                }
+
+                $('#inventoryTable').DataTable();
     
                 // Agregar eventos a los botones de editar, eliminar, agregar cantidad y activar/desactivar
                 document.querySelectorAll('.edit-button').forEach(button => {
@@ -97,10 +114,10 @@ $(document).ready(function() {
                 document.querySelectorAll('.add-quantity-button').forEach(button => {
                     button.addEventListener('click', function() {
                         let row = this.closest('tr');
-
+    
                         // Obtener la cantidad existente del producto de la tabla
                         let cantidadExistente = row.querySelector('.cantidad-column').textContent;
-
+    
                         document.querySelector('#addStockModal #productId').value = this.dataset.id;
                         // Cargar la cantidad existente en el modal
                         document.querySelector('#addStockModal #cantidad').value = cantidadExistente;
@@ -143,7 +160,7 @@ $(document).ready(function() {
                 $('#productModal').modal('hide');
                 alert('Producto creado correctamente');
                 // Actualizar la tabla de productos
-                obtenerProductos($('#sortCharacteristic').val(), $('#filterName').val());
+                obtenerProductos();
             }
         });
     });
@@ -168,6 +185,7 @@ $(document).ready(function() {
                 document.querySelector('#editProductForm #costo_unidad').value = producto.costo_unidad;
                 document.querySelector('#editProductForm #precio_unitario').value = producto.precio_unitario;
                 document.querySelector('#editProductForm #sector').value = producto.sector;
+                document.querySelector('#editProductForm #precio_envio').value = producto.precio_envio_km;
     
                 // Cargar la foto principal del producto
                 if (producto.foto) {
@@ -221,7 +239,7 @@ $(document).ready(function() {
             contentType: false,  // No establecer el encabezado Content-Type automáticamente
             success: function(response) {
                 alert('Producto editado correctamente');
-                obtenerProductos($('#sortCharacteristic').val(), $('#filterName').val());
+                obtenerProductos();
                 $('#editProductModal').modal('hide');
             }
         });
@@ -264,7 +282,7 @@ $(document).ready(function() {
                     if (data.status === 'success') {
                         alert('Cantidad modificada correctamente');
                         $('#addStockModal').modal('hide');
-                        obtenerProductos($('#sortCharacteristic').val(), $('#filterName').val());
+                        obtenerProductos();
                     } else {
                         alert(data.message);
                     }
@@ -273,11 +291,6 @@ $(document).ready(function() {
                     console.error(textStatus, errorThrown);
                 }
             });
-        });
-
-        $('#filterName').on('input', function() {
-            const nombre = $(this).val();
-            obtenerProductos($('#sortCharacteristic').val(), nombre);
         });
 
         // Función para validar los datos del producto
@@ -304,20 +317,6 @@ $(document).ready(function() {
         /*function isDecimal(value) {
             return /^\d+(\.\d+)?$/.test(value);
         } */
-
-        $('th').on('click', function() {
-            const columna = $(this).data('columna');
-            if (ordenar_por === columna) {
-                direccion = direccion === 'ASC' ? 'DESC' : 'ASC';
-            } else {
-                ordenar_por = columna;
-                direccion = 'ASC';
-            }
-            obtenerProductos(ordenar_por, null, direccion);
-        
-            // Cambia la flecha de dirección
-            $(this).find('i').toggleClass('fa-sort-up fa-sort-down');
-        });
 
         function obtenerCategorias() {
             $.post('../Controllers/CategoriaController.php', { funcion: 'obtener_categorias' }, function(response) {

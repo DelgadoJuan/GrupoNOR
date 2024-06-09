@@ -194,8 +194,6 @@ session_start();
             'apellido'=>$objeto->apellidos,
             'email'=>$objeto->email,
         );
-        $_SESSION['payer'] = $json;
         echo json_encode($json);
     }
-
 

@@ -1,3 +1,26 @@
+<?php
+  session_start();
+  include '../Models/Usuario.php';
+
+  // Verificar si el usuario tiene permisos de administrador
+  $usuario = new Usuario();
+
+  // Verificar si el usuario está logueado
+  if (isset($_SESSION['id'])) {
+      $rolUsuario = $usuario->obtener_rol($_SESSION['id']);
+      // Verificar si obtener_rol() devolvió un resultado
+      if (isset($rolUsuario[0])) {
+          $rol = $rolUsuario[0];
+      }
+  }
+
+  // Check if the user role is allowed
+  if (!in_array($rol->tipo, $allowed_roles)) {
+      header('Location: ./index.php');
+      exit();
+  }
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -85,8 +108,27 @@
           <span id="usuario_nav"> Usuario logueado</span>
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-          <a class="dropdown-item" href="mi_perfil.php"><i class="fas fa-user-cog"></i> Mi perfil</a>
-          <a class="dropdown-item" href="#"><i class="fas fa-shopping-basket"> </i> Mis pedidos</a>
+          <?php
+            if($rol !== null ) {
+                if ($rol->tipo === 'Repositor') {
+                    echo '<a class="dropdown-item text-dark" href="mi_perfil.php"><i class="fas fa-user-cog"></i> Mi perfil</a>';
+                    echo '<a class="dropdown-item text-dark" href="stock.php"><i class="fas fa-cubes"></i> Stock</a>';
+                    echo '<a class="dropdown-item text-dark" href="categoria.php"><i class="fas fa-tags"></i> Categorías</a>';
+                } else if ($rol->tipo === 'Empleado') {
+                    echo '<a class="dropdown-item text-dark" href="mi_perfil.php"><i class="fas fa-user-cog"></i> Mi perfil</a>';
+                    echo '<a class="dropdown-item text-dark" href="pedidoAdmin.php"><i class="fas fa-shopping-basket"></i> Pedidos</a>';
+                } else if ($rol->tipo === 'Administrador'){
+                    echo '<a class="dropdown-item text-dark" href="mi_perfil.php"><i class="fas fa-user-cog"></i> Mi perfil</a>';
+                    echo '<a class="dropdown-item text-dark" href="pedidoAdmin.php"><i class="fas fa-shopping-basket"></i> Pedidos</a>';
+                    echo '<a class="dropdown-item text-dark" href="usuarios.php"><i class="fas fa-users"></i> Usuarios</a>';
+                    echo '<a class="dropdown-item text-dark" href="stock.php"><i class="fas fa-cubes"></i> Stock</a>';
+                    echo '<a class="dropdown-item text-dark" href="categoria.php"><i class="fas fa-tags"></i> Categorías</a>';
+                } else {
+                    echo '<a class="dropdown-item text-dark" href="mi_perfil.php"><i class="fas fa-user-cog"></i> Mi perfil</a>';
+                    echo '<a class="dropdown-item text-dark" href="mis_pedidos.php"><i class="fas fa-shopping-basket"></i> Mis pedidos</a>';
+                }
+            }
+          ?>
           <!-- Controlador para cerrar sesion -->
           <a class="dropdown-item" href="../Controllers/logout.php"><i class="fas fa-user-times"></i> Cerrar sesión</a>
         </div>
@@ -94,8 +136,3 @@
     </ul>
   </nav>
   <!-- /.navbar -->
-  
-
-<?php
-
-?>

@@ -3,6 +3,8 @@
     include '..\Util\Config\config.php';
 ?>
 <input type="hidden" id="precioBase" value="<?php echo PRECIO_BASE; ?>">
+<input type="hidden" id="precioMayor12" value="<?php echo PRECIO_MAYOR_12; ?>">
+<input type="hidden" id="precioMayor15" value="<?php echo PRECIO_MAYOR_15; ?>">
 
 <section>
     <div class="container mt-5 mb-5">
@@ -13,9 +15,6 @@
             </div>
             <div class="form-group mb-4">
                 <input type="number" id="ancho" name="ancho" class="form-control" placeholder="Ancho" style="background:none; border:none; border-radius: 0; border-bottom: 3px solid rgba(0, 0, 0, 0.15)" required>
-            </div>
-            <div class="form-group mb-5">
-                <input type="number" id="altura" name="altura" class="form-control" placeholder="Altura" style="background:none; border:none; border-radius: 0; border-bottom: 3px solid rgba(0, 0, 0, 0.15)" required>
             </div>
             <label for="tipoTecho" class="text-dark">Tipo de Techo:</label>
             <select id="tipoTecho" name="tipoTecho" class="text-dark rounded mr-5"style="padding: .25em 1em; background:none; border: 1px solid rgba(0, 0, 0, 0.15); ">
@@ -29,8 +28,8 @@
                 <option value="azul" class="text-dark">Azul</option>
             </select>
             <div class="form-group mb-4">
-                <label for="resultado" class="text-dark">Precio:</label>
-                <div id="resultado" name="resultado" class="mt-3"></div>
+                <label style="display:flex;" for="resultado" class="text-dark">Precio: <div class="text-dark" style="padding-left:10px;font-weight:600;" id="resultado" name="resultado" class="mt-3">$0</div></label>
+                
             </div>
             <button type="submit" id="addToCart" class="btn btn-block" style="background: #ac2e32; color: #ffff; padding:.75em 0">Agregar al carrito</button>
         </form>

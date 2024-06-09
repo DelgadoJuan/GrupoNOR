@@ -54,7 +54,6 @@
 
       <div class="collapse navbar-collapse" id="navbarNav">
           <ul id="categorias" class="navbar-nav">
-              <li> <a class="nav-link rounded" href="../Views/calculadora.php">Calculadora</a> </li>
               <!-- Categorías se insertarán aquí -->
           </ul>
       </div>
@@ -99,7 +98,7 @@
             <img id="avatar_nav" src="" width="30" height="30" class="img-fluid img-circle">
             <span id="usuario_nav" class="ml-2 mr-2" style="color:rgb(80, 80, 80);"> Usuario logueado</span>
           </a>
-          <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+          <div class="dropdown-menu text-dark rounded" aria-labelledby="navbarDropdownMenuLink" style="background-color: rgb(245,245,245); box-shadow:none;border:none;">
             <a class="dropdown-item text-dark" href="mi_perfil.php"><i class="fas fa-user-cog mr-2" style="color:rgb(80, 80, 80);"></i> Mi perfil</a>
             <a class="dropdown-item text-dark" href="#"><i class="fas fa-shopping-basket mr-2" style="color:rgb(80, 80, 80);"> </i> Mis pedidos</a>
             <!-- Controlador para cerrar sesion -->

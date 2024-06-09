@@ -1,43 +1,44 @@
 import { verificar_sesion } from "./sesion.js";
 
 $(document).ready(function() {
-    let ordenar_por = null;
-    let direccion = 'ASC';
     bsCustomFileInput.init();
     verificar_sesion();
 
     $(document).ready(function() {
-        obtenerCategorias(null, null, null);
+        obtenerCategorias();
     });
 
-    function obtenerCategorias(ordenar_por, nombre, direccion) {
+    function obtenerCategorias() {
         $.ajax({
             url: '../Controllers/CategoriaController.php',
             type: 'POST',
-            data: { funcion: 'obtener_categorias', ordenar_por: ordenar_por, nombre: nombre, direccion: direccion},
+            data: { funcion: 'obtener_categorias'},
             success: function(response) {
                 const categorias = JSON.parse(response);
                 let tbody = '';
                 categorias.forEach(categoria => {
                     tbody += `
-                        <tr>
-                            <td>${categoria.nombre ? categoria.nombre : ''}</td>
-                            <td>${categoria.nombre_padre ? categoria.nombre_padre : ''}</td>
-                            <td>${categoria.descripcion ? categoria.descripcion : ''}</td>
-                            <td>${categoria.fecha_creacion ? new Date(new Date(categoria.fecha_creacion).getTime() + new Date().getTimezoneOffset()*60*1000).toLocaleDateString() : ''}</td>
-                            <td>
+                        <tr class="text-dark">
+                            <td class="text-dark">${categoria.nombre ? categoria.nombre : 'N/A'}</td>
+                            <td class="text-dark">${categoria.nombre_padre ? categoria.nombre_padre : 'N/A'}</td>
+                            <td class="text-dark">${categoria.descripcion ? categoria.descripcion : 'N/A'}</td>
+                            <td class="text-dark">${categoria.fecha_creacion ? new Date(new Date(categoria.fecha_creacion).getTime() + new Date().getTimezoneOffset()*60*1000).toLocaleDateString() : 'N/A'}</td>
+                            <td class="status-cell text-dark" data-order="${categoria.estado == 'A' ? 1 : 0}">
                                 <button class="btn btn-sm ${categoria.estado == 'A' ? 'btn-success' : 'btn-secondary'} toggle-status-button" data-id="${categoria.id}" data-status="${categoria.estado}">
                                     <i class="fas ${categoria.estado == 'A' ? 'fa-toggle-on' : 'fa-toggle-off'}"></i>
                                 </button>
                             </td>
-                            <td>
+                            <td class="text-dark">
                                 <button class="btn btn-primary btn-sm btn-edit" data-id="${categoria.id}" data-toggle="modal" data-target="#editCategoryModal"><i class="fas fa-edit"></i></button>
                                 <button class="btn btn-danger btn-sm btn-delete" data-id="${categoria.id}"><i class="fas fa-trash"></i></button>
                             </td>
                         </tr>
                     `;
                 });
+
                 $('#categoryTable tbody').html(tbody);
+                $('#categoryTable').DataTable();
+
                 // Controlador de eventos de clic para el botón de edición
                 $('.btn-edit').on('click', function() {
                     const id = $(this).data('id');
@@ -115,20 +116,6 @@ $(document).ready(function() {
         });
     }
 
-    $('th').on('click', function() {
-        const columna = $(this).data('columna');
-        if (ordenar_por === columna) {
-            direccion = direccion === 'ASC' ? 'DESC' : 'ASC';
-        } else {
-            ordenar_por = columna;
-            direccion = 'ASC';
-        }
-        obtenerCategorias(ordenar_por, $('#filterName').val(), direccion);
-    
-        // Cambia la flecha de dirección
-        $(this).find('i').toggleClass('fa-sort-up fa-sort-down');
-    });
-
     function cargarCategorias(selectId, excludeId, successCallback) {
         $.ajax({
             url: '../Controllers/CategoriaController.php',
@@ -153,11 +140,6 @@ $(document).ready(function() {
             }
         });
     }
-
-    $('#filterName').on('input', function() {
-        const nombre = $(this).val();
-        obtenerCategorias(ordenar_por, nombre, direccion);
-    });
 
     // Llama a la función cuando se muestra el modal de agregar producto
     $('#addCategoryModal').on('shown.bs.modal', function () {

@@ -37,7 +37,7 @@ if (isset($_SESSION['id'])) {
 
 <body>
 
-    <div class="popup-background-news"></div>
+    <!-- <div class="popup-background-news"></div> -->
 
     <nav class="nav-bar">
 
@@ -52,28 +52,30 @@ if (isset($_SESSION['id'])) {
                     <a class="nav-link" href="#quienes-somos"> NOSOTROS </a>
                     <a class="nav-link" href="#servicio"> SERVICIOS </a>
                     <a class="nav-link" href="#proyects"> PROYECTOS </a>
-                    <li class="dropdown">
-                        <a class="nav-link dropdown-toggle" href="#">ACCESOS</a>
-                        <ul class="dropdown-menu">
-                            <?php
-                                if ($rol->tipo === 'Administrador') {
-                                    echo '<li><a class="dropdown-item" href="./categoria.php">Categorias</a></li>
-                                    <li><a class="dropdown-item" href="./pedido.php">Pedidos de clientes</a></li>
-                                    <li><a class="dropdown-item" href="./stock.php">Stock</a></li>
-                                    <li><a class="dropdown-item" href="./usuarios.php">Lista usuarios</a></li>';
-                                } elseif ($rol->tipo === 'Repositor') {
-                                    echo '<li><a class="dropdown-item" href="./stock.php">Stock</a></li>';
-                                } elseif ($rol->tipo === 'Empleado') {
-                                    echo ' <li><a class="dropdown-item" href="./categoria.php">Categorias</a></li>
-                                    <li><a class="dropdown-item" href="./pedido.php">Pedidos de clientes</a></li>
-                                    <li><a class="dropdown-item" href="./stock.php">Stock</a></li>';
-                                } elseif ($rol->tipo === null){
-                                    echo '<li><a class="dropdown-item" href="#">Opción para otros roles</a></li>';
-                                }
-                            ?>
-                        </ul>
-                    </li>
-
+                    <?php if($rol !== null && $rol->tipo !== 'Cliente') : ?>
+                        <li class="dropdown">
+                            <a class="nav-link dropdown-toggle" href="#">ACCESOS</a>
+                            <ul class="dropdown-menu">
+                                <?php
+                                    if($rol !== null) {
+                                        if ($rol->tipo === 'Administrador') {
+                                            echo '<li><a class="dropdown-item" href="./categoria.php">Categorias</a></li>
+                                            <li><a class="dropdown-item" href="./pedidoAdmin.php">Pedidos de clientes</a></li>
+                                            <li><a class="dropdown-item" href="./stock.php">Stock</a></li>
+                                            <li><a class="dropdown-item" href="./usuarios.php">Lista usuarios</a></li>';
+                                        } elseif ($rol->tipo === 'Repositor') {
+                                            echo '<li><a class="dropdown-item" href="./categoria.php">Categorias</a></li>
+                                            <li><a class="dropdown-item" href="./stock.php">Stock</a></li>';
+                                        } elseif ($rol->tipo === 'Empleado') {
+                                            echo ' <li><a class="dropdown-item" href="./categoria.php">Categorias</a></li>
+                                            <li><a class="dropdown-item" href="./pedidoAdmin.php">Pedidos de clientes</a></li>
+                                            <li><a class="dropdown-item" href="./stock.php">Stock</a></li>';
+                                        }
+                                    } 
+                                ?>
+                            </ul>
+                        </li>
+                    <?php endif; ?>
                 </ul>
                     <?php
                         if (empty($rol->tipo)) {
@@ -107,7 +109,7 @@ if (isset($_SESSION['id'])) {
         <div class="back-image-2"></div>
 
 
-        <section id="popup-news">
+        <!-- <section id="popup-news">
             
             <div class="popup-center-news">
                 <div class="popup-container-news">
@@ -128,7 +130,7 @@ if (isset($_SESSION['id'])) {
                     <button href="#" class="btn-popup-news">Suscribirse</button>
                 </div>
             </div>
-        </section>
+        </section> -->
 
 
         <section id="popup-empleo">
@@ -258,8 +260,6 @@ if (isset($_SESSION['id'])) {
                         <Button class='btn-cotizar' onclick="window.location.href='./calculadora.php';">COTIZAR</Button>
                         <Button class='btn-contact' onclick="window.location.href='#end';">CONTÁCTANOS</Button>
                     </div>
-                    <p>¿Crees que tu experiencia nos puede ser útil? <a href="#" class="unete-btn"> Unete a nosotros</a>
-                    </p>
                 </div>
 
                 <div class='landing-img-container'>
@@ -309,7 +309,7 @@ if (isset($_SESSION['id'])) {
                         listos para instalar en cualquier punto del país. Confíe en nosotros
                         para cumplir sus proyectos con profesionalismo y eficiencia.
                     </p>
-                    <button id="btn-vermas">VER MÁS</button>
+                    <a href="./tienda.php"><button id="btn-vermas">VER MÁS</button></a>
                 </div>
 
             </div>
@@ -612,9 +612,7 @@ if (isset($_SESSION['id'])) {
                     Coméntanos sobre
                     tu Proyecto
                 </h1>
-                <button>
-                    CONTÁCTANOS
-                </button>
+                
             </div>
 
             <div class="end-container-2">

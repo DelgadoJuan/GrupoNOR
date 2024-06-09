@@ -8,18 +8,10 @@
             $this->acceso = $db->pdo;
         }
 
-        function obtener_categorias($ordenar_por = null, $nombre = null, $direccion = 'ASC') {
+        function obtener_categorias() {
             $sql = "SELECT c.id, c.nombre, c.id_padre, c.fecha_creacion, c.descripcion, c.estado, cp.nombre as nombre_padre FROM categoria as c LEFT JOIN categoria as cp ON c.id_padre=cp.id";
-            $params = [];
-            if ($nombre) {
-                $sql .= " WHERE c.nombre LIKE :nombre";
-                $params[':nombre'] = '%' . $nombre . '%';
-            }
-            if ($ordenar_por) {
-                $sql .= " ORDER BY " . $ordenar_por . " " . $direccion;
-            }
             $query = $this->acceso->prepare($sql);
-            $query->execute($params);
+            $query->execute();
             $this->objetos = $query->fetchAll();
             return $this->objetos;
         }

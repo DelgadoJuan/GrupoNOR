@@ -1,20 +1,10 @@
 <?php
     ob_start(); // Inicia el búfer de salida
-    session_start();
     include '../Util/Config/config.php';
-    include '../Models/Usuario.php';
-    // Verificar si el usuario está logueado
-    if (!isset($_SESSION['id'])) {
-        header('Location: ./index.php');
-        exit();
-    }
-    // Verificar si el usuario tiene permisos de administrador
-    $usuario = new Usuario();
-    $rol = $usuario->obtener_rol($_SESSION['id'])[0];
-    if ($rol->tipo !== 'Administrador' && $rol->tipo !== 'Repositor') {
-        header('Location: ./index.php');
-        exit();
-    }
+
+    // Specify the allowed roles for this page
+    $allowed_roles = ['Administrador', 'Repositor'];
+
     include_once 'Layouts/General/header.php'; // Mover esta línea después de las llamadas a header()
     ob_end_flush(); // Vacía (envía) el búfer de salida
 ?>
@@ -26,25 +16,25 @@
                 <div class="card" style="box-shadow: none;border:none;">
                     <div class="card-header mb-0" style="box-shadow: none;border:none;">
                         <h1 class="card-title mb-0" style="font-weight: 700; font-size:1.75em; ">Categorías Actuales</h1>
+                        <!-- Botón para abrir el modal -->
+                        <button type="button" class="btn btn-success float-right" data-toggle="modal" data-target="#addCategoryModal">
+                                Agregar Categoría
+                        </button>
                     </div>
                     <div class="card-body">
                         <div class="d-flex justify-content-between mb-5">
-                            <!-- Agregar un input para el filtrado por nombre -->
-                            <input type="text" id="filterName" class="form-control" style="width:100%; max-width: 25em; border:none; background: rgba(200,200,200,.3)" placeholder="Filtrar por Nombre">
-                            <!-- Botón para abrir el modal -->
-                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addCategoryModal">
-                                Agregar Categoría
-                            </button>
+                            
+                            
                         </div>
                         <!-- Agregar la tabla con la información de las categorías -->
                         <table id="categoryTable" class="table table-striped table-hover border-0" style="border:none;box-shadow:none;">
                             <thead>
                                 <tr>
-                                    <th data-columna="c.nombre"><p style="opacity:.4">Nombre <i class="fas fa-sort"></></p></th>
-                                    <th data-columna="cp.nombre"><p style="opacity:.4">Categoría Padre <i class="fas fa-sort"></></p></th>
-                                    <th data-columna="c.descripcion"><p style="opacity:.4">Descripción <i class="fas fa-sort"></></p></th>
-                                    <th data-columna="c.fecha_creacion"><p style="opacity:.4">Fecha de Registro <i class="fas fa-sort"></></p></th>
-                                    <th data-columna="c.estado"><p style="opacity:.4">Estado <i class="fas fa-sort"></></p></th>
+                                    <th data-columna="c.nombre"><p style="opacity:.4">Nombre</p></th>
+                                    <th data-columna="cp.nombre"><p style="opacity:.4">Categoría Padre</p></th>
+                                    <th data-columna="c.descripcion"><p style="opacity:.4">Descripción</p></th>
+                                    <th data-columna="c.fecha_creacion"><p style="opacity:.4">Fecha de Registro</p></th>
+                                    <th data-columna="c.estado"><p style="opacity:.4">Estado</p></th>
                                     <th><p style="opacity:.4">Acciones</p></th>
                                 </tr>
                             </thead>
@@ -130,3 +120,4 @@
     include_once 'Layouts/General/footer.php';
 ?>
 <script src="./categoria.js" type="module"></script>
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
