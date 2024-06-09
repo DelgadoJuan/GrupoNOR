@@ -14,26 +14,6 @@
     ob_end_flush(); // Vacía (envía) el búfer de salida
 ?>
 
-<!--<style>
-    .dataTables_length label {
-        color: black; /* Cambia el color del texto */
-    }
-    .dataTables_length select {
-        color: black; /* Cambia el color del texto */
-    }
-
-    /* Estilo para el campo de búsqueda */
-    .dataTables_filter input {
-        color: black; /* Cambia el color del texto */
-    }
-    .dataTables_filter label {
-        color: black; /* Cambia el color del texto */
-    }
-    .dataTables_info {
-        color: black; /* Cambia el color del texto */
-    }
-</style> -->
-
 <section class="content">
     <div class="container-fluid">
         <div class="row">

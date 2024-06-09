@@ -9,7 +9,7 @@
     <section class="content border-0 " style="border:none;">
 
       <!-- Default box -->
-      <div class="card mt-3 mb-3 border-0 " style="padding:1em; background:none; border:none">
+      <div class="card mt-3 mb-3 border-0 " style="padding:1em; background:none; border:none; box-shadow:none;">
         <div class="card-header mb-0" style="border:none;">
           <h3 class="card-title mb-0" style="color: #505050; font-weight:600; font-size:1.5em">Productos</h3>
         </div>

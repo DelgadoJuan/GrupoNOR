@@ -25,14 +25,14 @@ function obtenerPedidos() {
 
             pedidos.forEach(function(pedido) {
                 var row = $('<tr>');
-                row.append($('<td>').text(pedido.id || 'N/A'));
-                row.append($('<td>').text((pedido.nombres || 'N/A') + ' ' + (pedido.apellidos || 'N/A'))); // Reemplaza esto con el nombre del cliente
-                row.append($('<td>').text(pedido.dni || 'N/A')); // Reemplaza esto con el DNI del cliente
-                row.append($('<td>').text(pedido.fecha ? new Date(pedido.fecha).toLocaleString() : 'N/A'));
-                row.append($('<td>').text(pedido.envio ? Math.trunc(pedido.envio) : 0));
-                row.append($('<td>').text(pedido.total ? Math.trunc(pedido.total) : 0));
-                row.append($('<td>').text(pedido.metodo_pago || 'N/A'));
-                row.append($('<td>').text(pedido.estado || 'N/A'));
+                row.append($('<td class="text-dark">').text(pedido.id || 'N/A'));
+                row.append($('<td class="text-dark">').text((pedido.nombres || 'N/A') + ' ' + (pedido.apellidos || 'N/A'))); // Reemplaza esto con el nombre del cliente
+                row.append($('<td class="text-dark">').text(pedido.dni || 'N/A')); // Reemplaza esto con el DNI del cliente
+                row.append($('<td class="text-dark">').text(pedido.fecha ? new Date(pedido.fecha).toLocaleString() : 'N/A'));
+                row.append($('<td class="text-dark">').text(pedido.envio ? Math.trunc(pedido.envio) : 0));
+                row.append($('<td class="text-dark">').text(pedido.total ? Math.trunc(pedido.total) : 0));
+                row.append($('<td class="text-dark">').text(pedido.metodo_pago || 'N/A'));
+                row.append($('<td class="text-dark">').text(pedido.estado || 'N/A'));
 
                 var acciones = $('<td>');
                 var viewDetailsButton = $('<button>').attr('id', 'viewDetails-' + pedido.id).addClass('btn btn-info').append($('<i>').addClass('fas fa-eye'));

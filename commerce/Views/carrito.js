@@ -20,14 +20,14 @@ function obtenerCategorias() {
             var categorias = JSON.parse(response);
             var navbarHtml = '';
 
-            navbarHtml += '<li class="nav-item"><a href="./calculadora.php" class="nav-link">Cotización</a></li>';
+            navbarHtml += '<li class="nav-item text-dark"><a href="./calculadora.php" class="nav-link text-dark">Cotización</a></li>';
             function generateCategoryHtml(categoria, isSubcategory = false) {
                 var html = '';
                 if (isSubcategory) {
-                    html += '<li class="dropdown-submenu"><a href="#" class="dropdown-item subcategoria" data-id="' + categoria.id + '">' + categoria.nombre + '</a>';
+                    html += '<li class="dropdown-submenu text-dark"><a href="#" class="dropdown-item subcategoria text-dark" data-id="' + categoria.id + '">' + categoria.nombre + '</a>';
                 } else {
-                    html += '<li class="nav-item dropdown">';
-                    html += '<a href="#" class="nav-link categoria ' + ((categoria.subcategorias && categoria.subcategorias.length > 0) ? 'dropdown-toggle' : '') + '" role="button" aria-haspopup="true" aria-expanded="false" data-id="' + categoria.id + '">';
+                    html += '<li class="nav-item dropdown text-dark">';
+                    html += '<a href="#" class="nav-link categoria text-dark ' + ((categoria.subcategorias && categoria.subcategorias.length > 0) ? 'dropdown-toggle' : '') + '" role="button" aria-haspopup="true" aria-expanded="false" data-id="' + categoria.id + '">';
                     html += categoria.nombre;
                     html += '</a>';
                 }
@@ -95,6 +95,12 @@ $(document).ready(function(){
     obtenerDirecciones();
     $('#pagarButton').addClass('disabled');
 
+    $('#pagarButton').on('click', function() {
+        if (!$(this).hasClass('disabled')) {
+            window.location.href = './pago.php';
+        }
+    });
+
     // Detectar cambios en el dropdown de direcciones
     $('#direccion').change(function() {
         if ($(this).val() !== '') {
@@ -129,11 +135,11 @@ function obtenerDirecciones() {
         },
         success: function(response) {
             var direcciones = JSON.parse(response);
-            var direccionesHtml = '<option value="">Selecciona una dirección</option>';
+            var direccionesHtml = '<option class="text-dark" value="">Selecciona una dirección</option>';
             
             for (var i = 0; i < direcciones.length; i++) {
                 var direccionCompleta = direcciones[i].direccion + ', ' + direcciones[i].localidad + ', ' + direcciones[i].provincia
-                direccionesHtml += '<option value="' + direcciones[i].localidad + ', '+ direcciones[i].provincia + '">' + direccionCompleta + '</option>';
+                direccionesHtml += '<option class="text-dark" value="' + direcciones[i].localidad + ', '+ direcciones[i].provincia + '">' + direccionCompleta + '</option>';
             }
             $('#direccion').html(direccionesHtml);
         },
@@ -168,11 +174,11 @@ function obtenerCarrito() {
                 var itemSubtotal = cartItems[i].precio * cartItems[i].cantidad;
                 subtotal += itemSubtotal;
                 cartItemsHtml += '<tr>';
-                cartItemsHtml += '<td><img src="' + (cartItems[i].nombre_categoria === 'Tinglados' ? '../Util/Assets/tinglado3.jpeg' : cartItems[i].foto) + '" alt="' + cartItems[i].nombre_producto + '" style="width: 50px; height: 50px;"></td>';
-                cartItemsHtml += '<td>' + cartItems[i].nombre_producto + '</td>';
-                cartItemsHtml += '<td>' + cartItems[i].precio + '</td>';
-                cartItemsHtml += '<td><input type="number" class="form-control cantidadInput" value="' + cartItems[i].cantidad + '" min="1" max="' + cartItems[i].stock + '" data-id="' + cartItems[i].id + '"></td>';
-                cartItemsHtml += '<td>' + itemSubtotal + '</td>';
+                cartItemsHtml += '<td class="text-dark"><img src="' + (cartItems[i].nombre_categoria === 'Tinglados' ? '../Util/Assets/tinglado3.jpeg' : cartItems[i].foto) + '" alt="' + cartItems[i].nombre_producto + '" style="width: 50px; height: 50px;"></td>';
+                cartItemsHtml += '<td class="text-dark">' + cartItems[i].nombre_producto + '</td>';
+                cartItemsHtml += '<td class="text-dark">' + cartItems[i].precio + '</td>';
+                cartItemsHtml += '<td class="text-dark"><input type="number" class="form-control cantidadInput" value="' + cartItems[i].cantidad + '" min="1" max="' + cartItems[i].stock + '" data-id="' + cartItems[i].id + '"></td>';
+                cartItemsHtml += '<td class="text-dark">' + itemSubtotal + '</td>';
                 if (cartItems[i].cantidad > cartItems[i].stock) {
                     cartItemsHtml += '<td><i class="fas fa-exclamation-triangle text-warning" title="La cantidad en el carrito es mayor que el stock disponible"></i></td>';
                 } else {

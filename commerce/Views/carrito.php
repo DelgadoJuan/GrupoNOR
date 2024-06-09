@@ -45,20 +45,20 @@
                     </table>
                 </div>
                 
-                <div class="col-md-4 d-flex flex-column">
-                    <h3 class="text-dark mb-4" style="font-size:1.5em">Resumen del carrito</h3>
-                    <div id="cart-summary" class="border p-3 bg-light">
-                        <p id="cart-subtotal" class="mb-2">Subtotal: $<span id="subtotalPrice">0</span></p>
-                        <div class="form-group">
-                            <label for="direccion">Selecciona una dirección:</label>
-                            <select id="direccion" name="direccion" class="form-control">
+                <div class="col-md-4" style="display: flex;flex:2;flex-direction:column;">
+                    <h3 class=" text-dark mb-5" style="font-size:1.5em">Resumen del carrito</h3>
+                    <div id="cart-summary">
+                        <p class=" text-dark mb-4" id="cart-subtotal">Subtotal: $<span id="subtotalPrice" class="text-dark">0</span></p>
+                        <div>
+                            <label class=" text-dark" for="direccion">Selecciona una dirección:</label>
+                            <select class=" text-dark rounded mb-4" style="border:none; background:rgba(80,80,80,0.1); padding: .5em .5em" id="direccion" name="direccion">
                                 <!-- Las direcciones del usuario serán insertadas aquí por JavaScript -->
                             </select>
                         </div>
-                        <p id="cart-shipping" class="mb-2">Envío: $<span id="shippingPrice">0</span></p>
-                        <p id="cart-total" class="font-weight-bold mb-4">Total: $<span id="totalPrice">0</span></p>
-                        <a id="pagarButton" href="./pago.php" class="btn btn-primary btn-block disabled" style="background-color:rgb(6, 160, 227); border:none;">Ir a pagar</a>
+                        <p class=" text-dark" id="cart-shipping">Envío: $<span class=" text-dark" id="shippingPrice">0</span></p>
+                        <p class=" text-dark" id="cart-total">Total: $<span class=" text-dark" id="totalPrice">0</span></p>
                     </div>
+                    <Button id="pagarButton" class="disabled" style="background-color:rgb(6, 160, 227);border:none;opacity:1;margin-top:auto">Continuar</Button>
                 </div>
             </div>
         </div>

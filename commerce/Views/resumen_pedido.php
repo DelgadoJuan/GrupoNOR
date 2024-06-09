@@ -71,6 +71,3 @@
 ?>
 
 <script src="./resumen_pedido.js" type="module"></script>
-<script>
-    rol = echo $_SESSION['rol'];
-</script>

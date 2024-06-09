@@ -76,7 +76,7 @@ if (isset($_SESSION['id'])) {
                             </ul>
                         </li>
                     <?php endif; ?>
-
+                </ul>
                     <?php
                         if (empty($rol->tipo)) {
                             echo '<a class="nav-link-mobile" href="./login.php"> INICIAR SESIÓN </a>';

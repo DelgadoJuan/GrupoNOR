@@ -12,27 +12,27 @@
 ?>
 
 <section class="content">
-    <div class="container-fluid">
+    <div class="container-fluid mt-5">
         <div class="row">
-            <div class="col-md-12">
-                <div class="card">
+            <div class="col-md-12" style="box-shadow: none;border:none;">
+                <div class="card" style="box-shadow: none;border:none;">
                     <div class="card-header">
-                        <h3 class="card-title">Pedidos Actuales</h3>
+                        <h3 class="card-title" style="font-weight: 700; font-size:1.75em;">Pedidos Actuales</h3>
                     </div>
                     <div class="card-body">
                         <!-- Agregar la tabla con la información de los pedidos -->
                         <table id="ordersTable" class="table table-striped">
                             <thead>
                                 <tr>
-                                    <th>Nro. Pedido</th>
-                                    <th>Nombre del Cliente</th>
-                                    <th>DNI</th>
-                                    <th>Fecha del Pedido</th>
-                                    <th>Envío</th>
-                                    <th>Total</th>
-                                    <th>Forma de Pago</th>
-                                    <th>Estado</th>
-                                    <th>Acciones</th>
+                                    <th><p style="opacity:.4">Nro. Pedido</p></th>
+                                    <th><p style="opacity:.4">Nombre del Cliente</th>
+                                    <th><p style="opacity:.4">DNI</p></th>
+                                    <th><p style="opacity:.4">Fecha del Pedido</p></th>
+                                    <th><p style="opacity:.4">Envío</p></th>
+                                    <th><p style="opacity:.4">Total</p></th>
+                                    <th><p style="opacity:.4">Forma de Pago</p></th>
+                                    <th><p style="opacity:.4">Estado</p></th>
+                                    <th><p style="opacity:.4">Acciones</p</th>
                                 </tr>
                             </thead>
                             <tbody>

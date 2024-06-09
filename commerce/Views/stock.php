@@ -75,25 +75,28 @@
 ?>
 
 <section class="content">
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Inventario Actual</h3>
+    <div class="container-fluid mt-5" style="border:none; box-shadow:none; ">
+        <div class="row" style="border:none; box-shadow:none; ">
+            <div class="col-md-12" style="border:none; box-shadow:none; ">
+                <div class="card" style="border:none; box-shadow:none; ">
+                    <div class="card-header" style="border:none; box-shadow:none;">
+                        <h3 class="card-title"  style="font-weight: 700; font-size:1.75em; ">Inventario Actual</h3>
+                        <!-- Botón para abrir el modal -->
+                        <div class="float-right" style="display:flex; gap:.5em">
+                            <button type="button" class="btn btn-success float-right" data-toggle="modal" data-target="#productModal">
+                                Agregar Producto
+                            </button>
+                            <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#editPrecioKm2Modal">
+                                Editar Precios por km2
+                            </button>
+                            <button type="button" class="btn btn-primary float-right" data-toggle="modal" data-target="#editPrecioEnvioModal">
+                                Editar Precios de envio
+                            </button>
+                        </div>
                     </div>
                     <div class="card-body">
                         <div class="d-flex justify-content-between mb-3">
-                            <!-- Botón para abrir el modal -->
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#productModal">
-                                Agregar Producto
-                            </button>
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editPrecioKm2Modal">
-                                Editar Precios por km2
-                            </button>
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editPrecioEnvioModal">
-                                Editar Precios de envio
-                            </button>
+                            
                         </div>
                         <!-- Agregar la tabla con la información del inventario -->
                         <table id="inventoryTable" class="table table-striped">

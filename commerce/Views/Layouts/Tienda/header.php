@@ -136,11 +136,32 @@
             <img id="avatar_nav" src="" width="30" height="30" class="img-fluid img-circle">
             <span id="usuario_nav" class="ml-2 mr-2" style="color:rgb(80, 80, 80);"> Usuario logueado</span>
           </a>
-          <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-            <a class="dropdown-item text-dark" href="mi_perfil.php"><i class="fas fa-user-cog mr-2" style="color:rgb(80, 80, 80);"></i> Mi perfil</a>
-            <a class="dropdown-item text-dark" href="mis_pedidos.php"><i class="fas fa-shopping-basket mr-2" style="color:rgb(80, 80, 80);"> </i> Mis pedidos</a>
-            <!-- Controlador para cerrar sesion -->
-            <a class="dropdown-item text-dark" href="../Controllers/logout.php"><i class="fas fa-user-times" style="color:rgb(80, 80, 80);"></i> Cerrar sesión</a>
+          <div class="dropdown-menu text-dark rounded" aria-labelledby="navbarDropdownMenuLink" style="background-color: rgb(245,245,245); box-shadow:none;border:none;">
+            <?php 
+              if($rol !== null ) {
+                if ($rol->tipo === 'Repositor') {
+                    echo '<a class="dropdown-item text-dark" href="mi_perfil.php"><i class="fas fa-user-cog text-dark"></i> Mi perfil</a>';
+                    echo '<a class="dropdown-item text-dark" href="stock.php"><i class="fas fa-cubes text-dark"></i> Stock</a>';
+                    echo '<a class="dropdown-item text-dark" href="categoria.php"><i class="fas fa-tags text-dark"></i> Categorías</a>';
+                    echo '<a class="dropdown-item text-dark" href="../Controllers/logout.php"><i class="fas fa-user-times" style="color:rgb(80, 80, 80);"></i> Cerrar sesión</a>';
+                } else if ($rol->tipo === 'Empleado') {
+                    echo '<a class="dropdown-item text-dark" href="mi_perfil.php"><i class="fas fa-user-cog text-dark"></i> Mi perfil</a>';
+                    echo '<a class="dropdown-item text-dark" href="pedidoAdmin.php"><i class="fas fa-shopping-basket text-dark"></i> Pedidos</a>';
+                    echo '<a class="dropdown-item text-dark" href="../Controllers/logout.php"><i class="fas fa-user-times" style="color:rgb(80, 80, 80);"></i> Cerrar sesión</a>';
+                } else if ($rol->tipo === 'Administrador'){
+                    echo '<a class="dropdown-item text-dark" href="mi_perfil.php"><i class="fas fa-user-cog text-dark"></i> Mi perfil</a>';
+                    echo '<a class="dropdown-item text-dark" href="pedidoAdmin.php"><i class="fas fa-shopping-basket text-dark"></i> Pedidos</a>';
+                    echo '<a class="dropdown-item text-dark" href="usuarios.php"><i class="fas fa-users text-dark"></i> Usuarios</a>';
+                    echo '<a class="dropdown-item text-dark" href="stock.php"><i class="fas fa-cubes text-dark"></i> Stock</a>';
+                    echo '<a class="dropdown-item text-dark" href="categoria.php"><i class="fas fa-tags text-dark"></i> Categorías</a>';
+                    echo '<a class="dropdown-item text-dark" href="../Controllers/logout.php"><i class="fas fa-user-times" style="color:rgb(80, 80, 80);"></i> Cerrar sesión</a>';
+                } else {
+                    echo '<a class="dropdown-item text-dark" href="mi_perfil.php"><i class="fas fa-user-cog text-dark"></i> Mi perfil</a>';
+                    echo '<a class="dropdown-item text-dark" href="mis_pedidos.php"><i class="fas fa-shopping-basket text-dark"></i> Mis pedidos</a>';
+                    echo '<a class="dropdown-item text-dark" href="../Controllers/logout.php"><i class="fas fa-user-times" style="color:rgb(80, 80, 80);"></i> Cerrar sesión</a>';
+                }
+              }
+            ?>
           </div>
         </li>
       </ul>

@@ -99,16 +99,17 @@ ob_end_flush(); // Envía el contenido del búfer al cliente
         <title>Pago</title>
     </head>
     <body>
-        <div class="container">
+        <div class="container mt-5">
             <div class="row">
                 <div class="col-md-6">
-                    <h2 class="mb-3">Resumen del pedido</h2>
-                    <p class="mb-1"><strong>Subtotal:</strong> $<?php echo $total - $costo_envio; ?></p>
-                    <p class="mb-1"><strong>Costo de envío:</strong> $<?php echo $costo_envio; ?></p>
-                    <p class="mb-3"><strong>Total:</strong> $<?php echo $total; ?></p>
+                    <h3 class="mb-4 text-dark" style="font-size: 2em;">Resumen del pedido</h3>
+                    <p class="mb-1 text-dark"><strong class="text-dark">Subtotal:</strong> $<?php echo $total - $costo_envio; ?></p>
+                    <p class="mb-1 text-dark"><strong class="text-dark">Costo de envío:</strong> $<?php echo $costo_envio; ?></p>
+                    <p class="mb-4 text-dark"><strong class="text-dark">Total:</strong> $<?php echo $total; ?></p>
+                    <button id="pay-button" class="boton-checkout btn-block" style="background-color: rgb(59, 157, 207); border:none;"></button>
                 </div>
                 <div class="col-md-6">
-                    <button id="pay-button" class="boton-checkout"></button>
+                    
                 </div>
             </div>
         </div>

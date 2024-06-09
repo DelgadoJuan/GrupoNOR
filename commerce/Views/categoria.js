@@ -26,17 +26,17 @@ $(document).ready(function() {
                 let tbody = '';
                 categorias.forEach(categoria => {
                     tbody += `
-                        <tr>
-                            <td>${categoria.nombre ? categoria.nombre : 'N/A'}</td>
-                            <td>${categoria.nombre_padre ? categoria.nombre_padre : 'N/A'}</td>
-                            <td>${categoria.descripcion ? categoria.descripcion : 'N/A'}</td>
-                            <td>${categoria.fecha_creacion ? new Date(new Date(categoria.fecha_creacion).getTime() + new Date().getTimezoneOffset()*60*1000).toLocaleDateString() : 'N/A'}</td>
-                            <td class="status-cell" data-order="${categoria.estado == 'A' ? 1 : 0}">
+                        <tr class="text-dark">
+                            <td class="text-dark">${categoria.nombre ? categoria.nombre : 'N/A'}</td>
+                            <td class="text-dark">${categoria.nombre_padre ? categoria.nombre_padre : 'N/A'}</td>
+                            <td class="text-dark">${categoria.descripcion ? categoria.descripcion : 'N/A'}</td>
+                            <td class="text-dark">${categoria.fecha_creacion ? new Date(new Date(categoria.fecha_creacion).getTime() + new Date().getTimezoneOffset()*60*1000).toLocaleDateString() : 'N/A'}</td>
+                            <td class="status-cell text-dark" data-order="${categoria.estado == 'A' ? 1 : 0}">
                                 <button class="btn btn-sm ${categoria.estado == 'A' ? 'btn-success' : 'btn-secondary'} toggle-status-button" data-id="${categoria.id}" data-status="${categoria.estado}">
                                     <i class="fas ${categoria.estado == 'A' ? 'fa-toggle-on' : 'fa-toggle-off'}"></i>
                                 </button>
                             </td>
-                            <td>
+                            <td class="text-dark">
                                 <button class="btn btn-primary btn-sm btn-edit" data-id="${categoria.id}" data-toggle="modal" data-target="#editCategoryModal"><i class="fas fa-edit"></i></button>
                                 <button class="btn btn-danger btn-sm btn-delete" data-id="${categoria.id}"><i class="fas fa-trash"></i></button>
                             </td>

@@ -36,11 +36,14 @@
                 <div id="imagenes" class="col-12 col-sm-6">            
                 </div>
             <div class="col-12 col-sm-6">
-                <h4  id="id_producto" class="my-3" style="font-weight: 700;"></h2>
+                <h4  id="id_producto" class="my-3 text-dark" style="font-weight: 700;"></h2>
                 <hr>             
                 <div class="mt-4">
-                    <h4>Cantidad</h4>
-                    <input class="rounded" style="width: 100%; height:2em" type="number" id="product_quantity" min="1" value="1">
+                    <h4 class="text-dark">Cantidad</h4>
+                    <input class="rounded text-dark" style="width: 100%; height:2em;padding-left:15px; border:none; background-color: rgba(80,80,80,0.2);" type="number" id="product_quantity" min="1" value="1">
+                </div>
+                <div class="mt-4">
+                    <span id="warningStock" class="text-danger"></span>
                 </div>
                 <div class="mt-4">
                     <span id="warningStock" class="text-danger"></span>
@@ -48,9 +51,11 @@
 
                 <div id="product_options" class="mt-4"></div>
 
+                <div id="product_options" class="mt-4"></div>
+
                 <div class="bg-gray py-2 px-3 mt-4 border rounded">
-                    <h2 class="mb-0" id="precio_producto">
-                    </h2>
+                    <h4 class="mb-0" id="precio_producto">
+                    </h4>
                 </div>
 
                 <div class="mt-4" class="input-group mb-3 card-footer" style="background:none; padding:0;">
@@ -69,7 +74,7 @@
                 </div>
                 </nav>
                 <div class="tab-content p-3" id="nav-tabContent">
-                <div class="tab-pane fade show active" id="product-desc" role="tabpanel" aria-labelledby="product-desc-tab">
+                <div class="tab-pane fade show active text-dark" id="product-desc" role="tabpanel" aria-labelledby="product-desc-tab">
                     Aqui va la descripcion
                 </div>
                 </div>

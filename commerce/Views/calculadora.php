@@ -31,8 +31,8 @@
                 <option value="azul" class="text-dark">Azul</option>
             </select>
             <div class="form-group mb-4">
-                <label for="resultado" class="text-dark">Precio:</label>
-                <div id="resultado" name="resultado" class="mt-3"></div>
+                <label style="display:flex;" for="resultado" class="text-dark">Precio: <div class="text-dark" style="padding-left:10px;font-weight:600;" id="resultado" name="resultado" class="mt-3">$0</div></label>
+                
             </div>
             <button type="submit" id="addToCart" class="btn btn-block" style="background: #ac2e32; color: #ffff; padding:.75em 0">Agregar al carrito</button>
         </form>

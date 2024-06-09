@@ -90,17 +90,17 @@
         <div class="row">
             <div class="col-md-6 offset-md-3">
                 <div class="card mt-5">
-                    <div class="card-body text-center">
+                    <div class="card-body text-center" style="text-align: center;">
                         <?php 
                             if ($error) {
-                                echo '<h1 class="card-title">Error</h1>';
-                                echo '<p class="card-text">No queda stock de un determinado producto</p';
+                                echo '<h1 class="card-title text-danger" style="font-size:1em; font-weight:600">Error</h1>';
+                                echo '<p class="card-text text-dark">No queda stock de un determinado producto</p';
                             } else {
-                                echo '<h1 class="card-title">Pago Exitoso</h1>';
-                                echo '<p class="card-text">Tu pago ha sido procesado con éxito. ¡Gracias por tu compra!</p>';
+                                echo '<h1 class="card-title text-success style="font-size:1em; font-weight:600">Pago Exitoso</h1>';
+                                echo '<p class="card-text text-dark">Tu pago ha sido procesado con éxito. ¡Gracias por tu compra!</p>';
                             }
                         ?>
-                        <p class="card-text" id="redireccion-info">Serás redireccionado en <span id="contador-segundos">5</span> segundos.</p>
+                        <p class="card-text text-dark" id="redireccion-info">Serás redireccionado en <span id="contador-segundos" class=" text-dark">5</span> segundos.</p>
                     </div>
                 </div>
             </div>

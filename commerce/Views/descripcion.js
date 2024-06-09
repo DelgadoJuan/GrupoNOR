@@ -58,14 +58,14 @@ function obtenerCategorias() {
                 var categorias = JSON.parse(response);
                 var navbarHtml = '';
     
-                navbarHtml += '<li class="nav-item"><a href="./calculadora.php" class="nav-link">Cotización</a></li>';
+                navbarHtml += '<li class="nav-item text-dark"><a href="./calculadora.php" class="nav-link text-dark">Cotización</a></li>';
                 function generateCategoryHtml(categoria, isSubcategory = false) {
                     var html = '';
                     if (isSubcategory) {
-                        html += '<li class="dropdown-submenu"><a href="#" class="dropdown-item subcategoria" data-id="' + categoria.id + '">' + categoria.nombre + '</a>';
+                        html += '<li class="dropdown-submenu text-dark"><a href="#" class="dropdown-item text-dark subcategoria" data-id="' + categoria.id + '">' + categoria.nombre + '</a>';
                     } else {
-                        html += '<li class="nav-item dropdown">';
-                        html += '<a href="#" class="nav-link categoria ' + ((categoria.subcategorias && categoria.subcategorias.length > 0) ? 'dropdown-toggle' : '') + '" role="button" aria-haspopup="true" aria-expanded="false" data-id="' + categoria.id + '">';
+                        html += '<li class="nav-item dropdown text-dark">';
+                        html += '<a href="#" class="nav-link categoria text-dark ' + ((categoria.subcategorias && categoria.subcategorias.length > 0) ? 'dropdown-toggle' : '') + '" role="button" aria-haspopup="true" aria-expanded="false" data-id="' + categoria.id + '">';
                         html += categoria.nombre;
                         html += '</a>';
                     }
@@ -141,7 +141,6 @@ $(document).ready(function(){
             let response = await data.text();
             try {
                 let producto = JSON.parse(response);
-                console.log(producto);
                 let template ='';
                 let template2 ='';
                 if (producto.imagenes.length > 0) {
@@ -258,7 +257,6 @@ document.querySelector('.agregar-carrito').addEventListener('click', () => {
         text: id_producto + ' ' + cantidad + ' ' + precio,
         icon: "error"
     });
-    //alert(id_producto + ' ' + cantidad + ' ' + precio);
 
     agregar_carrito(id_producto, cantidad, precio);
 });

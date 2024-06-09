@@ -16,13 +16,15 @@
                 <div class="card" style="box-shadow: none;border:none;">
                     <div class="card-header mb-0" style="box-shadow: none;border:none;">
                         <h1 class="card-title mb-0" style="font-weight: 700; font-size:1.75em; ">Categorías Actuales</h1>
+                        <!-- Botón para abrir el modal -->
+                        <button type="button" class="btn btn-success float-right" data-toggle="modal" data-target="#addCategoryModal">
+                                Agregar Categoría
+                        </button>
                     </div>
                     <div class="card-body">
                         <div class="d-flex justify-content-between mb-5">
-                            <!-- Botón para abrir el modal -->
-                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addCategoryModal">
-                                Agregar Categoría
-                            </button>
+                            
+                            
                         </div>
                         <!-- Agregar la tabla con la información de las categorías -->
                         <table id="categoryTable" class="table table-striped table-hover border-0" style="border:none;box-shadow:none;">

@@ -11,7 +11,6 @@
       // Verificar si obtener_rol() devolvió un resultado
       if (isset($rolUsuario[0])) {
           $rol = $rolUsuario[0];
-          $_SESSION['rol'] = $rol->tipo;
       }
   }
 
