@@ -1,9 +1,10 @@
 <?php
     if(!empty($_GET['id']) && $_GET['name']){
-        session_start();
-        $_SESSION['product-verification'] = $_GET['id'];
+        $require_login = false;  // No requiere iniciar sesión
+        $allowed_roles = ['Administrador', 'Repositor', 'Empleado', 'Cliente', null];
         //echo $_SESSION['product-verification'];
         include_once './Layouts/Tienda/header.php';
+        $_SESSION['product-verification'] = $_GET['id'];
     }
 ?>
     

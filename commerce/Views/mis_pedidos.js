@@ -2,7 +2,17 @@ import { verificar_sesion } from './sesion.js';
 
 $(document).ready(function() {
     verificar_sesion();
+    obtenerCategorias();
     obtenerPedidos();
+    
+});
+
+const swalWithBootstrapButtons = Swal.mixin({
+    customClass: {
+    confirmButton: "btn btn-success m-3",
+    cancelButton: "btn btn-danger"
+    },
+    buttonsStyling: false
 });
 
 function obtenerPedidos() {
@@ -17,14 +27,14 @@ function obtenerPedidos() {
 
             pedidos.forEach(function(pedido) {
                 var row = $('<tr>');
-                row.append($('<td>').text(pedido.id || 'N/A'));
-                row.append($('<td>').text(pedido.fecha ? new Date(pedido.fecha).toLocaleString() : 'N/A'));
-                row.append($('<td>').text(pedido.envio ? Math.trunc(pedido.envio) : 0));
-                row.append($('<td>').text(pedido.total ? Math.trunc(pedido.total) : 0));
-                row.append($('<td>').text(pedido.metodo_pago || 'N/A'));
-                row.append($('<td>').text(pedido.estado || 'N/A'));
+                row.append($('<td class="text-dark">').text(pedido.id || 'N/A'));
+                row.append($('<td class="text-dark">').text(pedido.fecha ? new Date(pedido.fecha).toLocaleString() : 'N/A'));
+                row.append($('<td class="text-dark">').text(pedido.envio ? Math.trunc(pedido.envio) : 0));
+                row.append($('<td class="text-dark">').text(pedido.total ? Math.trunc(pedido.total) : 0));
+                row.append($('<td class="text-dark">').text(pedido.metodo_pago || 'N/A'));
+                row.append($('<td class="text-dark">').text(pedido.estado || 'N/A'));
 
-                var acciones = $('<td>');
+                var acciones = $('<td class="text-dark">');
                 var viewDetailsButton = $('<button>').attr('id', 'viewDetails-' + pedido.id).addClass('btn btn-info').append($('<i>').addClass('fas fa-eye'));
                 var viewInvoiceButton = $('<button>').attr('id', 'viewInvoice-' + pedido.id).addClass('btn').append($('<i>').addClass('fas fa-file-invoice'));
 
@@ -53,7 +63,12 @@ function obtenerPedidos() {
             $('#ordersTable').DataTable(); // Inicializar el plugin DataTable
         },
         error: function() {
-            alert('Error al obtener los pedidos del servidor');
+            swalWithBootstrapButtons.fire({
+                title: "Error!",
+                text: "Error al obtener los pedidos del servidor",
+                icon: "error"
+            });
+            //alert('Error al obtener los pedidos del servidor');
         }
     });
 }
@@ -80,12 +95,104 @@ $('#saveChanges').on('click', function() {
             if (data.status === 'success') {
                 $('#editOrderModal').modal('hide');
                 obtenerPedidos();
+                swalWithBootstrapButtons.fire({
+                    title: "Exito!",
+                    text: "Se edito el pedido",
+                    icon: "success"
+                });
             } else {
-                alert('Error al editar el pedido');
+                swalWithBootstrapButtons.fire({
+                    title: "Error!",
+                    text: "Error al editar el pedido",
+                    icon: "error"
+                });
+                //alert('Error al editar el pedido');
             }
         },
         error: function() {
-            alert('Error al editar el pedido');
+            swalWithBootstrapButtons.fire({
+                title: "Error!",
+                text: "Error al editar el pedido",
+                icon: "error"
+            });
+            //alert('Error al editar el pedido');
         }
     });
 });
+
+function obtenerCategorias() {
+    $.ajax({
+        url: '../Controllers/CategoriaController.php',
+        method: 'POST',
+        data: {
+            funcion: 'obtener_categorias_activas'
+        },
+        success: function(response) {
+            var categorias = JSON.parse(response);
+            var navbarHtml = '';
+
+            navbarHtml += '<li class="nav-item"><a href="./calculadora.php" class="nav-link">Cotización</a></li>';
+            function generateCategoryHtml(categoria, isSubcategory = false) {
+                var html = '';
+                if (isSubcategory) {
+                    html += '<li class="dropdown-submenu"><a href="#" class="dropdown-item subcategoria" data-id="' + categoria.id + '">' + categoria.nombre + '</a>';
+                } else {
+                    html += '<li class="nav-item dropdown">';
+                    html += '<a href="#" class="nav-link categoria ' + ((categoria.subcategorias && categoria.subcategorias.length > 0) ? 'dropdown-toggle' : '') + '" role="button" aria-haspopup="true" aria-expanded="false" data-id="' + categoria.id + '">';
+                    html += categoria.nombre;
+                    html += '</a>';
+                }
+
+                if (categoria.subcategorias && categoria.subcategorias.length > 0) {
+                    html += '<ul class="dropdown-menu">';
+                    categoria.subcategorias.forEach(function(subcategoria) {
+                        html += generateCategoryHtml(subcategoria, true);
+                    });
+                    html += '</ul>';
+                }
+                html += '</li>';
+                return html;
+            }
+
+            categorias.forEach(function(categoria) {
+                navbarHtml += generateCategoryHtml(categoria, false);
+            });
+
+            $('#categorias').html(navbarHtml);
+
+            function handleItemClick(event) {
+                event.preventDefault();
+                let $this = $(this);
+                let id_categoria = $this.data('id');
+                let nombre_categoria = $this.text();
+
+                // Cambiar la URL
+                window.location.href = './tienda.php?nombre=' + encodeURIComponent(nombre_categoria) + '&id=' + encodeURIComponent(id_categoria);
+            }
+
+            function handleMouseEnter() {
+                $(this).children('.dropdown-menu').stop(true, true).slideDown();
+            }
+
+            function handleMouseLeave() {
+                $(this).children('.dropdown-menu').stop(true, true).slideUp();
+            }
+
+            $('#categorias').off('click', '.categoria, .subcategoria', handleItemClick);
+            $('#categorias').off('mouseenter', '.nav-item', handleMouseEnter);
+            $('#categorias').off('mouseleave', '.nav-item', handleMouseLeave);
+
+            $('#categorias').on('click', '.categoria, .subcategoria', handleItemClick);
+            $('#categorias').on('mouseenter', '.nav-item', handleMouseEnter);
+            $('#categorias').on('mouseleave', '.nav-item', handleMouseLeave);
+        },
+        error: function() {
+            swalWithBootstrapButtons.fire({
+                title: "Error!",
+                text: "Error al realizar la solicitud AJAX",
+                icon: "error"
+            });
+            //alert('Error al realizar la solicitud AJAX');
+        }
+    });
+}

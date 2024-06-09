@@ -1,4 +1,7 @@
 <?php
+    $require_login = false;  // No requiere iniciar sesión
+    $allowed_roles = ['Administrador', 'Repositor', 'Empleado', 'Cliente', null];
+
     include_once('Layouts/Tienda/header.php');
     include '..\Util\Config\config.php';
 ?>

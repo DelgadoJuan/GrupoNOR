@@ -19,8 +19,6 @@
                     </div>
                     <div class="card-body">
                         <div class="d-flex justify-content-between mb-5">
-                            <!-- Agregar un input para el filtrado por nombre -->
-                            <input type="text" id="filterName" class="form-control" style="width:100%; max-width: 25em; border:none; background: rgba(200,200,200,.3)" placeholder="Filtrar por Nombre">
                             <!-- Botón para abrir el modal -->
                             <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addCategoryModal">
                                 Agregar Categoría

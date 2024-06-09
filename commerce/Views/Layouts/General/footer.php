@@ -100,6 +100,5 @@
 <script src="../Util/Js/sweetalert2.min.js"></script>
 <!-- Importador de archivos -->
 <script src="../Util/Js/bs-custom-file-input.min.js"></script>
-
 </body>
 </html>

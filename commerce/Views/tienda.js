@@ -1,5 +1,13 @@
 import { verificar_sesion } from "./sesion.js";
 
+const swalWithBootstrapButtons = Swal.mixin({
+    customClass: {
+    confirmButton: "btn btn-success m-3",
+    cancelButton: "btn btn-danger"
+    },
+    buttonsStyling: false
+});
+
 $(document).ready(function() {
     var funcion;
     let limit = 20;
@@ -9,7 +17,9 @@ $(document).ready(function() {
 
     let urlParams = new URLSearchParams(window.location.search);
     let id_categoria = urlParams.get('id');
-    llenar_productos(id_categoria, 'mas_vendido', null);
+    let searchValue = urlParams.get('search');
+    let sortValue = urlParams.get('sort') || 'mas_vendido';
+    llenar_productos(id_categoria, sortValue, searchValue);
 
     async function llenar_productos(id_categoria = null, sortValue = null, searchValue = null){
         funcion = "llenar_productos";
@@ -94,7 +104,7 @@ $(document).ready(function() {
 
     document.getElementById('loadMoreButton').addEventListener('click', function() {
         limit += 20;
-        var sortValue = document.getElementById('sortSelect').value;
+        sortValue = document.getElementById('sortSelect').value;
         var searchInput = document.getElementById('inputSearch');
         var searchValue = searchInput ? searchInput.value : null;
         llenar_productos(id_categoria, sortValue, searchValue);
@@ -179,7 +189,12 @@ $(document).ready(function() {
                 $('#categorias').on('mouseleave', '.nav-item', handleMouseLeave);
             },
             error: function() {
-                alert('Error al realizar la solicitud AJAX');
+                swalWithBootstrapButtons.fire({
+                    title: "Error!",
+                    text: "Error al realizar la solicitud AJAX",
+                    icon: "error"
+                });
+                //alert('Error al realizar la solicitud AJAX');
             }
         });
     }
@@ -187,8 +202,8 @@ $(document).ready(function() {
     urlParams = new URLSearchParams(window.location.search);
     id_categoria = urlParams.get('id');
     if(id_categoria){
-        var searchValue = $(this).find('input[name="search"]').val();
-        var sortValue = $('#sortSelect').val();
+        searchValue = $(this).find('input[name="search"]').val();
+        sortValue = $('#sortSelect').val();
         llenar_productos(id_categoria, sortValue, searchValue);
     }
 
@@ -198,12 +213,11 @@ $(document).ready(function() {
         e.preventDefault();
 
         // Get the search value
-        var searchValue = $(this).find('input[name="search"]').val();
-        var sortValue = $('#sortSelect').val();
+        let searchValue = $(this).find('input[name="search"]').val();
+        sortValue = $('#sortSelect').val();
         
-        // Send AJAX request to the server with the search value
-        llenar_productos(null, sortValue, searchValue);
+        // Redirect to tienda.php with the search value as a query parameter
+        window.location.href = `tienda.php?search=${encodeURIComponent(searchValue)}&sort=${encodeURIComponent(sortValue)}`;
     });
-
 
 });

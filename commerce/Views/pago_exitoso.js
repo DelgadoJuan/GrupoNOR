@@ -9,7 +9,7 @@ function redireccionar() {
     if (error) {
         window.location.href = './carrito.php';
     } else {
-        window.location.href = './tienda.php';
+        window.location.href = './mis_pedidos.php';
     }
 }
 

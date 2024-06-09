@@ -1,5 +1,13 @@
 import { verificar_sesion } from "./sesion.js";
 
+const swalWithBootstrapButtons = Swal.mixin({
+    customClass: {
+    confirmButton: "btn btn-success m-3",
+    cancelButton: "btn btn-danger"
+    },
+    buttonsStyling: false
+});
+
 $(document).ready(function() {
     let ordenar_por = null;
     let direccion = 'ASC';
@@ -19,7 +27,12 @@ $(document).ready(function() {
                 estado: estado
             },
             success: function(response) {
-                alert('Estado modificado correctamente');
+                swalWithBootstrapButtons.fire({
+                    title: "Exito!",
+                    text: "Estado modificado correctamente",
+                    icon: "success"
+                });
+                //alert('Estado modificado correctamente');
                 obtenerProductos(); // Actualizar la tabla
 
                 // Encuentra el botón de estado para este producto y actualiza su estado
@@ -42,7 +55,12 @@ $(document).ready(function() {
                 id: id
             },
             success: function(response) {
-                alert('Producto eliminado correctamente');
+                swalWithBootstrapButtons.fire({
+                    title: "Exito!",
+                    text: "Producto eliminado correctamente",
+                    icon: "success"
+                });
+                //alert('Producto eliminado correctamente');
                 obtenerProductos(); // Actualizar la tabla
             }
         });
@@ -105,9 +123,19 @@ $(document).ready(function() {
     
                 document.querySelectorAll('.delete-button').forEach(button => {
                     button.addEventListener('click', function() {
-                        if (confirm('¿Estás seguro de que quieres eliminar este producto?')) {
-                            eliminarProducto(this.dataset.id);
-                        }
+                        Swal.fire({
+                            title: '¿Estás seguro?',
+                            text: "¿Estás seguro de que quieres eliminar este producto?",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Sí, eliminar!'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                eliminarProducto(this.dataset.id);
+                            }
+                        });
                     });
                 });
     
@@ -158,7 +186,12 @@ $(document).ready(function() {
             success: function(response) {
                 // Ocultar el modal
                 $('#productModal').modal('hide');
-                alert('Producto creado correctamente');
+                swalWithBootstrapButtons.fire({
+                    title: "Exito!",
+                    text: "Producto creado correctamente",
+                    icon: "success"
+                });
+                //alert('Producto creado correctamente');
                 // Actualizar la tabla de productos
                 obtenerProductos();
             }
@@ -238,7 +271,12 @@ $(document).ready(function() {
             processData: false,  // No procesar los datos
             contentType: false,  // No establecer el encabezado Content-Type automáticamente
             success: function(response) {
-                alert('Producto editado correctamente');
+                swalWithBootstrapButtons.fire({
+                    title: "Exito!",
+                    text: "Producto editado correctamente",
+                    icon: "success"
+                });
+                //alert('Producto editado correctamente');
                 obtenerProductos();
                 $('#editProductModal').modal('hide');
             }
@@ -247,20 +285,34 @@ $(document).ready(function() {
 
     function eliminarFoto(id, event) {
         event.stopPropagation();
-        if (confirm('¿Estás seguro de que quieres eliminar esta foto?')) {
-            $.ajax({
-                url: '../Controllers/ProductoController.php',
-                method: 'POST',
-                data: {
-                    funcion: 'eliminar_foto',
-                    id: id
-                },
-                success: function(response) {
-                    obtenerProducto(document.querySelector('#editProductForm #id').value);
-                    alert('Foto eliminada correctamente');
-                }
-            });
-        }
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "¿Estás seguro de que quieres eliminar esta foto?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, eliminar!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '../Controllers/ProductoController.php',
+                    method: 'POST',
+                    data: {
+                        funcion: 'eliminar_foto',
+                        id: id
+                    },
+                    success: function(response) {
+                        obtenerProducto(document.querySelector('#editProductForm #id').value);
+                        swalWithBootstrapButtons.fire({
+                            title: "Exito!",
+                            text: "Foto editada correctamente",
+                            icon: "success"
+                        });
+                    }
+                });
+            }
+        });
     }
     
         $('#saveChanges').on('click', function() {
@@ -280,11 +332,21 @@ $(document).ready(function() {
                 success: function(response) {
                     var data = JSON.parse(response);
                     if (data.status === 'success') {
-                        alert('Cantidad modificada correctamente');
+                        swalWithBootstrapButtons.fire({
+                            title: "Exito!",
+                            text: "Cantidad editada correctamente",
+                            icon: "success"
+                        });
+                        //alert('Cantidad modificada correctamente');
                         $('#addStockModal').modal('hide');
                         obtenerProductos();
                     } else {
-                        alert(data.message);
+                        swalWithBootstrapButtons.fire({
+                            title: "Error!",
+                            text: "Cantidad no pudo ser editada",
+                            icon: "error"
+                        });
+                        //alert(data.message);
                     }
                 },
                 error: function(_jqXHR, textStatus, errorThrown) {

@@ -5,6 +5,14 @@ $(document).ready(function() {
     obtenerPedidos();
 });
 
+const swalWithBootstrapButtons = Swal.mixin({
+    customClass: {
+    confirmButton: "btn btn-success m-3",
+    cancelButton: "btn btn-danger"
+    },
+    buttonsStyling: false
+});
+
 function obtenerPedidos() {
     $.ajax({
         url: '../Controllers/PedidoController.php', // Reemplaza esto con la ruta a tu archivo PHP
@@ -46,9 +54,19 @@ function obtenerPedidos() {
                 deleteOrderButton.on('click', function() {
                     // Aquí puedes eliminar el pedido
                     // Asegúrate de confirmar la acción antes de eliminar el pedido
-                    if (confirm('¿Estás seguro de que quieres eliminar este pedido?')) {
-                        eliminarPedido(pedido.id);
-                    }
+                    Swal.fire({
+                        title: '¿Estás seguro?',
+                        text: "¿Estás seguro de que quieres eliminar este pedido?",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Sí, eliminar!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            eliminarPedido(pedido.id);
+                        }
+                    });
                 });
 
                 if (pedido.ruta_pdf) {
@@ -71,7 +89,12 @@ function obtenerPedidos() {
             $('#ordersTable').DataTable(); // Inicializar el plugin DataTable
         },
         error: function() {
-            alert('Error al obtener los pedidos del servidor');
+            swalWithBootstrapButtons.fire({
+                title: "Error!",
+                text: "Error al obtener los pedidos del servidor",
+                icon: "error"
+            });
+            //alert('Error al obtener los pedidos del servidor');
         }
     });
 }
@@ -88,12 +111,27 @@ function eliminarPedido(id) {
             var data = JSON.parse(response);
             if (data.status === 'success') {
                 obtenerPedidos();
+                swalWithBootstrapButtons.fire({
+                    title: "Exito!",
+                    text: "Pedido eliminado",
+                    icon: "success"
+                });
             } else {
-                alert('Error al eliminar el pedido');
+                swalWithBootstrapButtons.fire({
+                    title: "Error!",
+                    text: "Error al eliminar el pedido",
+                    icon: "error"
+                });
+                //alert('Error al eliminar el pedido');
             }
         },
         error: function() {
-            alert('Error al eliminar el pedido');
+            swalWithBootstrapButtons.fire({
+                title: "Error!",
+                text: "Error al eliminar el pedido",
+                icon: "error"
+            });
+            //alert('Error al eliminar el pedido');
         }
     });
 }
@@ -120,12 +158,27 @@ $('#saveChanges').on('click', function() {
             if (data.status === 'success') {
                 $('#editOrderModal').modal('hide');
                 obtenerPedidos();
+                swalWithBootstrapButtons.fire({
+                    title: "Exito!",
+                    text: "Pedido editado",
+                    icon: "success"
+                });
             } else {
-                alert('Error al editar el pedido');
+                swalWithBootstrapButtons.fire({
+                    title: "Error!",
+                    text: "Error al editar el pedido",
+                    icon: "error"
+                });
+                //alert('Error al editar el pedido');
             }
         },
         error: function() {
-            alert('Error al editar el pedido');
+            swalWithBootstrapButtons.fire({
+                title: "Error!",
+                text: "Error al editar el pedido",
+                icon: "error"
+            });
+            //alert('Error al editar el pedido');
         }
     });
 });

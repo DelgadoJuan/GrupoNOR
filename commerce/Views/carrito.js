@@ -1,5 +1,14 @@
 import { verificar_sesion } from "./sesion.js";
 
+var noStock;
+const swalWithBootstrapButtons = Swal.mixin({
+    customClass: {
+    confirmButton: "btn btn-success m-3",
+    cancelButton: "btn btn-danger"
+    },
+    buttonsStyling: false
+});
+
 function obtenerCategorias() {
     $.ajax({
         url: '../Controllers/CategoriaController.php',
@@ -67,7 +76,12 @@ function obtenerCategorias() {
             $('#categorias').on('mouseleave', '.nav-item', handleMouseLeave);
         },
         error: function() {
-            alert('Error al realizar la solicitud AJAX');
+            swalWithBootstrapButtons.fire({
+                title: "Error!",
+                text: "Error al realizar la solicitud AJAX'",
+                icon: "error"
+            });
+            //alert('Error al realizar la solicitud AJAX');
         }
     });
 }
@@ -94,7 +108,9 @@ $(document).ready(function(){
             });
 
             // Habilitar el botón cuando se seleccione una dirección válida
-            $('#pagarButton').removeClass('disabled');
+            if (!noStock) {
+                $('#pagarButton').removeClass('disabled');
+            }
         } else {
             $('#shippingPrice').text(0);
             $('#totalPrice').text(parseFloat($('#subtotalPrice').text()));
@@ -122,7 +138,12 @@ function obtenerDirecciones() {
             $('#direccion').html(direccionesHtml);
         },
         error: function() {
-            alert('Error al realizar la solicitud AJAX');
+            swalWithBootstrapButtons.fire({
+                title: "Error!",
+                text: "Error al realizar la solicitud AJAX'",
+                icon: "error"
+            });
+            //alert('Error al realizar la solicitud AJAX');
         }
     });
 }
@@ -139,48 +160,82 @@ function obtenerCarrito() {
             var cartItemsHtml = '';
             var subtotal = 0;
             var envio = 0;
+
             for (var i = 0; i < cartItems.length; i++) {
+                if (cartItems[i].cantidad > cartItems[i].stock) {
+                    noStock = true;
+                }
                 var itemSubtotal = cartItems[i].precio * cartItems[i].cantidad;
                 subtotal += itemSubtotal;
                 cartItemsHtml += '<tr>';
                 cartItemsHtml += '<td><img src="' + (cartItems[i].nombre_categoria === 'Tinglados' ? '../Util/Assets/tinglado3.jpeg' : cartItems[i].foto) + '" alt="' + cartItems[i].nombre_producto + '" style="width: 50px; height: 50px;"></td>';
                 cartItemsHtml += '<td>' + cartItems[i].nombre_producto + '</td>';
                 cartItemsHtml += '<td>' + cartItems[i].precio + '</td>';
-                cartItemsHtml += '<td><input type="number" class="cantidadInput" value="' + cartItems[i].cantidad + '" min="1" max="' + cartItems[i].stock + '" data-id="' + cartItems[i].id + '"></td>';
+                cartItemsHtml += '<td><input type="number" class="form-control cantidadInput" value="' + cartItems[i].cantidad + '" min="1" max="' + cartItems[i].stock + '" data-id="' + cartItems[i].id + '"></td>';
                 cartItemsHtml += '<td>' + itemSubtotal + '</td>';
                 if (cartItems[i].cantidad > cartItems[i].stock) {
-                    cartItemsHtml += '<td><i class="fas fa-exclamation-triangle" title="La cantidad en el carrito es mayor que el stock disponible"></i></td>';
+                    cartItemsHtml += '<td><i class="fas fa-exclamation-triangle text-warning" title="La cantidad en el carrito es mayor que el stock disponible"></i></td>';
                 } else {
                     cartItemsHtml += '<td></td>';
                 }
                 cartItemsHtml += '<td><button class="btn btn-danger delete-button" data-id="' + cartItems[i].id + '"><i class="fas fa-trash-alt"></i></button></td>';
                 cartItemsHtml += '</tr>';
             }
+
             $('#cart-items').html(cartItemsHtml);
             var total = subtotal + envio;
 
-            document.getElementById('subtotalPrice').innerText = subtotal;
-            document.getElementById('shippingPrice').innerText = envio;
-            document.getElementById('totalPrice').innerText = total;
+            document.getElementById('subtotalPrice').innerText = subtotal.toFixed(2);
+            document.getElementById('shippingPrice').innerText = envio.toFixed(2);
+            document.getElementById('totalPrice').innerText = total.toFixed(2);
 
             // Agregar eventos a los botones de eliminar y agregar cantidad
             document.querySelectorAll('.cantidadInput').forEach(input => {
                 input.addEventListener('change', function() {
+                    var input = this;
                     var id = input.getAttribute('data-id');
+                    if (this.value <= this.max) {
+                        noStock = false;
+                        if ($('#direccion').val() !== '') {
+                            setTimeout(function() {
+                                $('#pagarButton').removeClass('disabled');
+                            }, 2000); // 2000 milisegundos = 2 segundos
+                        }
+                    } else {
+                        noStock = true;
+                    }
                     cambiarCantidad(id, input.value);
                 });
             });
 
             document.querySelectorAll('.delete-button').forEach(button => {
                 button.addEventListener('click', function() {
-                    if (confirm('¿Estás seguro de que quieres eliminar este producto del carrito?')) {
-                        eliminarDelCarrito(this.dataset.id);
-                    }
+                    Swal.fire({
+                        title: '¿Estás seguro?',
+                        text: "¿Estás seguro de que quieres eliminar este producto del carrito?",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Eliminar',
+                        cancelButtonText: 'Cancelar'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            eliminarDelCarrito(this.dataset.id);
+                            // Actualizar la tabla del carrito después de eliminar un producto
+                            obtenerCarrito();
+                        }
+                    })
                 });
             });
         },
         error: function() {
-            alert('Error al realizar la solicitud AJAX');
+            swalWithBootstrapButtons.fire({
+                title: "Error!",
+                text: "Error al realizar la solicitud AJAX'",
+                icon: "error"
+            });
+            //alert('Error al realizar la solicitud AJAX');
         }
     });
 }
@@ -199,7 +254,12 @@ function obtenerDatosCliente() {
             $('#email').val(data.email);
         },
         error: function() {
-            alert('Error al realizar la solicitud AJAX');
+            swalWithBootstrapButtons.fire({
+                title: "Error!",
+                text: "Error al realizar la solicitud AJAX'",
+                icon: "error"
+            });
+            //alert('Error al realizar la solicitud AJAX');
         }
     });
 
@@ -227,10 +287,15 @@ function cambiarCantidad(id, cantidad) {
                 obtenerCarrito();
             },
             error: function() {
-                alert('Error al realizar la solicitud AJAX');
+                swalWithBootstrapButtons.fire({
+                    title: "Error!",
+                    text: "Error al realizar la solicitud AJAX'",
+                    icon: "error"
+                });
+                //alert('Error al realizar la solicitud AJAX');
             }
         });
-    }, 3000); // 3000 milisegundos = 3 segundos
+    }, 2000); // 2000 milisegundos = 3 segundos
 }
 
 function eliminarDelCarrito(id_detalle_pedido) {
@@ -244,15 +309,27 @@ function eliminarDelCarrito(id_detalle_pedido) {
         success: function(response) {
             var result = JSON.parse(response);
             if (result.status === 'success') {
-                alert(result.message);
-                // Actualizar la tabla del carrito después de eliminar un producto
-                obtenerCarrito();
+                swalWithBootstrapButtons.fire({
+                    title: "Producto eliminado!",
+                    text: "Tu producto fue eliminado del carrito",
+                    icon: "success"
+                });
             } else {
-                alert('Error al eliminar el producto del carrito');
+                swalWithBootstrapButtons.fire({
+                    title: "Error!",
+                    text: "Hubo un error al eliminar el producto del carrito",
+                    icon: "error"
+                });
+                //alert('Error al eliminar el producto del carrito');
             }
         },
         error: function() {
-            alert('Error al realizar la solicitud AJAX');
+            swalWithBootstrapButtons.fire({
+                title: "Error!",
+                text: "Error al realizar la solicitud AJAX'",
+                icon: "error"
+            });
+            //alert('Error al realizar la solicitud AJAX');
         }
     });
 }
@@ -268,7 +345,12 @@ function calcularEnvio(origen, destino, callback) {
         }, 
         function(response, status) {
             if (status !== 'OK') {
-                alert('Error al calcular el envío: ' + status);
+                swalWithBootstrapButtons.fire({
+                    title: "Error!",
+                    text: "Hubo un error al calcular el envio " + status,
+                    icon: "error"
+                });
+                //alert('Error al calcular el envío: ' + status);
                 return;
             }
             var precio_envio_km = parseFloat(document.getElementById('precio_envio_km').value);
@@ -301,16 +383,31 @@ function calcularEnvio(origen, destino, callback) {
                             if (data.status === 'success') {
                                 callback(Math.trunc(costoEnvioTotal));
                             } else {
-                                alert('Error al obtener el costo de envío del servidor');
+                                swalWithBootstrapButtons.fire({
+                                    title: "Error!",
+                                    text: "Error al obtener el costo de envío del servidor",
+                                    icon: "error"
+                                });
+                                //alert('Error al obtener el costo de envío del servidor');
                             }
                         },
-                        error: function() {
-                            alert('Error al enviar el costo de envío al servidor');
+                        error: function() {  
+                            swalWithBootstrapButtons.fire({
+                                title: "Error!",
+                                text: "Error al enviar el costo de envío al servidor",
+                                icon: "error"
+                            });                        
+                            //alert('Error al enviar el costo de envío al servidor');
                         }
                     });
                 },
                 error: function() {
-                    alert('Error al realizar la solicitud AJAX para obtener el carrito');
+                    swalWithBootstrapButtons.fire({
+                        title: "Error!",
+                        text: "Error al enviar el costo de envío al servidor",
+                        icon: "error"
+                    }); 
+                    //alert('Error al realizar la solicitud AJAX para obtener el carrito');
                 }
             });
         }

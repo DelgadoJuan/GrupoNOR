@@ -20,6 +20,24 @@
   float: none;
 }
 
+.dataTables_length label {
+  color: black; /* Cambia el color del texto */
+}
+.dataTables_length select {
+  color: black; /* Cambia el color del texto */
+}
+
+/* Estilo para el campo de búsqueda */
+.dataTables_filter input {
+  color: black; /* Cambia el color del texto */
+}
+.dataTables_filter label {
+  color: black; /* Cambia el color del texto */
+}
+.dataTables_info {
+  color: black; /* Cambia el color del texto */
+}
+
 /* Estilos básicos para el menú */
 .nav-list {
   list-style: none;

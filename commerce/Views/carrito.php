@@ -1,25 +1,11 @@
 <?php
     ob_start(); // Activa el almacenamiento en búfer de salida
-    session_start();
+
+    $require_login = true;  // No requiere iniciar sesión
+    $allowed_roles = ['Administrador', 'Repositor', 'Empleado', 'Cliente'];
+
     include_once 'Layouts/Tienda/header.php';
-    include_once '../Models/Detalle_Pedido.php';
     include '../Util/Config/config.php';
-
-    $detalle_pedido = new Detalle_Pedido();
-    $id_usuario = $_SESSION['id'];
-    $cartItems = $detalle_pedido->obtenerDetallesPedido($id_usuario);
-
-    $total = 0;
-
-    // Verifica si el carrito está vacío
-    if (!empty($cartItems)) {
-        foreach ($cartItems as $cartItem) {
-            $total += floatval($cartItem->precio_unitario) * $cartItem->cantidad;
-        }
-
-        $costo_envio = isset($_SESSION['costo_envio']) ? floatval($_SESSION['costo_envio']) : 0;
-        $total += $costo_envio;
-    }
 
     ob_end_flush(); // Envía el contenido del búfer al cliente
 ?>
@@ -50,6 +36,7 @@
                                 <th class=" text-dark" style="font-weight:700;">Precio</th>
                                 <th class=" text-dark" style="font-weight:700;">Cantidad</th>
                                 <th class=" text-dark" style="font-weight:700;">Subtotal</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody id="cart-items">
@@ -58,20 +45,20 @@
                     </table>
                 </div>
                 
-                <div class="col-md-4" style="display: flex;flex:2;flex-direction:column;">
-                    <h3 class=" text-dark mb-4" style="font-size:1.5em">Resumen del carrito</h3>
-                    <div id="cart-summary" style="margin-top:auto;">
-                        <p id="cart-subtotal">Subtotal: $<span id="subtotalPrice">0</span></p>
-                        <div>
+                <div class="col-md-4 d-flex flex-column">
+                    <h3 class="text-dark mb-4" style="font-size:1.5em">Resumen del carrito</h3>
+                    <div id="cart-summary" class="border p-3 bg-light">
+                        <p id="cart-subtotal" class="mb-2">Subtotal: $<span id="subtotalPrice">0</span></p>
+                        <div class="form-group">
                             <label for="direccion">Selecciona una dirección:</label>
-                            <select id="direccion" name="direccion">
+                            <select id="direccion" name="direccion" class="form-control">
                                 <!-- Las direcciones del usuario serán insertadas aquí por JavaScript -->
                             </select>
                         </div>
-                        <p id="cart-shipping">Envío: $<span id="shippingPrice">0</span></p>
-                        <p id="cart-total">Total: $<span id="totalPrice">0</span></p>
+                        <p id="cart-shipping" class="mb-2">Envío: $<span id="shippingPrice">0</span></p>
+                        <p id="cart-total" class="font-weight-bold mb-4">Total: $<span id="totalPrice">0</span></p>
+                        <a id="pagarButton" href="./pago.php" class="btn btn-primary btn-block disabled" style="background-color:rgb(6, 160, 227); border:none;">Ir a pagar</a>
                     </div>
-                    <a id="pagarButton" href="./pago.php" class="boton-checkout" style="background-color:rgb(6, 160, 227);border:none;opacity:1;margin-top:auto" disabled></button>
                 </div>
             </div>
         </div>

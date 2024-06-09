@@ -5,6 +5,14 @@ $(document).ready(function() {
     obtenerCategorias();
 });
 
+const swalWithBootstrapButtons = Swal.mixin({
+    customClass: {
+    confirmButton: "btn btn-success m-3",
+    cancelButton: "btn btn-danger"
+    },
+    buttonsStyling: false
+});
+
 function obtenerCategorias() {
     $.ajax({
         url: '../Controllers/CategoriaController.php',
@@ -72,7 +80,12 @@ function obtenerCategorias() {
             $('#categorias').on('mouseleave', '.nav-item', handleMouseLeave);
         },
         error: function() {
-            alert('Error al realizar la solicitud AJAX');
+            swalWithBootstrapButtons.fire({
+                title: "Error!",
+                text: "Error al realizar la solicitud AJAX",
+                icon: "error"
+            });
+            //alert('Error al realizar la solicitud AJAX');
         }
     });
 }
@@ -148,7 +161,12 @@ $('#tingladoForm').on('submit', function(e) {
             agregar_tinglado(id_producto, precio);
         },
         error: function() {
-            alert('Error al realizar la solicitud AJAX');
+            swalWithBootstrapButtons.fire({
+                title: "Error!",
+                text: "Error al realizar la solicitud AJAX",
+                icon: "error"
+            });
+            //alert('Error al realizar la solicitud AJAX');
         }
     });
 });
@@ -166,13 +184,28 @@ function agregar_tinglado(id_producto, precio) {
         success: function(response) {
             var data = JSON.parse(response);
             if (data.status === 'success') {
-                alert(data.message);
+                swalWithBootstrapButtons.fire({
+                    title: "Producto agregado!",
+                    text: "Tinglado agregado al carrito",
+                    icon: "success"
+                });
+                //alert(data.message);
             } else {
-                alert('Error al agregar el tinglado al carrito');
+                swalWithBootstrapButtons.fire({
+                    title: "Error!",
+                    text: "Hubo un error al agregar el tinglado al carrito",
+                    icon: "error"
+                });
+                //alert('Error al agregar el tinglado al carrito');
             }
         },
         error: function() {
-            alert('Error al realizar la solicitud AJAX');
+            swalWithBootstrapButtons.fire({
+                title: "Error!",
+                text: "Error al realizar la solicitud AJAX'",
+                icon: "error"
+            });
+            //alert('Error al realizar la solicitud AJAX');
         }
     });
 }

@@ -1,5 +1,7 @@
 <?php
-    session_start();
+    $require_login = true;  // No requiere iniciar sesión
+    $allowed_roles = ['Administrador', 'Repositor', 'Empleado', 'Cliente'];
+
     include_once 'Layouts/Tienda/header.php';
     include_once '../Models/Pedido.php';
     include_once '../Models/Detalle_Pedido.php';

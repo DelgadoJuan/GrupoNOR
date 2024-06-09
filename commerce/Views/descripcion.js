@@ -1,5 +1,13 @@
 import { verificar_sesion } from "./sesion.js";
 
+const swalWithBootstrapButtons = Swal.mixin({
+    customClass: {
+    confirmButton: "btn btn-success m-3",
+    cancelButton: "btn btn-danger"
+    },
+    buttonsStyling: false
+});
+
 function agregar_carrito(id_producto, cantidad, precio) {
     $.ajax({
         url: '../Controllers/Detalle_PedidoController.php',
@@ -13,13 +21,28 @@ function agregar_carrito(id_producto, cantidad, precio) {
         success: function(response) {
             var data = JSON.parse(response);
             if (data.status === 'success') {
-                alert(data.message);
+                //alert(data.message);
+                swalWithBootstrapButtons.fire({
+                    title: "Producto agregado!",
+                    text: "Tu producto fue agregado al carrito",
+                    icon: "success"
+                });
             } else {
-                alert('Error al agregar el producto al carrito');
+                //alert('Error al agregar el producto al carrito');
+                swalWithBootstrapButtons.fire({
+                    title: "Error!",
+                    text: "Hubo un error al agregar el producto al carrito",
+                    icon: "error"
+                });
             }
         },
         error: function() {
-            alert('Error al realizar la solicitud AJAX');
+            swalWithBootstrapButtons.fire({
+                title: "Error!",
+                text: "Error al realizar la solicitud AJAX",
+                icon: "error"
+            });
+            //alert('Error al realizar la solicitud AJAX');
         }
     });
 }
@@ -91,7 +114,12 @@ function obtenerCategorias() {
                 $('#categorias').on('mouseleave', '.nav-item', handleMouseLeave);
             },
             error: function() {
-                alert('Error al realizar la solicitud AJAX');
+                swalWithBootstrapButtons.fire({
+                    title: "Error!",
+                    text: "Error al realizar la solicitud AJAX",
+                    icon: "error"
+                });
+                //alert('Error al realizar la solicitud AJAX');
             }
         });
     }
@@ -113,6 +141,7 @@ $(document).ready(function(){
             let response = await data.text();
             try {
                 let producto = JSON.parse(response);
+                console.log(producto);
                 let template ='';
                 let template2 ='';
                 if (producto.imagenes.length > 0) {
@@ -223,6 +252,13 @@ document.querySelector('.agregar-carrito').addEventListener('click', () => {
     const id_producto = document.getElementById('id_producto').textContent;
     const cantidad = document.getElementById('product_quantity').value;
     const precio = document.getElementById('precio_producto').textContent.trim().substring(2);
+
+    swalWithBootstrapButtons.fire({
+        title: "Exito!",
+        text: id_producto + ' ' + cantidad + ' ' + precio,
+        icon: "error"
+    });
+    //alert(id_producto + ' ' + cantidad + ' ' + precio);
 
     agregar_carrito(id_producto, cantidad, precio);
 });

@@ -37,7 +37,7 @@ if (isset($_SESSION['id'])) {
 
 <body>
 
-    <div class="popup-background-news"></div>
+    <!--<div class="popup-background-news"></div> -->
 
     <nav class="nav-bar">
 
@@ -109,7 +109,7 @@ if (isset($_SESSION['id'])) {
         <div class="back-image-2"></div>
 
 
-        <section id="popup-news">
+        <!--<section id="popup-news">
             
             <div class="popup-center-news">
                 <div class="popup-container-news">
@@ -130,7 +130,7 @@ if (isset($_SESSION['id'])) {
                     <button href="#" class="btn-popup-news">Suscribirse</button>
                 </div>
             </div>
-        </section>
+        </section> -->
 
 
         <section id="popup-empleo">

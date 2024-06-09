@@ -11,6 +11,7 @@
       // Verificar si obtener_rol() devolvió un resultado
       if (isset($rolUsuario[0])) {
           $rol = $rolUsuario[0];
+          $_SESSION['rol'] = $rol->tipo;
       }
   }
 
@@ -125,6 +126,7 @@
                     echo '<a class="dropdown-item" href="categoria.php"><i class="fas fa-tags"></i> Categorías</a>';
                 } else {
                     echo '<a class="dropdown-item" href="mi_perfil.php"><i class="fas fa-user-cog"></i> Mi perfil</a>';
+                    echo '<a class="dropdown-item" href="tienda.php"><i class="fas fa-store"></i> Tienda</a>';
                     echo '<a class="dropdown-item" href="mis_pedidos.php"><i class="fas fa-shopping-basket"></i> Mis pedidos</a>';
                 }
             }

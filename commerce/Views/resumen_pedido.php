@@ -2,12 +2,47 @@
     ob_start(); // Inicia el búfer de salida
     
     //include '../Util/Config/config.php';
-    //include '../Models/Usuario.php';
-    // Verificar si el usuario está logueado
-    $allowed_roles = ['Administrador', 'Empleado'];
+    $require_login = true;  // No requiere iniciar sesión
+    $allowed_roles = ['Administrador', 'Repositor', 'Empleado', 'Cliente'];
     include_once 'Layouts/General/header.php'; // Mover esta línea después de las llamadas a header()
     ob_end_flush(); // Vacía (envía) el búfer de salida
 ?>
+
+<head>
+    <style>
+        .productos-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px; /* Espacio entre productos */
+        }
+        .producto-item {
+            display: flex;
+            align-items: center;
+            border: 1px solid #ddd;
+            padding: 10px;
+        }
+        .producto-img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            margin-right: 15px;
+        }
+        .detalles-producto {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+        .detalles-texto {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+        .detalles-texto p {
+            margin: 0;
+        }
+    </style>
+</head>
 
 <section class="content">
     <div class="container-fluid">
@@ -18,13 +53,12 @@
                         <h3 class="card-title">Detalles del pedido</h3>
                     </div>
                     <div class="card-body">
-                        <h4>Número del pedido:</h4>
-                        <p id="pedido-id"></p>
+                        <h4>Número de pedido: <span id="pedido-id"></span></h4>
 
                         <h4>Productos:</h4>
-                        <ul id="lista-productos">
+                        <div id="lista-productos" class="productos-container">
                             <!-- Los productos se agregarán aquí -->
-                        </ul>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -37,3 +71,6 @@
 ?>
 
 <script src="./resumen_pedido.js" type="module"></script>
+<script>
+    rol = echo $_SESSION['rol'];
+</script>

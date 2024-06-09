@@ -89,3 +89,4 @@
 
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
 <script src="./pedidoAdmin.js" type="module"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>

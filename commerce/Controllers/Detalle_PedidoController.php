@@ -10,18 +10,31 @@ session_start();
 
     if($_POST['funcion']=='agregar_carrito'){
         $id_producto = openssl_decrypt($_SESSION['product-verification'], CODE, KEY);
-        $cantidad = $_POST['cantidad'];
-        $precio = floatval($_POST['precio']);
-        //$tipoTecho = $_POST['tipoTecho'];
-        //$color = $_POST['color'];
         $id_usuario = $_SESSION['id'];
-        $resultado = $detalle_pedido->agregarDetallePedido(null, $id_producto, $cantidad, $precio, $id_usuario);
-        $_SESSION['product-verification'] = null;
 
-        if ($resultado) {
+        $detalle_pedido->obtener_Detalle_Pedido_Id_Producto($id_producto, $id_usuario);
+
+        if (count($detalle_pedido->objetos) > 0) {
+            if ($detalle_pedido->objetos[0]->stock == 0 || $detalle_pedido->objetos[0]->stock < $detalle_pedido->objetos[0]->cantidad + $_POST['cantidad']) {
+                echo json_encode(['message' => 'Producto sin stock', 'status' => 'error']);
+                return;
+            }
+            $detalle_pedido->cambiarCantidad($detalle_pedido->objetos[0]->id, $detalle_pedido->objetos[0]->cantidad + $_POST['cantidad']);
             echo json_encode(['message' => 'Producto agregado al carrito', 'status' => 'success']);
         } else {
-            echo json_encode(['message' => 'Error al agregar el producto al carrito', 'status' => 'error']);
+            $cantidad = $_POST['cantidad'];
+            $precio = floatval($_POST['precio']);
+            //$tipoTecho = $_POST['tipoTecho'];
+            //$color = $_POST['color'];
+            $id_usuario = $_SESSION['id'];
+            $resultado = $detalle_pedido->agregarDetallePedido(null, $id_producto, $cantidad, $precio, $id_usuario);
+            $_SESSION['product-verification'] = null;
+
+            if ($resultado) {
+                echo json_encode(['message' => 'Producto agregado al carrito', 'status' => 'success']);
+            } else {
+                echo json_encode(['message' => 'Error al agregar el producto al carrito', 'status' => 'error']);
+            }
         }
     }
 

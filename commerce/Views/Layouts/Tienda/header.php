@@ -1,3 +1,41 @@
+<?php
+  session_start();
+  include '../Models/Usuario.php';
+
+  // Definir la variable $require_login si no está definida en la vista
+  if (!isset($require_login)) {
+      $require_login = true; // Por defecto, se requiere inicio de sesión
+  }
+
+  // Verificar si el usuario está logueado
+  $usuario = new Usuario();
+  $rol = null;
+
+  if (isset($_SESSION['id'])) {
+      $rolUsuario = $usuario->obtener_rol($_SESSION['id']);
+      // Verificar si obtener_rol() devolvió un resultado
+      if (isset($rolUsuario[0])) {
+          $rol = $rolUsuario[0];
+          $_SESSION['rol'] = $rol->tipo;
+      }
+  }
+
+  // Check if the user role is allowed or if login is required
+  if ($require_login) {
+      // Si se requiere inicio de sesión y el usuario no está logueado
+      if ($rol === null) {
+          header('Location: ./index.php'); // Redirigir a la página de inicio
+          exit();
+      }
+
+      // Si el usuario está logueado, verificar su rol
+      if (!in_array($rol->tipo, $allowed_roles)) {
+          header('Location: ./index.php');
+          exit();
+      }
+  }
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,7 +57,7 @@
   <link rel="stylesheet" href="..\Util\Css\styles.css">
 
 <style>
-    /* Estilo para manejar submenús anidados */
+  /* Estilo para manejar submenús anidados */
   .dropdown-submenu {
       position: relative;
   }
@@ -63,7 +101,7 @@
         <!-- Navbar Search -->
         <li class="nav-item">
           <div class="search-container">
-              <form id="searchForm" class="header-search-form">
+              <form id="searchForm" class="header-search-form" action="tienda.php" method="GET">
                 <input id="inputSearch" type="text" placeholder="Buscar" name="search" class="header-search-input">
                 <button type="submit" class="header-search-btn"><i class="fa fa-search"></i></button>
               </form>
@@ -100,7 +138,7 @@
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
             <a class="dropdown-item text-dark" href="mi_perfil.php"><i class="fas fa-user-cog mr-2" style="color:rgb(80, 80, 80);"></i> Mi perfil</a>
-            <a class="dropdown-item text-dark" href="#"><i class="fas fa-shopping-basket mr-2" style="color:rgb(80, 80, 80);"> </i> Mis pedidos</a>
+            <a class="dropdown-item text-dark" href="mis_pedidos.php"><i class="fas fa-shopping-basket mr-2" style="color:rgb(80, 80, 80);"> </i> Mis pedidos</a>
             <!-- Controlador para cerrar sesion -->
             <a class="dropdown-item text-dark" href="../Controllers/logout.php"><i class="fas fa-user-times" style="color:rgb(80, 80, 80);"></i> Cerrar sesión</a>
           </div>

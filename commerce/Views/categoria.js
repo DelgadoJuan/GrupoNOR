@@ -1,5 +1,13 @@
 import { verificar_sesion } from "./sesion.js";
 
+const swalWithBootstrapButtons = Swal.mixin({
+    customClass: {
+    confirmButton: "btn btn-success m-3",
+    cancelButton: "btn btn-danger"
+    },
+    buttonsStyling: false
+});
+
 $(document).ready(function() {
     bsCustomFileInput.init();
     verificar_sesion();
@@ -73,10 +81,20 @@ $(document).ready(function() {
                         success: function(response) {
                             const data = JSON.parse(response);
                             if (data.status === 'success') {
-                                alert(data.message);
-                                location.reload(); // Recarga la página para mostrar el nuevo estado de la categoría
+                                swalWithBootstrapButtons.fire({
+                                    title: "Exito!",
+                                    text: "Se cambio el estado de la categoria",
+                                    icon: "success"
+                                });
+                                //alert(data.message);
+                                obtenerCategorias();
                             } else {
-                                alert('Hubo un error al cambiar el estado de la categoría');
+                                swalWithBootstrapButtons.fire({
+                                    title: "Error!",
+                                    text: "Hubo un error al cambiar el estado de la categoría",
+                                    icon: "error"
+                                });
+                                //alert('Hubo un error al cambiar el estado de la categoría');
                             }
                         },
                         error: function(error) {
@@ -89,25 +107,44 @@ $(document).ready(function() {
                 $('.btn-delete').on('click', function() {
                     const id = $(this).data('id');
                 
-                    if (confirm('¿Estás seguro de que quieres eliminar esta categoría?')) {
-                        $.ajax({
-                            url: '../Controllers/CategoriaController.php',
-                            type: 'POST',
-                            data: { funcion: 'eliminar_categoria', id: id },
-                            success: function(response) {
-                                const data = JSON.parse(response);
-                                if (data.status === 'success') {
-                                    alert(data.message);
-                                    location.reload(); // Recarga la página para mostrar los cambios
-                                } else {
-                                    alert('Hubo un error al eliminar la categoría');
+                    Swal.fire({
+                        title: '¿Estás seguro?',
+                        text: "¿Estás seguro de que quieres eliminar esta categoría?",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Eliminar',
+                        cancelButtonText: 'Cancelar'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.ajax({
+                                url: '../Controllers/CategoriaController.php',
+                                type: 'POST',
+                                data: { funcion: 'eliminar_categoria', id: id },
+                                success: function(response) {
+                                    const data = JSON.parse(response);
+                                    if (data.status === 'success') {
+                                        swalWithBootstrapButtons.fire({
+                                            title: "Categoria eliminada!",
+                                            text: "Tu categoria fue eliminada con exito",
+                                            icon: "success"
+                                        });
+                                        obtenerCategorias();
+                                    } else {
+                                        swalWithBootstrapButtons.fire({
+                                            title: "Error!",
+                                            text: "Hubo un error al eliminar la categoría",
+                                            icon: "error"
+                                        });
+                                    }
+                                },
+                                error: function(error) {
+                                    console.error(error);
                                 }
-                            },
-                            error: function(error) {
-                                console.error(error);
-                            }
-                        });
-                    }
+                            });
+                        }
+                    });
                 });
             },
             error: function(error) {
@@ -161,11 +198,21 @@ $(document).ready(function() {
             success: function(response) {
                 const data = JSON.parse(response);
                 if (data.status === 'success') {
-                    alert(data.message);
+                    swalWithBootstrapButtons.fire({
+                        title: "Exito!",
+                        text: "Categoria agregada",
+                        icon: "success"
+                    });
+                    //alert(data.message);
                     $('#addCategoryModal').modal('hide');
-                    location.reload();
+                    obtenerCategorias();
                 } else {
-                    alert('Hubo un error al agregar la categoría');
+                    swalWithBootstrapButtons.fire({
+                        title: "Error!",
+                        text: "Hubo un error al agregar la categoría",
+                        icon: "error"
+                    });
+                    //alert('Hubo un error al agregar la categoría');
                 }
             },
             error: function(error) {
@@ -189,11 +236,21 @@ $(document).ready(function() {
             success: function(response) {
                 const data = JSON.parse(response);
                 if (data.status === 'success') {
-                    alert(data.message);
+                    swalWithBootstrapButtons.fire({
+                        title: "Exito!",
+                        text: "Categoria actualizada",
+                        icon: "success"
+                    });
+                    //alert(data.message);
                     $('#editCategoryModal').modal('hide');
-                    location.reload(); // Recarga la página para mostrar los cambios
+                    obtenerCategorias();
                 } else {
-                    alert('Hubo un error al actualizar la categoría');
+                    swalWithBootstrapButtons.fire({
+                        title: "Error!",
+                        text: "Hubo un error al actualizar la categoría",
+                        icon: "error"
+                    });
+                    //alert('Hubo un error al actualizar la categoría');
                 }
             },
             error: function(error) {

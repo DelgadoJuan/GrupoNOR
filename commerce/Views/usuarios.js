@@ -1,24 +1,35 @@
 import { verificar_sesion } from "./sesion.js";
 
+const swalWithBootstrapButtons = Swal.mixin({
+    customClass: {
+    confirmButton: "btn btn-success m-3",
+    cancelButton: "btn btn-danger"
+    },
+    buttonsStyling: false
+});
+
 $(document).ready(function() {
     verificar_sesion();
     $('#employeesTable').hide();
+
+    $('#showClients').on('click', function() {
+        toggleTables('#clientsTable', '#employeesTable');
+    });
+
+    $('#showEmployees').on('click', function() {
+        toggleTables('#employeesTable', '#clientsTable');
+    });
     obtener_usuarios();
 });
 
-document.getElementById('showClients').addEventListener('click', function() {
-    $('#employeesTable').hide();
-    $('#employeesTable').DataTable().destroy();
-    $('#clientsTable').show();
-    $('#clientsTable').DataTable();
-});
-
-document.getElementById('showEmployees').addEventListener('click', function() {
-    $('#clientsTable').hide();
-    $('#clientsTable').DataTable().destroy();
-    $('#employeesTable').show();
-    $('#employeesTable').DataTable();
-});
+function toggleTables(showTable, hideTable) {
+    $(hideTable).hide();
+    if ($.fn.DataTable.isDataTable(hideTable)) {
+        $(hideTable).DataTable().destroy();
+    }
+    $(showTable).show();
+    $(showTable).DataTable();
+}
 
 function obtener_usuarios() {
     $.ajax({
@@ -62,53 +73,73 @@ function obtener_usuarios() {
                     tablaEmpleados += filaUsuario;
                 }
             });
-            $('#clientsTable tbody').html(tablaClientes);
-            $('#employeesTable tbody').html(tablaEmpleados);
-            $('#clientsTable').DataTable();
-            
-            $('.fa-toggle-on, .fa-toggle-off').click(function() {
-                var filaUsuario = $(this).closest('tr');
-                var id_usuario = filaUsuario.data('id');
-                var nuevoEstado = $(this).hasClass('fa-toggle-on') ? 'I' : 'A';
-                cambiarEstadoUsuario(id_usuario, nuevoEstado);
-            });
-
-            $('.fa-trash').click(function() {
-                var filaUsuario = $(this).closest('tr');
-                var id_usuario = filaUsuario.data('id');
-                if (confirm('¿Estás seguro de que quieres eliminar este usuario?')) {
-                    eliminarUsuario(id_usuario);
-                }
-            });
-
-            document.querySelectorAll('.editar_usuario').forEach(boton => {
-                boton.addEventListener('click', function() {
-                    let filaUsuario = this.closest('tr');
-                    var id_tipo = this.dataset.idTipo;
-
-                    if (id_tipo == 2) {
-                        document.querySelector('#editEmployeeForm #selectDiv').style.display = 'none';
-                        document.querySelector('#editEmployeeForm #tipoEmpleado').value = "";
-                    } else {
-                        document.querySelector('#editEmployeeForm #selectDiv').style.display = 'block';
-                        var select = document.querySelector('#editEmployeeForm #tipoEmpleado');
-                        if (select) {
-                            select.value = id_tipo;
-                        }
-                    }
-            
-                    document.querySelector('#editEmployeeForm #id_usuario').value = filaUsuario.dataset.id;
-                    document.querySelector('#editEmployeeForm #dni').value = filaUsuario.querySelector('.dni').textContent;
-                    document.querySelector('#editEmployeeForm #user').value = filaUsuario.querySelector('.user').textContent;
-                    document.querySelector('#editEmployeeForm #email').value = filaUsuario.querySelector('.email').textContent;
-                    document.querySelector('#editEmployeeForm #nombre').value = filaUsuario.querySelector('.nombres').textContent;
-                    document.querySelector('#editEmployeeForm #apellido').value = filaUsuario.querySelector('.apellidos').textContent;
-                    document.querySelector('#editEmployeeForm #telefono').value = filaUsuario.querySelector('.telefono').textContent;
-                    document.querySelector('#editEmployeeForm #direccion').value = filaUsuario.querySelector('.direccion').textContent;
-                    document.querySelector('#editEmployeeForm #referencia').value = filaUsuario.querySelector('.referencia').textContent;
-                });
-            });
+            actualizarTablas(tablaClientes, tablaEmpleados);
         }
+    });
+}
+
+function actualizarTablas(tablaClientes, tablaEmpleados) {
+    $('#clientsTable').DataTable().destroy();
+    $('#employeesTable').DataTable().destroy();
+    $('#clientsTable tbody').html(tablaClientes);
+    $('#employeesTable tbody').html(tablaEmpleados);
+    $('#clientsTable').DataTable();
+    $('#employeesTable').DataTable();
+    agregarEventos();
+}
+
+function agregarEventos() {
+    $('.fa-toggle-on, .fa-toggle-off').click(function() {
+        var filaUsuario = $(this).closest('tr');
+        var id_usuario = filaUsuario.data('id');
+        var nuevoEstado = $(this).hasClass('fa-toggle-on') ? 'I' : 'A';
+        cambiarEstadoUsuario(id_usuario, nuevoEstado);
+    });
+
+    $('.fa-trash').click(function() {
+        var filaUsuario = $(this).closest('tr');
+        var id_usuario = filaUsuario.data('id');
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "¿Estás seguro de que quieres eliminar este usuario?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, eliminar!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                eliminarUsuario(id_usuario);
+            }
+        });
+    });
+
+    document.querySelectorAll('.editar_usuario').forEach(boton => {
+        boton.addEventListener('click', function() {
+            let filaUsuario = this.closest('tr');
+            var id_tipo = this.dataset.idTipo;
+
+            if (id_tipo == 2) {
+                document.querySelector('#editEmployeeForm #selectDiv').style.display = 'none';
+                document.querySelector('#editEmployeeForm #tipoEmpleado').value = "";
+            } else {
+                document.querySelector('#editEmployeeForm #selectDiv').style.display = 'block';
+                var select = document.querySelector('#editEmployeeForm #tipoEmpleado');
+                if (select) {
+                    select.value = id_tipo;
+                }
+            }
+
+            document.querySelector('#editEmployeeForm #id_usuario').value = filaUsuario.dataset.id;
+            document.querySelector('#editEmployeeForm #dni').value = filaUsuario.querySelector('.dni').textContent;
+            document.querySelector('#editEmployeeForm #user').value = filaUsuario.querySelector('.user').textContent;
+            document.querySelector('#editEmployeeForm #email').value = filaUsuario.querySelector('.email').textContent;
+            document.querySelector('#editEmployeeForm #nombre').value = filaUsuario.querySelector('.nombres').textContent;
+            document.querySelector('#editEmployeeForm #apellido').value = filaUsuario.querySelector('.apellidos').textContent;
+            document.querySelector('#editEmployeeForm #telefono').value = filaUsuario.querySelector('.telefono').textContent;
+            document.querySelector('#editEmployeeForm #direccion').value = filaUsuario.querySelector('.direccion').textContent;
+            document.querySelector('#editEmployeeForm #referencia').value = filaUsuario.querySelector('.referencia').textContent;
+        });
     });
 }
 
@@ -121,7 +152,12 @@ function eliminarUsuario(id_usuario) {
             id: id_usuario,
         },
         success: function(response) {
-            alert('Usuario eliminado correctamente');
+            swalWithBootstrapButtons.fire({
+                title: "Exito!",
+                text: "Usuario eliminado correctamente",
+                icon: "success"
+            });
+            //alert('Usuario eliminado correctamente');
             obtener_usuarios(); // Actualizar la tabla
         }
     });
@@ -137,28 +173,21 @@ function cambiarEstadoUsuario(id_usuario, nuevoEstado) {
             estado: nuevoEstado,
         },
         success: function(response) {
-            alert('Estado modificado correctamente');
+            swalWithBootstrapButtons.fire({
+                title: "Exito!",
+                text: "Estado modificado correctamente",
+                icon: "success"
+            });
+            //alert('Estado modificado correctamente');
             obtener_usuarios(); // Actualizar la tabla
         }
     });
 }
 
 document.querySelector('#addEmployeeForm').addEventListener('submit', function(event) {
-    // Prevenir la recarga de la página
     event.preventDefault();
-
-    // Crear un objeto FormData con los datos del formulario
     let formData = new FormData(this);
-
-    // Validar los datos del producto
-    /*if (!validarProducto(formData)) {
-        return;
-    }*/
-
-    // Agregar la función al objeto FormData
     formData.append('funcion', 'registrar_empleado');
-
-    // Enviar los datos del formulario al servidor
     $.ajax({
         url: '../Controllers/UsuarioController.php',
         method: 'POST',
@@ -166,31 +195,22 @@ document.querySelector('#addEmployeeForm').addEventListener('submit', function(e
         processData: false,
         contentType: false,
         success: function(response) {
-            // Ocultar el modal
-            $('#addEmployeeForm').modal('hide');
-            alert('Empleado creado correctamente');
-            // Actualizar la tabla de empleados
+            $('#addEmployeeModal').modal('hide');
+            swalWithBootstrapButtons.fire({
+                title: "Exito!",
+                text: "Empleado creado correctamente",
+                icon: "success"
+            });
+            //alert('Empleado creado correctamente');
             obtener_usuarios();
         }
     });
 });
 
 document.querySelector('#editEmployeeForm').addEventListener('submit', function(event) {
-    // Prevenir la recarga de la página
     event.preventDefault();
-
-    // Crear un objeto FormData con los datos del formulario
     let formData = new FormData(this);
-
-    // Validar los datos del producto
-    /*if (!validarProducto(formData)) {
-        return;
-    }*/
-
-    // Agregar la función al objeto FormData
     formData.append('funcion', 'modificar_usuario');
-
-    // Enviar los datos del formulario al servidor
     $.ajax({
         url: '../Controllers/UsuarioController.php',
         method: 'POST',
@@ -198,10 +218,13 @@ document.querySelector('#editEmployeeForm').addEventListener('submit', function(
         processData: false,
         contentType: false,
         success: function(response) {
-            // Ocultar el modal
             $('#editEmployeeModal').modal('hide');
-            alert('Empleado actualizado correctamente');
-            // Actualizar la tabla de empleados
+            swalWithBootstrapButtons.fire({
+                title: "Exito!",
+                text: "Empleado actualizado correctamente",
+                icon: "success"
+            });
+            //alert('Empleado actualizado correctamente');
             obtener_usuarios();
         }
     });
