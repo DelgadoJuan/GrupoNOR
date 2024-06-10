@@ -8,6 +8,10 @@
   box-sizing: border-box;
 }
 
+.card-product {
+  cursor: pointer;
+}
+
 .dataTables_wrapper .top {
   display: flex;
   justify-content: space-between;
@@ -37,6 +41,8 @@
 .dataTables_info {
   color: black; /* Cambia el color del texto */
 }
+
+
 
 /* Estilos básicos para el menú */
 .nav-list {

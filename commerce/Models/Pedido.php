@@ -10,12 +10,12 @@
             $this->acceso = $db->pdo;
         }
     
-        public function crear_pedido($id_usuario, $fecha_registro, $total, $metodo_pago, $envio, $estado) {
+        public function crear_pedido($id_usuario, $fecha_registro, $total, $metodo_pago, $envio, $estado, $direccion_envio) {
             $this->acceso->beginTransaction();
         
             try {
-                $sql = "INSERT INTO pedido (fecha, estado, metodo_pago, id_usuario, total) 
-                        VALUES(:fecha, :estado, :metodo_pago, :id_usuario, :total)";
+                $sql = "INSERT INTO pedido (fecha, estado, metodo_pago, id_usuario, total, precio_envio, direccion_envio) 
+                        VALUES(:fecha, :estado, :metodo_pago, :id_usuario, :total, :precio_envio, :direccion_envio)";
         
                 $query = $this->acceso->prepare($sql);
         
@@ -24,7 +24,9 @@
                     ':fecha' => $fecha_registro, 
                     ':total' => $total, 
                     ':metodo_pago' => $metodo_pago, 
-                    ':estado' => $estado
+                    ':estado' => $estado,
+                    ':precio_envio' => $envio,
+                    ':direccion_envio' => $direccion_envio
                 ));
         
                 $id_pedido = $this->acceso->lastInsertId();

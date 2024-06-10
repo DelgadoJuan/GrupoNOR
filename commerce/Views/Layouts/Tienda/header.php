@@ -43,6 +43,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Tienda</title>
 
+  <!-- Bootstrap 4 -->
+  <link rel="stylesheet" href="../Util/Css/bootstrap.min.css">
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Select2 -->
@@ -53,31 +55,33 @@
   <link rel="stylesheet" href="../Util/Css/adminlte.min.css">
   <!-- Sweetalert2 -->
   <link rel="stylesheet" href="../Util/Css/sweetalert2.min.css">
-
-  <link rel="stylesheet" href="..\Util\Css\styles.css">
-
-<style>
-  /* Estilo para manejar submenús anidados */
-  .dropdown-submenu {
+  <link rel="stylesheet" type="text/css" href="../Util/Css/styles.css">
+  
+  <style>
+    #dropdown-submenu {
       position: relative;
-  }
+    }
 
-  .dropdown-submenu > .dropdown-menu {
+    #dropdown-submenu > #dropdown-menu {
       top: 0;
       left: 100%;
       margin-top: -1px;
       display: none; /* Ocultar inicialmente */
-  }
+    }
 
-  .dropdown-submenu:hover > .dropdown-menu {
+    #dropdown-submenu:hover > #dropdown-menu {
       display: block; /* Mostrar cuando se hace hover */
-  }
+    }
 
-  .navbar-nav .dropdown-menu {
+    .navbar-nav #dropdown-menu {
       margin-top: 0;
-  }
-</style>
-  
+      display: none; /* Ocultar inicialmente */
+    }
+
+    .navbar-nav #dropdown:hover > #dropdown-menu {
+      display: block; /* Mostrar cuando se hace hover */
+    }
+  </style>
 </head>
 <body class="hold-transition">
   <!-- Site wrapper -->
@@ -90,7 +94,7 @@
           <img src="../Util/Assets/Grupo Nor Logo 2 [Recuperado].png" alt="Company Logo" class="" style="opacity: 1; width: 10em; margin-left:1em">
       </a>
 
-      <div class="collapse navbar-collapse" id="navbarNav">
+      <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
           <ul id="categorias" class="navbar-nav">
               <!-- Categorías se insertarán aquí -->
           </ul>

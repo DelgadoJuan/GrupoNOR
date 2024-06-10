@@ -63,7 +63,7 @@ $(document).ready(function() {
                     //let fotoUrl = id_categoria !== null ? `../${producto.foto}` : producto.foto;
                     template+= ` 
                     <div class="col-sm-2">
-                        <div class="card">
+                        <div class="card card-product" onclick="location.href='../Views/descripcion.php?name=${encodeURIComponent(producto.nombre)}&id=${encodeURIComponent(producto.id)}'">
                             <div class="card-body">
                                 <div class="row">
                                 <div class="col-sm-12 rounded mb-2">
@@ -71,7 +71,7 @@ $(document).ready(function() {
                                 </div>
                                 <div class="col-sm-12" style="gap:0;justify-content:center;align-items:center;">
                                     <span class="card-title float-left text-dark fw-bold fs-4 mb-0" style="font-weight:500; font-size:1.25em; margin-bottom:0;">${producto.nombre}</span></br></br>
-                                    <a href="../Views/descripcion.php?name=${encodeURIComponent(producto.nombre)}&id=${encodeURIComponent(producto.id)}" class="float-left descripcion_producto text-dark mb-4" style="font-size: .75em">Descripcion del producto</a></br></br>
+                                    <!--<a href="../Views/descripcion.php?name=${encodeURIComponent(producto.nombre)}&id=${encodeURIComponent(producto.id)}" class="float-left descripcion_producto text-dark mb-4" style="font-size: .75em">Descripcion del producto</a></br></br>-->
                                     <h4 class="mb-0 float-left text-info " >$ ${producto.precio}</h4></br></br>
                                 </div>
                             </div>
@@ -128,19 +128,21 @@ $(document).ready(function() {
                 var navbarHtml = '';
     
                 navbarHtml += '<li class="nav-item text-dark"><a href="./calculadora.php" class="nav-link text-dark">Cotización</a></li>';
+                navbarHtml += '<li class="nav-item text-dark"><a href="./tienda.php" class="nav-link text-dark">Inicio</a></li>';
+    
                 function generateCategoryHtml(categoria, isSubcategory = false) {
                     var html = '';
                     if (isSubcategory) {
-                        html += '<li class="dropdown-submenu text-dark"><a href="#" class="dropdown-item subcategoria text-dark" data-id="' + categoria.id + '">' + categoria.nombre + '</a>';
+                        html += '<li id="dropdown-submenu" class="dropdown-submenu text-dark"><a href="#" class="dropdown-item text-dark subcategoria" data-id="' + categoria.id + '">' + categoria.nombre + '</a>';
                     } else {
-                        html += '<li class="nav-item dropdown text-dark">';
-                        html += '<a href="#" class="nav-link categoria text-dark ' + ((categoria.subcategorias && categoria.subcategorias.length > 0) ? 'dropdown-toggle' : '') + '" role="button" aria-haspopup="true" aria-expanded="false" data-id="' + categoria.id + '">';
+                        html += '<li id="dropdown" class="nav-item dropdown text-dark">';
+                        html += '<a href="#" class="nav-link text-dark categoria ' + ((categoria.subcategorias && categoria.subcategorias.length > 0) ? 'dropdown-toggle' : '') + '" role="button" aria-haspopup="true" aria-expanded="false" data-id="' + categoria.id + '">';
                         html += categoria.nombre;
                         html += '</a>';
                     }
     
                     if (categoria.subcategorias && categoria.subcategorias.length > 0) {
-                        html += '<ul class="dropdown-menu text-dark">';
+                        html += '<ul id="dropdown-menu" class="dropdown-menu text-dark rounded" style="background-color: rgb(230,230,230); box-shadow:none;border:none;">';
                         categoria.subcategorias.forEach(function(subcategoria) {
                             html += generateCategoryHtml(subcategoria, true);
                         });
@@ -175,15 +177,15 @@ $(document).ready(function() {
                 function handleMouseEnter() {
                     $(this).children('.dropdown-menu').stop(true, true).slideDown();
                 }
-    
+                
                 function handleMouseLeave() {
                     $(this).children('.dropdown-menu').stop(true, true).slideUp();
                 }
-    
+                
                 $('#categorias').off('click', '.categoria, .subcategoria', handleItemClick);
                 $('#categorias').off('mouseenter', '.nav-item', handleMouseEnter);
                 $('#categorias').off('mouseleave', '.nav-item', handleMouseLeave);
-    
+
                 $('#categorias').on('click', '.categoria, .subcategoria', handleItemClick);
                 $('#categorias').on('mouseenter', '.nav-item', handleMouseEnter);
                 $('#categorias').on('mouseleave', '.nav-item', handleMouseLeave);

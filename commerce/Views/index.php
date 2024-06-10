@@ -632,7 +632,7 @@ if (isset($_SESSION['id'])) {
 
                 <div class="end-list-2">
                     <iframe class="end-map"
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3539.865306290696!2d-58.98670980000001!3d-27.473452400000003!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94450cc72ade0523%3A0xdb958f05def20967!2sE.%20Duvivier%201365%2C%20Resistencia%2C%20Chaco!5e0!3m2!1ses!2sar!4v1693771162599!5m2!1ses!2sar"
+                        src="https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d890.3007895832679!2d-60.453807943699296!3d-26.801659107565058!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1sColectora%20Sur%20y%20Calle%2022!5e0!3m2!1ses!2sar!4v1717992181737!5m2!1ses!2sar"
                         width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
                         referrerpolicy="no-referrer-when-downgrade">
                     </iframe>
@@ -647,10 +647,9 @@ if (isset($_SESSION['id'])) {
 
                 <div class="end-list-4">
                     <h4 class="end-list-item-name" href="">Redes</h4>
-                    <a class="end-list-item" href="">LinkedIn</a>
                     <a class="end-list-item" href="https://www.instagram.com/gruponor.ventas/">Instagram</a>
                     <a class="end-list-item" href="https://www.facebook.com/p/Grupo-NOR-100088112688254/">Facebook</a>
-                    <a class="end-list-item" href="">WhatsApp</a>
+                    <a class="end-list-item" href="https://api.whatsapp.com/send?phone=%2B5493435310475&context=ARAefVPWNQyy32tq9e77YBJ4a7dWC4LeJL5J_wrwh6ThnrcQ2f3Tz-Aupn1kF7dDcJ2Q6MqjHVxRiL5OgDKtwkkkEEB_5Ei_TaGlAXXAlTU27EiumLk2Tnm-jSZWLunE9Cg1xFEZUBWZo-JacNhDc1w9Mg&source=FB_Page&app=facebook&entry_point=page_cta&fbclid=IwZXh0bgNhZW0CMTAAAR0P7ZYwqD28R9TTuC5vtI8dCsaAEG5OJ01B2nRY3uHq01u5EujxhZKt9KA_aem_AbKquTN6CnBkGSWAmfgIyrNZhgjYyL00cX6Svb3v8QsInw6KaXZuxv785fYnuqFzGoXMZexC_OAwrCvApoEDplXC">WhatsApp</a>
                 </div>
 
             </div>

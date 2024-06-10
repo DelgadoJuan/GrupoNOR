@@ -9,8 +9,6 @@ const swalWithBootstrapButtons = Swal.mixin({
 });
 
 $(document).ready(function() {
-    let ordenar_por = null;
-    let direccion = 'ASC';
 
     bsCustomFileInput.init();
     verificar_sesion();
@@ -60,8 +58,6 @@ $(document).ready(function() {
                     text: "Producto eliminado correctamente",
                     icon: "success"
                 });
-                //alert('Producto eliminado correctamente');
-                obtenerProductos(); // Actualizar la tabla
             }
         });
     }
@@ -74,45 +70,32 @@ $(document).ready(function() {
             data: { funcion: 'obtener_productos' },
             success: function(response) {
                 let productos = JSON.parse(response);
-                let tbody = document.querySelector('#inventoryTable tbody');
-                tbody.innerHTML = '';
     
+                // Inicializar DataTable y mantener una referencia a ella
+                let table = $('#inventoryTable').DataTable();
+                table.clear().draw(); // Limpiar la tabla antes de agregar nuevas filas
+        
                 productos.forEach(producto => {
-                    let row = `
-                        <tr>
-                            <td>${producto.nombre ? producto.nombre : 'N/A'}</td>
-                            <td>${producto.nombre_categoria ? producto.nombre_categoria : 'N/A'}</td>
-                            <td>${producto.precio_unitario ? parseInt(producto.precio_unitario).toString().replace(/,/g, '') : 'N/A'}</td>
-                            <td>${producto.costo_unidad ? parseInt(producto.costo_unidad).toString().replace(/,/g, '') : 'N/A'}</td>
-                            <td>${producto.precio_envio_km ? parseInt(producto.precio_envio_km).toString().replace(/,/g, '') : 'N/A'}</td>
-                            <td>${producto.sector ? producto.sector : 'N/A'}</td>
-                            <td>${producto.descripcion ? producto.descripcion : 'N/A'}</td>
-                            <td>${producto.fecha_registro ? new Date(producto.fecha_registro).toLocaleString() : 'N/A'}</td>
-                            <td>${producto.fecha_actualizacion ? new Date(producto.fecha_actualizacion).toLocaleString() : 'N/A'}</td>
-                            <td class='cantidad-column'>${producto.cantidad_disponible ? producto.cantidad_disponible : 'N/A'}</td>
-                            <td data-order="${producto.estado == 'A' ? 1 : 0}">
-                                <button class="btn btn-warning toggle-status-button" data-id="${producto.id}" data-status="${producto.estado}">
-                                    <i class="${producto.estado == 'A' ? 'fas fa-toggle-on' : 'fas fa-toggle-off'}"></i>
-                                </button>
-                            </td>
-                            <td>
-                                <button class="btn btn-primary add-quantity-button" data-id="${producto.id}" data-toggle="modal" data-target="#addStockModal"><i class="fas fa-plus"></i></button>
-                                <button class="btn btn-info edit-button" data-id="${producto.id}" data-toggle="modal" data-target="#editProductModal"><i class="fas fa-edit"></i></button>
-                                <button class="btn btn-danger delete-button" data-id="${producto.id}"><i class="fas fa-trash"></i></button>
-                            </td>
-                        </tr>
-                    `;
-    
-                    // Agregar la fila al cuerpo de la tabla
-                    tbody.innerHTML += row;
+                    // Añadir una nueva fila usando el método row.add() de DataTables
+                    let rowNode = table.row.add([
+                        producto.nombre ? producto.nombre : 'N/A',
+                        producto.nombre_categoria ? producto.nombre_categoria : 'N/A',
+                        producto.precio_unitario ? parseInt(producto.precio_unitario).toString().replace(/,/g, '') : 'N/A',
+                        producto.costo_unidad ? parseInt(producto.costo_unidad).toString().replace(/,/g, '') : 'N/A',
+                        producto.precio_envio_km ? parseInt(producto.precio_envio_km).toString().replace(/,/g, '') : 'N/A',
+                        producto.sector ? producto.sector : 'N/A',
+                        producto.descripcion ? producto.descripcion : 'N/A',
+                        producto.fecha_registro ? new Date(producto.fecha_registro).toLocaleString() : 'N/A',
+                        producto.fecha_actualizacion ? new Date(producto.fecha_actualizacion).toLocaleString() : 'N/A',
+                        producto.cantidad_disponible ? producto.cantidad_disponible : 'N/A',
+                        `<button class="btn btn-warning toggle-status-button" data-id="${producto.id}" data-status="${producto.estado}">
+                            <i class="${producto.estado == 'A' ? 'fas fa-toggle-on' : 'fas fa-toggle-off'}"></i>
+                        </button>`,
+                        `<button class="btn btn-primary add-quantity-button" data-id="${producto.id}" data-toggle="modal" data-target="#addStockModal"><i class="fas fa-plus"></i></button>
+                        <button class="btn btn-info edit-button" data-id="${producto.id}" data-toggle="modal" data-target="#editProductModal"><i class="fas fa-edit"></i></button>
+                        <button class="btn btn-danger delete-button" data-id="${producto.id}"><i class="fas fa-trash"></i></button>`
+                    ]).draw().node();
                 });
-    
-                // Destruir la instancia existente de DataTables antes de crear una nueva
-                if ($.fn.DataTable.isDataTable('#inventoryTable')) {
-                    $('#inventoryTable').DataTable().destroy();
-                }
-
-                $('#inventoryTable').DataTable();
     
                 // Agregar eventos a los botones de editar, eliminar, agregar cantidad y activar/desactivar
                 document.querySelectorAll('.edit-button').forEach(button => {
@@ -134,6 +117,7 @@ $(document).ready(function() {
                         }).then((result) => {
                             if (result.isConfirmed) {
                                 eliminarProducto(this.dataset.id);
+                                table.row($(this).parents('tr')).remove().draw();
                             }
                         });
                     });
@@ -141,11 +125,11 @@ $(document).ready(function() {
     
                 document.querySelectorAll('.add-quantity-button').forEach(button => {
                     button.addEventListener('click', function() {
-                        let row = this.closest('tr');
-    
+                        let row = $(this).closest('tr');
+
                         // Obtener la cantidad existente del producto de la tabla
-                        let cantidadExistente = row.querySelector('.cantidad-column').textContent;
-    
+                        let cantidadExistente = $('#inventoryTable').DataTable().cell(row, 9).data();
+
                         document.querySelector('#addStockModal #productId').value = this.dataset.id;
                         // Cargar la cantidad existente en el modal
                         document.querySelector('#addStockModal #cantidad').value = cantidadExistente;
@@ -193,7 +177,7 @@ $(document).ready(function() {
                 });
                 //alert('Producto creado correctamente');
                 // Actualizar la tabla de productos
-                obtenerProductos();
+                setTimeout(obtenerProductos, 100);
             }
         });
     });
@@ -209,41 +193,48 @@ $(document).ready(function() {
             success: function(response) {
                 var producto = JSON.parse(response)[0];
     
-                // Llenar el formulario de edición con los datos del producto
-                document.querySelector('#editProductForm #id').value = producto.id;
-                document.querySelector('#editProductForm #id_categoria').value = producto.id_categoria;
-                document.querySelector('#editProductForm #nombre').value = producto.nombre;
-                document.querySelector('#editProductForm #descripcion').value = producto.descripcion;
-                document.querySelector('#editProductForm #cantidad_disponible').value = producto.cantidad_disponible;
-                document.querySelector('#editProductForm #costo_unidad').value = producto.costo_unidad;
-                document.querySelector('#editProductForm #precio_unitario').value = producto.precio_unitario;
-                document.querySelector('#editProductForm #sector').value = producto.sector;
-                document.querySelector('#editProductForm #precio_envio').value = producto.precio_envio_km;
+                // Limpiar campos de fotos antes de cargar los datos
+                document.querySelector('#editProductForm #fotoExistente').src = '';
+                document.querySelector('#editProductForm #nombreFoto').textContent = '';
+                document.querySelector('#editProductForm #fotos').innerHTML = '';
     
-                // Cargar la foto principal del producto
+                // Llenar el formulario de edición con los datos del producto
+                $('#editProductForm #id').val(producto.id);
+                $('#editProductForm #id_categoria').val(producto.id_categoria);
+                $('#editProductForm #nombre').val(producto.nombre);
+                $('#editProductForm #descripcion').val(producto.descripcion);
+                $('#editProductForm #cantidad_disponible').val(producto.cantidad_disponible);
+                $('#editProductForm #costo_unidad').val(producto.costo_unidad);
+                $('#editProductForm #precio_unitario').val(producto.precio_unitario);
+                $('#editProductForm #sector').val(producto.sector);
+                $('#editProductForm #precio_envio').val(producto.precio_envio_km);
+    
+                // Cargar la foto principal del producto si existe
                 if (producto.foto) {
                     document.querySelector('#editProductForm #fotoExistente').src = producto.foto;
                     document.querySelector('#editProductForm #nombreFoto').textContent = producto.foto.split('/').pop();
                 }
     
-                // Agregar las fotos al formulario de edición
+                // Agregar las fotos al formulario de edición si existen
                 let fotosContainer = document.querySelector('#editProductForm #fotos');
                 fotosContainer.innerHTML = '';
-                producto.fotos.forEach(foto => {
-                    let fotoElement = document.createElement('div');
-                    let nombreFoto = foto.nombre.split('/').pop();
-                    fotoElement.innerHTML = `
-                        <img src="${foto.nombre}" alt="Foto del producto" style="width: 50px; height: 50px;">
-                        <span>${nombreFoto}</span>
-                        <button type="button" class="delete-photo-button" data-id="${foto.id}">Eliminar</button>
-                    `;
-                    fotosContainer.appendChild(fotoElement);
+                if (producto.fotos && producto.fotos.length > 0) {
+                    producto.fotos.forEach(foto => {
+                        let fotoElement = document.createElement('div');
+                        let nombreFoto = foto.nombre.split('/').pop();
+                        fotoElement.innerHTML = `
+                            <img src="${foto.nombre}" alt="Foto del producto" style="width: 50px; height: 50px;">
+                            <span>${nombreFoto}</span>
+                            <button type="button" class="delete-photo-button" data-id="${foto.id}">Eliminar</button>
+                        `;
+                        fotosContainer.appendChild(fotoElement);
     
-                    // Agregar evento al botón de eliminar foto
-                    fotoElement.querySelector('.delete-photo-button').addEventListener('click', function(event) {
-                        eliminarFoto(this.dataset.id, event);
+                        // Agregar evento al botón de eliminar foto
+                        fotoElement.querySelector('.delete-photo-button').addEventListener('click', function(event) {
+                            eliminarFoto(this.dataset.id, event);
+                        });
                     });
-                });
+                }
             }
         });
     }
@@ -277,8 +268,11 @@ $(document).ready(function() {
                     icon: "success"
                 });
                 //alert('Producto editado correctamente');
-                obtenerProductos();
                 $('#editProductModal').modal('hide');
+                obtenerProductos();
+                document.querySelector('#editProductForm').reset();
+                document.querySelector('#editProductForm #fotoExistente').src = '';
+                document.querySelector('#editProductForm #fotos').innerHTML = '';
             }
         });
     });
@@ -348,6 +342,8 @@ $(document).ready(function() {
                         });
                         //alert(data.message);
                     }
+                    // Resetear el formulario del modal
+                    $('#addStockForm')[0].reset();
                 },
                 error: function(_jqXHR, textStatus, errorThrown) {
                     console.error(textStatus, errorThrown);

@@ -31,13 +31,13 @@
 
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-    <!-- Select2 -->
-    <link rel="stylesheet" href="../Util/Css/select2.min.css">
+  <!-- Select2 -->
+  <link rel="stylesheet" href="../Util/Css/select2.min.css">
   <!-- Font Awesome -->
   <link rel="stylesheet" href="../Util/Css/css/all.min.css">
   <!-- Theme style -->
   <link rel="stylesheet" href="../Util/Css/adminlte.min.css">
-<!-- Sweetalert2 -->
+  <!-- Sweetalert2 -->
   <link rel="stylesheet" href="../Util/Css/sweetalert2.min.css">
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.css">
 </head>

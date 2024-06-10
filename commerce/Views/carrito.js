@@ -21,19 +21,21 @@ function obtenerCategorias() {
             var navbarHtml = '';
 
             navbarHtml += '<li class="nav-item text-dark"><a href="./calculadora.php" class="nav-link text-dark">Cotización</a></li>';
+            navbarHtml += '<li class="nav-item text-dark"><a href="./tienda.php" class="nav-link text-dark">Inicio</a></li>';
+
             function generateCategoryHtml(categoria, isSubcategory = false) {
                 var html = '';
                 if (isSubcategory) {
-                    html += '<li class="dropdown-submenu text-dark"><a href="#" class="dropdown-item subcategoria text-dark" data-id="' + categoria.id + '">' + categoria.nombre + '</a>';
+                    html += '<li id="dropdown-submenu" class="dropdown-submenu text-dark"><a href="#" class="dropdown-item text-dark subcategoria" data-id="' + categoria.id + '">' + categoria.nombre + '</a>';
                 } else {
-                    html += '<li class="nav-item dropdown text-dark">';
-                    html += '<a href="#" class="nav-link categoria text-dark ' + ((categoria.subcategorias && categoria.subcategorias.length > 0) ? 'dropdown-toggle' : '') + '" role="button" aria-haspopup="true" aria-expanded="false" data-id="' + categoria.id + '">';
+                    html += '<li id="dropdown" class="nav-item dropdown text-dark">';
+                    html += '<a href="#" class="nav-link text-dark categoria ' + ((categoria.subcategorias && categoria.subcategorias.length > 0) ? 'dropdown-toggle' : '') + '" role="button" aria-haspopup="true" aria-expanded="false" data-id="' + categoria.id + '">';
                     html += categoria.nombre;
                     html += '</a>';
                 }
 
                 if (categoria.subcategorias && categoria.subcategorias.length > 0) {
-                    html += '<ul class="dropdown-menu">';
+                    html += '<ul id="dropdown-menu" class="dropdown-menu text-dark rounded" style="background-color: rgb(230,230,230); box-shadow:none;border:none;">';
                     categoria.subcategorias.forEach(function(subcategoria) {
                         html += generateCategoryHtml(subcategoria, true);
                     });
@@ -62,11 +64,11 @@ function obtenerCategorias() {
             function handleMouseEnter() {
                 $(this).children('.dropdown-menu').stop(true, true).slideDown();
             }
-
+            
             function handleMouseLeave() {
                 $(this).children('.dropdown-menu').stop(true, true).slideUp();
             }
-
+            
             $('#categorias').off('click', '.categoria, .subcategoria', handleItemClick);
             $('#categorias').off('mouseenter', '.nav-item', handleMouseEnter);
             $('#categorias').off('mouseleave', '.nav-item', handleMouseLeave);
@@ -78,7 +80,7 @@ function obtenerCategorias() {
         error: function() {
             swalWithBootstrapButtons.fire({
                 title: "Error!",
-                text: "Error al realizar la solicitud AJAX'",
+                text: "Error al realizar la solicitud AJAX",
                 icon: "error"
             });
             //alert('Error al realizar la solicitud AJAX');
@@ -91,7 +93,6 @@ $(document).ready(function(){
     verificar_sesion();
     obtenerCategorias();
     obtenerCarrito();
-    obtenerDatosCliente();
     obtenerDirecciones();
     $('#pagarButton').addClass('disabled');
 
@@ -167,7 +168,11 @@ function obtenerCarrito() {
             var subtotal = 0;
             var envio = 0;
 
+            // Reiniciar cantidadCarrito al inicio
+            var cantidadCarrito = 0;
+
             for (var i = 0; i < cartItems.length; i++) {
+                cantidadCarrito += 1;
                 if (cartItems[i].cantidad > cartItems[i].stock) {
                     noStock = true;
                 }
@@ -186,6 +191,13 @@ function obtenerCarrito() {
                 }
                 cartItemsHtml += '<td><button class="btn btn-danger delete-button" data-id="' + cartItems[i].id + '"><i class="fas fa-trash-alt"></i></button></td>';
                 cartItemsHtml += '</tr>';
+            }
+            console.log(cantidadCarrito);
+            if (cantidadCarrito === 0) {
+                document.getElementById('direccion').setAttribute('disabled', 'disabled');
+                document.getElementById('pagarButton').setAttribute('disabled', 'disabled');
+            } else {
+                document.getElementById('direccion').removeAttribute('disabled');
             }
 
             $('#cart-items').html(cartItemsHtml);
@@ -229,7 +241,7 @@ function obtenerCarrito() {
                         if (result.isConfirmed) {
                             eliminarDelCarrito(this.dataset.id);
                             // Actualizar la tabla del carrito después de eliminar un producto
-                            obtenerCarrito();
+                            setTimeout(obtenerCarrito, 100); // Espera 500 milisegundos (ajusta según sea necesario)
                         }
                     })
                 });
@@ -244,31 +256,6 @@ function obtenerCarrito() {
             //alert('Error al realizar la solicitud AJAX');
         }
     });
-}
-
-function obtenerDatosCliente() {
-    $.ajax({
-        url: '../Controllers/UsuarioController.php',
-        method: 'POST',
-        data: {
-            funcion: 'obtener_payer'
-        },
-        success: function(response) {
-            var data = JSON.parse(response);
-            $('#nombre').val(data.nombre);
-            $('#apellido').val(data.apellido);
-            $('#email').val(data.email);
-        },
-        error: function() {
-            swalWithBootstrapButtons.fire({
-                title: "Error!",
-                text: "Error al realizar la solicitud AJAX'",
-                icon: "error"
-            });
-            //alert('Error al realizar la solicitud AJAX');
-        }
-    });
-
 }
 
 var cambiarCantidadTimeout;
@@ -326,7 +313,6 @@ function eliminarDelCarrito(id_detalle_pedido) {
                     text: "Hubo un error al eliminar el producto del carrito",
                     icon: "error"
                 });
-                //alert('Error al eliminar el producto del carrito');
             }
         },
         error: function() {
@@ -335,7 +321,6 @@ function eliminarDelCarrito(id_detalle_pedido) {
                 text: "Error al realizar la solicitud AJAX'",
                 icon: "error"
             });
-            //alert('Error al realizar la solicitud AJAX');
         }
     });
 }
@@ -379,11 +364,17 @@ function calcularEnvio(origen, destino, callback) {
                         }
                     });
 
+                    var select = document.getElementById('direccion');
+                    var direccionCompletaSeleccionada = select.options[select.selectedIndex].text;
+
                     // Enviar el costo de envío total al servidor
                     $.ajax({
                         url: 'guardar_envio.php',
                         method: 'POST',
-                        data: { envio: costoEnvioTotal },
+                        data: { 
+                            envio: costoEnvioTotal,
+                            direccion: direccionCompletaSeleccionada
+                        },
                         success: function(response) {
                             var data = JSON.parse(response);
                             if (data.status === 'success') {

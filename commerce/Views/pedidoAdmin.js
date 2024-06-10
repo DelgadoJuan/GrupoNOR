@@ -31,6 +31,7 @@ function obtenerPedidos() {
                 row.append($('<td class="text-dark">').text(pedido.fecha ? new Date(pedido.fecha).toLocaleString() : 'N/A'));
                 row.append($('<td class="text-dark">').text(pedido.envio ? Math.trunc(pedido.envio) : 0));
                 row.append($('<td class="text-dark">').text(pedido.total ? Math.trunc(pedido.total) : 0));
+                row.append($('<td class="text-dark">').text(pedido.direccion_envio || 'N/A'));
                 row.append($('<td class="text-dark">').text(pedido.metodo_pago || 'N/A'));
                 row.append($('<td class="text-dark">').text(pedido.estado || 'N/A'));
 

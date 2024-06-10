@@ -9,6 +9,26 @@
 ?>
     
 <title> <?php echo $_GET['name'] ?> </title>
+<head>
+    <style>
+        .custom-select {
+            width: 100%;
+            padding: .375rem .75rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #495057;
+            background-color: #fff;
+            border: 1px solid #ced4da;
+            border-radius: .25rem;
+        }
+
+        .custom-select:focus {
+            border-color: #80bdff;
+            outline: 0;
+            box-shadow: 0 0 0 .2rem rgba(0,123,255,.25);
+        }
+    </style>
+</head>
 
 <!-- Content Header (Page header) -->
 <section class="content-header" style="padding: 0 1.5em">
@@ -19,7 +39,7 @@
         </div>
         <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-            <li class="breadcrumb-item"><a href="./tienda.php">Home</a></li>
+            <li class="breadcrumb-item"><a href="./tienda.php">Inicio</a></li>
             <li class="breadcrumb-item active"><?php echo $_GET['name'] ?></li>
             </ol>
         </div>
@@ -40,7 +60,7 @@
                 <hr>             
                 <div class="mt-4">
                     <h4 class="text-dark">Cantidad</h4>
-                    <input class="rounded text-dark" style="width: 100%; height:2em;padding-left:15px; border:none; background-color: rgba(80,80,80,0.2);" type="number" id="product_quantity" min="1" value="1">
+                    <input class="rounded text-dark text-center" style="width: 100%; height:2em;padding-left:15px; border:none; background-color: rgba(80,80,80,0.2);" type="number" id="product_quantity" min="1" value="1">
                 </div>
                 <div class="mt-4">
                     <span id="warningStock" class="text-danger"></span>
@@ -54,7 +74,7 @@
                 <div id="product_options" class="mt-4"></div>
 
                 <div class="bg-gray py-2 px-3 mt-4 border rounded">
-                    <h4 class="mb-0" id="precio_producto">
+                    <h4 class="mb-0 text-center" id="precio_producto">
                     </h4>
                 </div>
 
@@ -69,14 +89,14 @@
             </div>
             <div class="row mt-4">
                 <nav class="w-100">
-                <div class="nav nav-tabs" id="product-tab" role="tablist">
-                    <a class="nav-item nav-link active" id="product-desc-tab" data-toggle="tab" href="#product-desc" role="tab" aria-controls="product-desc" aria-selected="true">Descripcion</a>
-                </div>
+                    <div class="nav nav-tabs" id="product-tab" role="tablist">
+                        <a class="nav-item nav-link active" id="product-desc-tab" data-toggle="tab" href="#product-desc" role="tab" aria-controls="product-desc" aria-selected="true">Descripcion</a>
+                    </div>
                 </nav>
                 <div class="tab-content p-3" id="nav-tabContent">
-                <div class="tab-pane fade show active text-dark" id="product-desc" role="tabpanel" aria-labelledby="product-desc-tab">
-                    Aqui va la descripcion
-                </div>
+                    <div class="tab-pane fade show active text-dark" id="product-desc" role="tabpanel" aria-labelledby="product-desc-tab">
+                        <pre id="product-description-content">Aqui va la descripcion</pre>
+                    </div>
                 </div>
             </div>
             </div>

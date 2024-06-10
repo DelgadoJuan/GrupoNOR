@@ -7,14 +7,13 @@ const swalWithBootstrapButtons = Swal.mixin({
     },
     buttonsStyling: false
 });
+let categorias = [];
 
 $(document).ready(function() {
     bsCustomFileInput.init();
     verificar_sesion();
 
-    $(document).ready(function() {
-        obtenerCategorias();
-    });
+    obtenerCategorias();
 
     function obtenerCategorias() {
         $.ajax({
@@ -22,8 +21,9 @@ $(document).ready(function() {
             type: 'POST',
             data: { funcion: 'obtener_categorias'},
             success: function(response) {
-                const categorias = JSON.parse(response);
+                categorias = JSON.parse(response);
                 let tbody = '';
+                $('#categoryTable').DataTable().destroy();
                 categorias.forEach(categoria => {
                     tbody += `
                         <tr class="text-dark">
@@ -47,111 +47,112 @@ $(document).ready(function() {
                 $('#categoryTable tbody').html(tbody);
                 $('#categoryTable').DataTable();
 
-                // Controlador de eventos de clic para el botón de edición
-                $('.btn-edit').on('click', function() {
-                    const id = $(this).data('id');
-                
-                    // Busca la categoría en la lista de categorías
-                    const categoria = categorias.find(categoria => categoria.id === id);
-                
-                    // Llena los campos del formulario con los datos de la categoría
-                    $('#editCategoryForm #id').val(categoria.id);
-                    $('#editCategoryForm #nombre').val(categoria.nombre);
-                    // Si id_padre es null, establece un valor predeterminado
-                    const id_padre = categoria.id_padre !== null ? categoria.id_padre : '';
-                    cargarCategorias('#editCategoryForm #id_padre', categoria.id, function() {
-                        $('#editCategoryForm #id_padre').val(id_padre);
-                    });
-                    $('#editCategoryForm #descripcion').val(categoria.descripcion);
-                
-                    // Muestra el modal
-                    $('#editCategoryModal').modal('show');
-                });
-
-                // Controlador de eventos de clic para el botón de estado
-                $('.toggle-status-button').on('click', function() {
-                    const id = $(this).data('id');
-                    const currentStatus = $(this).data('status');
-                    const funcion = currentStatus === 'A' ? 'desactivar_categoria' : 'activar_categoria';
-                
-                    $.ajax({
-                        url: '../Controllers/CategoriaController.php',
-                        type: 'POST',
-                        data: { funcion: funcion, id: id },
-                        success: function(response) {
-                            const data = JSON.parse(response);
-                            if (data.status === 'success') {
-                                swalWithBootstrapButtons.fire({
-                                    title: "Exito!",
-                                    text: "Se cambio el estado de la categoria",
-                                    icon: "success"
-                                });
-                                //alert(data.message);
-                                obtenerCategorias();
-                            } else {
-                                swalWithBootstrapButtons.fire({
-                                    title: "Error!",
-                                    text: "Hubo un error al cambiar el estado de la categoría",
-                                    icon: "error"
-                                });
-                                //alert('Hubo un error al cambiar el estado de la categoría');
-                            }
-                        },
-                        error: function(error) {
-                            console.error(error);
-                        }
-                    });
-                });
-
-                // Controlador de eventos de clic para el botón de eliminación
-                $('.btn-delete').on('click', function() {
-                    const id = $(this).data('id');
-                
-                    Swal.fire({
-                        title: '¿Estás seguro?',
-                        text: "¿Estás seguro de que quieres eliminar esta categoría?",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Eliminar',
-                        cancelButtonText: 'Cancelar'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            $.ajax({
-                                url: '../Controllers/CategoriaController.php',
-                                type: 'POST',
-                                data: { funcion: 'eliminar_categoria', id: id },
-                                success: function(response) {
-                                    const data = JSON.parse(response);
-                                    if (data.status === 'success') {
-                                        swalWithBootstrapButtons.fire({
-                                            title: "Categoria eliminada!",
-                                            text: "Tu categoria fue eliminada con exito",
-                                            icon: "success"
-                                        });
-                                        obtenerCategorias();
-                                    } else {
-                                        swalWithBootstrapButtons.fire({
-                                            title: "Error!",
-                                            text: "Hubo un error al eliminar la categoría",
-                                            icon: "error"
-                                        });
-                                    }
-                                },
-                                error: function(error) {
-                                    console.error(error);
-                                }
-                            });
-                        }
-                    });
-                });
             },
             error: function(error) {
                 console.error(error);
             }
         });
     }
+
+    // Controlador de eventos de clic para el botón de edición
+    $(document).on('click', '.btn-edit', function() {
+        const id = Number($(this).data('id'));
+    
+        // Busca la categoría en la lista de categorías
+        const categoria = categorias.find(categoria => Number(categoria.id) === id);
+    
+        // Llena los campos del formulario con los datos de la categoría
+        $('#editCategoryForm #id').val(categoria.id);
+        $('#editCategoryForm #nombre').val(categoria.nombre);
+        // Si id_padre es null, establece un valor predeterminado
+        const id_padre = categoria.id_padre !== null ? categoria.id_padre : '';
+        cargarCategorias('#editCategoryForm #id_padre', categoria.id, function() {
+            $('#editCategoryForm #id_padre').val(id_padre);
+        });
+        $('#editCategoryForm #descripcion').val(categoria.descripcion);
+    
+        // Muestra el modal
+        $('#editCategoryModal').modal('show');
+    });
+
+    // Controlador de eventos de clic para el botón de estado
+    $(document).on('click', '.toggle-status-button', function() {
+        const id = $(this).data('id');
+        const currentStatus = $(this).data('status');
+        const funcion = currentStatus === 'A' ? 'desactivar_categoria' : 'activar_categoria';
+    
+        $.ajax({
+            url: '../Controllers/CategoriaController.php',
+            type: 'POST',
+            data: { funcion: funcion, id: id },
+            success: function(response) {
+                const data = JSON.parse(response);
+                if (data.status === 'success') {
+                    swalWithBootstrapButtons.fire({
+                        title: "Exito!",
+                        text: "Se cambio el estado de la categoria",
+                        icon: "success"
+                    });
+                    //alert(data.message);
+                    obtenerCategorias();
+                } else {
+                    swalWithBootstrapButtons.fire({
+                        title: "Error!",
+                        text: "Hubo un error al cambiar el estado de la categoría",
+                        icon: "error"
+                    });
+                    //alert('Hubo un error al cambiar el estado de la categoría');
+                }
+            },
+            error: function(error) {
+                console.error(error);
+            }
+        });
+    });
+
+    // Controlador de eventos de clic para el botón de eliminación
+    $(document).on('click', '.btn-delete', function() {
+        const id = $(this).data('id');
+    
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "¿Estás seguro de que quieres eliminar esta categoría?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '../Controllers/CategoriaController.php',
+                    type: 'POST',
+                    data: { funcion: 'eliminar_categoria', id: id },
+                    success: function(response) {
+                        const data = JSON.parse(response);
+                        if (data.status === 'success') {
+                            swalWithBootstrapButtons.fire({
+                                title: "Categoria eliminada!",
+                                text: "Tu categoria fue eliminada con exito",
+                                icon: "success"
+                            });
+                            obtenerCategorias();
+                        } else {
+                            swalWithBootstrapButtons.fire({
+                                title: "Error!",
+                                text: "Hubo un error al eliminar la categoría",
+                                icon: "error"
+                            });
+                        }
+                    },
+                    error: function(error) {
+                        console.error(error);
+                    }
+                });
+            }
+        });
+    });
 
     function cargarCategorias(selectId, excludeId, successCallback) {
         $.ajax({

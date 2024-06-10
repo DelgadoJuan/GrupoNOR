@@ -20,6 +20,9 @@
                 opacity: 0.5; /* Se ve deshabilitado */
                 cursor: not-allowed; /* Cursor de no permitido */
             }
+            #pagarButton.disabled {
+                background-color: lightgray !important; /* Cambia el color de fondo a gris claro */
+            }
         </style>
     </head>
     

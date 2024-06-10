@@ -31,6 +31,7 @@ function obtenerPedidos() {
                 row.append($('<td class="text-dark">').text(pedido.fecha ? new Date(pedido.fecha).toLocaleString() : 'N/A'));
                 row.append($('<td class="text-dark">').text(pedido.envio ? Math.trunc(pedido.envio) : 0));
                 row.append($('<td class="text-dark">').text(pedido.total ? Math.trunc(pedido.total) : 0));
+                row.append($('<td class="text-dark">').text(pedido.direccion_envio || 'N/A'));
                 row.append($('<td class="text-dark">').text(pedido.metodo_pago || 'N/A'));
                 row.append($('<td class="text-dark">').text(pedido.estado || 'N/A'));
 
@@ -132,19 +133,21 @@ function obtenerCategorias() {
             var navbarHtml = '';
 
             navbarHtml += '<li class="nav-item text-dark"><a href="./calculadora.php" class="nav-link text-dark">Cotización</a></li>';
+            navbarHtml += '<li class="nav-item text-dark"><a href="./tienda.php" class="nav-link text-dark">Inicio</a></li>';
+
             function generateCategoryHtml(categoria, isSubcategory = false) {
                 var html = '';
                 if (isSubcategory) {
-                    html += '<li class="dropdown-submenu text-dark"><a href="#" class="dropdown-item subcategoria text-dark" data-id="' + categoria.id + '">' + categoria.nombre + '</a>';
+                    html += '<li id="dropdown-submenu" class="dropdown-submenu text-dark"><a href="#" class="dropdown-item text-dark subcategoria" data-id="' + categoria.id + '">' + categoria.nombre + '</a>';
                 } else {
-                    html += '<li class="nav-item dropdown text-dark">';
-                    html += '<a href="#" class="nav-link categoria text-dark ' + ((categoria.subcategorias && categoria.subcategorias.length > 0) ? 'dropdown-toggle' : '') + '" role="button" aria-haspopup="true" aria-expanded="false" data-id="' + categoria.id + '">';
+                    html += '<li id="dropdown" class="nav-item dropdown text-dark">';
+                    html += '<a href="#" class="nav-link text-dark categoria ' + ((categoria.subcategorias && categoria.subcategorias.length > 0) ? 'dropdown-toggle' : '') + '" role="button" aria-haspopup="true" aria-expanded="false" data-id="' + categoria.id + '">';
                     html += categoria.nombre;
                     html += '</a>';
                 }
 
                 if (categoria.subcategorias && categoria.subcategorias.length > 0) {
-                    html += '<ul class="dropdown-menu">';
+                    html += '<ul id="dropdown-menu" class="dropdown-menu text-dark rounded" style="background-color: rgb(230,230,230); box-shadow:none;border:none;">';
                     categoria.subcategorias.forEach(function(subcategoria) {
                         html += generateCategoryHtml(subcategoria, true);
                     });
@@ -173,11 +176,11 @@ function obtenerCategorias() {
             function handleMouseEnter() {
                 $(this).children('.dropdown-menu').stop(true, true).slideDown();
             }
-
+            
             function handleMouseLeave() {
                 $(this).children('.dropdown-menu').stop(true, true).slideUp();
             }
-
+            
             $('#categorias').off('click', '.categoria, .subcategoria', handleItemClick);
             $('#categorias').off('mouseenter', '.nav-item', handleMouseEnter);
             $('#categorias').off('mouseleave', '.nav-item', handleMouseLeave);

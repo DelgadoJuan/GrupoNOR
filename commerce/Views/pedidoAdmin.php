@@ -24,12 +24,13 @@
                         <table id="ordersTable" class="table table-striped">
                             <thead>
                                 <tr>
-                                    <th><p style="opacity:.4">Nro. Pedido</p></th>
+                                    <th class="text-dark"><p style="opacity:.4">Nro. Pedido</p></th>
                                     <th><p style="opacity:.4">Nombre del Cliente</th>
                                     <th><p style="opacity:.4">DNI</p></th>
                                     <th><p style="opacity:.4">Fecha del Pedido</p></th>
                                     <th><p style="opacity:.4">Envío</p></th>
                                     <th><p style="opacity:.4">Total</p></th>
+                                    <th style="width: 20%"><p style="opacity:.4">Dirección de Envío</p></th>
                                     <th><p style="opacity:.4">Forma de Pago</p></th>
                                     <th><p style="opacity:.4">Estado</p></th>
                                     <th><p style="opacity:.4">Acciones</p</th>

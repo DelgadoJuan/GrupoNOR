@@ -6,7 +6,7 @@ $(document).ready(function() {
 
 function redireccionar() {
     // Redirige al usuario a tienda.php
-    if (error) {
+    if (error || statusMP === 'rejected') {
         window.location.href = './carrito.php';
     } else {
         window.location.href = './mis_pedidos.php';

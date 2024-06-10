@@ -2,43 +2,45 @@ import { verificar_sesion } from "./sesion.js";
 
 const swalWithBootstrapButtons = Swal.mixin({
     customClass: {
-    confirmButton: "btn btn-success m-3",
-    cancelButton: "btn btn-danger"
+        confirmButton: "btn btn-success m-3",
+        cancelButton: "btn btn-danger"
     },
     buttonsStyling: false
 });
 
-$(document).ready(function() {
+$(document).ready(function () {
     verificar_sesion();
     $('#employeesTable').hide();
 
-    $('#showClients').on('click', function() {
+    $('#showClients').on('click', function () {
         toggleTables('#clientsTable', '#employeesTable');
     });
 
-    $('#showEmployees').on('click', function() {
+    $('#showEmployees').on('click', function () {
         toggleTables('#employeesTable', '#clientsTable');
     });
+
     obtener_usuarios();
 });
 
 function toggleTables(showTable, hideTable) {
-    $(hideTable).hide();
     if ($.fn.DataTable.isDataTable(hideTable)) {
         $(hideTable).DataTable().destroy();
     }
+    $(hideTable).hide();
     $(showTable).show();
-    $(showTable).DataTable();
+
+    if (!$.fn.DataTable.isDataTable(showTable)) {
+        $(showTable).DataTable();
+    }
 }
 
 function obtener_usuarios() {
     $.ajax({
         url: '../Controllers/UsuarioController.php',
         method: 'POST',
-        data: {
-            funcion: 'obtener_usuarios'
-        },
-        success: function(response) {
+        data: { funcion: 'obtener_usuarios' },
+        success: function (response) {
             var usuarios = JSON.parse(response);
             var tablaClientes = '';
             var tablaEmpleados = '';
@@ -56,7 +58,7 @@ function obtener_usuarios() {
                     <td class="direccion">${usuario.direccion ? usuario.direccion : ''}</td>
                     <td class="referencia">${usuario.referencia ? usuario.referencia : ''}</td>
                 `;
-                if(usuario.id_tipo != 2) {
+                if (usuario.id_tipo != 2) {
                     filaUsuario += `<td class="tipo_usuario">${usuario.tipo_usuario ? usuario.tipo_usuario : ''}</td>`;
                 }
                 filaUsuario += `
@@ -67,7 +69,7 @@ function obtener_usuarios() {
                     </td>
                 </tr>
                 `;
-                if(usuario.id_tipo == 2) {
+                if (usuario.id_tipo == 2) {
                     tablaClientes += filaUsuario;
                 } else {
                     tablaEmpleados += filaUsuario;
@@ -79,24 +81,38 @@ function obtener_usuarios() {
 }
 
 function actualizarTablas(tablaClientes, tablaEmpleados) {
-    $('#clientsTable').DataTable().destroy();
-    $('#employeesTable').DataTable().destroy();
+    // Destruir las tablas existentes si son DataTables
+    /*if ($.fn.DataTable.isDataTable('#clientsTable')) {
+        $('#clientsTable').DataTable().destroy();
+    }
+    if ($.fn.DataTable.isDataTable('#employeesTable')) {
+        $('#employeesTable').DataTable().destroy();
+    }*/
+
+    // Actualizar el contenido de las tablas
     $('#clientsTable tbody').html(tablaClientes);
     $('#employeesTable tbody').html(tablaEmpleados);
-    $('#clientsTable').DataTable();
-    $('#employeesTable').DataTable();
+
+    // Inicializar las tablas como DataTables si tienen contenido
+    if (tablaClientes.trim() !== '') {
+        $('#clientsTable').DataTable();
+    }
+    if ($('#employeesTable').is(':visible') && tablaEmpleados.trim() !== '') {
+        $('#employeesTable').DataTable();
+    }
+
     agregarEventos();
 }
 
 function agregarEventos() {
-    $('.fa-toggle-on, .fa-toggle-off').click(function() {
+    $('.fa-toggle-on, .fa-toggle-off').click(function () {
         var filaUsuario = $(this).closest('tr');
         var id_usuario = filaUsuario.data('id');
         var nuevoEstado = $(this).hasClass('fa-toggle-on') ? 'I' : 'A';
         cambiarEstadoUsuario(id_usuario, nuevoEstado);
     });
 
-    $('.fa-trash').click(function() {
+    $('.fa-trash').click(function () {
         var filaUsuario = $(this).closest('tr');
         var id_usuario = filaUsuario.data('id');
         Swal.fire({
@@ -115,7 +131,7 @@ function agregarEventos() {
     });
 
     document.querySelectorAll('.editar_usuario').forEach(boton => {
-        boton.addEventListener('click', function() {
+        boton.addEventListener('click', function () {
             let filaUsuario = this.closest('tr');
             var id_tipo = this.dataset.idTipo;
 
@@ -151,13 +167,12 @@ function eliminarUsuario(id_usuario) {
             funcion: 'eliminar_usuario',
             id: id_usuario,
         },
-        success: function(response) {
+        success: function (response) {
             swalWithBootstrapButtons.fire({
                 title: "Exito!",
                 text: "Usuario eliminado correctamente",
                 icon: "success"
             });
-            //alert('Usuario eliminado correctamente');
             obtener_usuarios(); // Actualizar la tabla
         }
     });
@@ -172,19 +187,18 @@ function cambiarEstadoUsuario(id_usuario, nuevoEstado) {
             id: id_usuario,
             estado: nuevoEstado,
         },
-        success: function(response) {
+        success: function (response) {
             swalWithBootstrapButtons.fire({
                 title: "Exito!",
                 text: "Estado modificado correctamente",
                 icon: "success"
             });
-            //alert('Estado modificado correctamente');
             obtener_usuarios(); // Actualizar la tabla
         }
     });
 }
 
-document.querySelector('#addEmployeeForm').addEventListener('submit', function(event) {
+document.querySelector('#addEmployeeForm').addEventListener('submit', function (event) {
     event.preventDefault();
     let formData = new FormData(this);
     formData.append('funcion', 'registrar_empleado');
@@ -194,20 +208,19 @@ document.querySelector('#addEmployeeForm').addEventListener('submit', function(e
         data: formData,
         processData: false,
         contentType: false,
-        success: function(response) {
+        success: function (response) {
             $('#addEmployeeModal').modal('hide');
             swalWithBootstrapButtons.fire({
                 title: "Exito!",
                 text: "Empleado creado correctamente",
                 icon: "success"
             });
-            //alert('Empleado creado correctamente');
             obtener_usuarios();
         }
     });
 });
 
-document.querySelector('#editEmployeeForm').addEventListener('submit', function(event) {
+document.querySelector('#editEmployeeForm').addEventListener('submit', function (event) {
     event.preventDefault();
     let formData = new FormData(this);
     formData.append('funcion', 'modificar_usuario');
@@ -217,14 +230,13 @@ document.querySelector('#editEmployeeForm').addEventListener('submit', function(
         data: formData,
         processData: false,
         contentType: false,
-        success: function(response) {
+        success: function (response) {
             $('#editEmployeeModal').modal('hide');
             swalWithBootstrapButtons.fire({
                 title: "Exito!",
                 text: "Empleado actualizado correctamente",
                 icon: "success"
             });
-            //alert('Empleado actualizado correctamente');
             obtener_usuarios();
         }
     });

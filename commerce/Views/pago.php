@@ -37,6 +37,7 @@
             $total += floatval($cartItem->precio_unitario) * $cartItem->cantidad;
         }
 
+        $direccion_envio = isset($_SESSION['direccion_envio']) ? $_SESSION['direccion_envio'] : '';
         $costo_envio = isset($_SESSION['costo_envio']) ? $_SESSION['costo_envio'] : 0;
         $total += $costo_envio;
 
@@ -61,8 +62,8 @@
             ],
             "payer" => $payer,
             "back_urls" => [
-                "success" => "https://1a87-190-138-186-169.ngrok-free.app/GrupoNOR/commerce/Views/pago_exitoso.php",
-                "failure" => "https://1a87-190-138-186-169.ngrok-free.app/GrupoNOR/commerce/Views/stock.php"
+                "success" => "https://d298-190-138-186-169.ngrok-free.app/GrupoNOR/commerce/Views/pago_exitoso.php",
+                "failure" => "https://d298-190-138-186-169.ngrok-free.app/GrupoNOR/commerce/Views/pago_exitoso.php"
             ],
             "statement_descriptor" => "NAME_DISPLAYED_IN_USER_BILLING",
             "payment_methods" => [
@@ -79,7 +80,7 @@
         $request_options->setCustomHeaders(["X-Idempotency-Key: <SOME_UNIQUE_VALUE>"]);
         try {
             $preference = $client->create($request, $request_options);
-            echo "<script>var mercadoPagoUrl = '" . $preference->init_point . "';</script>";
+            echo "<script>var mercadoPagoUrl = '" . $preference->init_point ."';</script>";
         } catch (MPApiException $e) {
             echo "Status code: " . $e->getApiResponse()->getStatusCode() . "\n";
             echo "Content: ";
@@ -97,16 +98,29 @@ ob_end_flush(); // Envía el contenido del búfer al cliente
 <html>
     <head>
         <title>Pago</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <style>
+            .back-button {
+                font-size: 1.25em;
+                color: #000;
+                cursor: pointer;
+                text-decoration: none;
+                display: inline-block;
+                margin-bottom: 20px;
+            }
+        </style>
     </head>
     <body>
         <div class="container mt-5">
+            <a href="./carrito.php" class="back-button">&larr; Volver</a>
             <div class="row">
                 <div class="col-md-6">
                     <h3 class="mb-4 text-dark" style="font-size: 2em;">Resumen del pedido</h3>
+                    <p class="mb-1 text-dark"><strong class="text-dark">Dirección de envío:</strong> <?php echo $direccion_envio;?></p>
                     <p class="mb-1 text-dark"><strong class="text-dark">Subtotal:</strong> $<?php echo $total - $costo_envio; ?></p>
                     <p class="mb-1 text-dark"><strong class="text-dark">Costo de envío:</strong> $<?php echo $costo_envio; ?></p>
                     <p class="mb-4 text-dark"><strong class="text-dark">Total:</strong> $<?php echo $total; ?></p>
-                    <button id="pay-button" class="boton-checkout btn-block" style="background-color: rgb(59, 157, 207); border:none;"></button>
+                    <button id="pay-button" class="boton-checkout btn-block" style="background-color: rgb(59, 157, 207); border:none;">Pagar</button>
                 </div>
                 <div class="col-md-6">
                     
@@ -138,15 +152,11 @@ ob_end_flush(); // Envía el contenido del búfer al cliente
                     id: '<?php echo $preference->id ?>',
                     redirectMode: 'modal',
                 },
-                render: {
-                    container: '.boton-checkout',  // Indica dónde se mostrará el botón
-                    label: 'Pagar',  // Cambia el texto del botón
-                }
             });
 
         </script>
         <!-- Incluir tu archivo JavaScript -->
-        <script src="./carrito.js" type="module"></script>
+        <script src="./pago.js" type="module"></script>
     </body>
 </html>
 

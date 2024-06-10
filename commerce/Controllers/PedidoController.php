@@ -72,6 +72,7 @@ session_start();
                 'envio'=>$objeto->precio_envio,
                 'estado'=>$objeto->estado,
                 'ruta_pdf'=>$objeto->ruta_pdf,
+                'direccion_envio'=>$objeto->direccion_envio,
                 'nombres'=>$objeto->nombres,
                 'apellidos'=>$objeto->apellidos,
                 'dni'=>$objeto->dni
@@ -94,7 +95,8 @@ session_start();
                     'metodo_pago'=>$objeto->metodo_pago,
                     'envio'=>$objeto->precio_envio,
                     'estado'=>$objeto->estado,
-                    'ruta_pdf'=>$objeto->ruta_pdf
+                    'ruta_pdf'=>$objeto->ruta_pdf,
+                    'direccion_envio'=>$objeto->direccion_envio
                 );
             }
             $jsonstring = json_encode($json);
